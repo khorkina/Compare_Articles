@@ -1,5 +1,6 @@
 import { clientStorage } from './storage';
 import { wikipediaClient, type WikipediaSearchResult, type WikipediaLanguageLink } from './wikipedia-client';
+import { simpleWikipedia } from './wikipedia-simple';
 import { openaiClient } from './openai-client';
 
 export interface SearchResult {
@@ -115,35 +116,48 @@ export const api = {
     try {
       console.log('Starting comparison with data:', comparisonData);
       
-      // Fetch article content for each language
-      console.log('Fetching articles for languages:', comparisonData.languageTitles);
-      const articles = await wikipediaClient.getMultipleArticleContents(
-        comparisonData.languageTitles,
-        comparisonData.baseLanguage
-      );
+      // Test Wikipedia connection first
+      const connectionOk = await simpleWikipedia.testConnection();
+      if (!connectionOk) {
+        throw new Error('Cannot connect to Wikipedia API');
+      }
 
-      console.log('Fetched articles:', articles.length, articles.map(a => `${a.language}: ${a.title} (${a.contentLength} chars)`));
+      // Fetch articles using simple client
+      const articles = [];
+      console.log('Fetching articles for languages:', comparisonData.languageTitles);
+      
+      for (const [language, title] of Object.entries(comparisonData.languageTitles)) {
+        try {
+          const article = await simpleWikipedia.fetchArticle(title, language);
+          articles.push(article);
+          console.log(`✓ Fetched ${language}: ${article.title} (${article.contentLength} chars)`);
+        } catch (error) {
+          console.error(`✗ Failed to fetch ${language}: ${title}`, error);
+        }
+      }
 
       if (articles.length < 1) {
         throw new Error(`No articles could be fetched. Please verify the article exists and try again.`);
       }
       
-      if (articles.length < 2) {
-        console.warn(`Only ${articles.length} article(s) fetched, proceeding with comparison`);
-      }
+      console.log(`Successfully fetched ${articles.length} articles for comparison`);
 
       // Prepare content for OpenAI
       const articleContents: Record<string, string> = {};
-      articles.forEach(article => {
+      articles.forEach((article: any) => {
         articleContents[article.language] = article.content;
       });
 
+      console.log('Sending to OpenAI for comparison...');
+      
       // Get AI comparison
       const comparisonResult = await openaiClient.compareArticles({
         articles: articleContents,
         outputLanguage: comparisonData.outputLanguage,
         isFunnyMode: comparisonData.isFunnyMode
       });
+
+      console.log('OpenAI comparison completed, saving to local storage...');
 
       // Save comparison to local storage
       const comparison = await clientStorage.saveComparison({
@@ -156,6 +170,7 @@ export const api = {
         articles
       });
 
+      console.log('Comparison saved successfully:', comparison.id);
       return comparison;
     } catch (error) {
       console.error('Compare articles error:', error);
