@@ -149,13 +149,21 @@ export const api = {
       });
 
       console.log('Sending to OpenAI for comparison...');
+      console.log('Article content lengths:', Object.entries(articleContents).map(([lang, content]) => `${lang}: ${content.length} chars`));
       
       // Get AI comparison
-      const comparisonResult = await openaiClient.compareArticles({
-        articles: articleContents,
-        outputLanguage: comparisonData.outputLanguage,
-        isFunnyMode: comparisonData.isFunnyMode
-      });
+      let comparisonResult;
+      try {
+        comparisonResult = await openaiClient.compareArticles({
+          articles: articleContents,
+          outputLanguage: comparisonData.outputLanguage,
+          isFunnyMode: comparisonData.isFunnyMode
+        });
+        console.log('OpenAI comparison result length:', comparisonResult.length);
+      } catch (openaiError) {
+        console.error('OpenAI comparison failed:', openaiError);
+        throw new Error(`AI comparison failed: ${openaiError instanceof Error ? openaiError.message : 'Unknown error'}`);
+      }
 
       console.log('OpenAI comparison completed, saving to local storage...');
 
@@ -174,7 +182,19 @@ export const api = {
       return comparison;
     } catch (error) {
       console.error('Compare articles error:', error);
-      throw error;
+      
+      // Provide more specific error information
+      if (error instanceof Error) {
+        if (error.message.includes('API key')) {
+          throw new Error('OpenAI API key issue: ' + error.message + '. Please check your API key in Settings.');
+        } else if (error.message.includes('Wikipedia')) {
+          throw new Error('Wikipedia data error: ' + error.message + '. Please try a different article.');
+        } else {
+          throw new Error('Comparison failed: ' + error.message);
+        }
+      } else {
+        throw new Error('Comparison failed: Unknown error occurred');
+      }
     }
   },
 
