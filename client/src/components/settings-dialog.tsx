@@ -96,6 +96,66 @@ export function SettingsDialog() {
     }
   };
 
+  const testComparison = async () => {
+    try {
+      console.log('=== TESTING FULL COMPARISON FLOW ===');
+      
+      // Test API key retrieval
+      const testKey = await clientStorage.getOpenAIKey();
+      console.log('Retrieved API key:', testKey ? 'Found' : 'Missing');
+      
+      if (!testKey) {
+        toast({
+          title: "No API Key",
+          description: "Please save your OpenAI API key first",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      // Test simple OpenAI call
+      console.log('Testing OpenAI API call...');
+      const testResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${testKey}`
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: [{ role: 'user', content: 'Say "Test successful"' }],
+          max_tokens: 10
+        })
+      });
+      
+      console.log('OpenAI response status:', testResponse.status);
+      
+      if (testResponse.ok) {
+        const data = await testResponse.json();
+        console.log('OpenAI test result:', data.choices[0].message.content);
+        toast({
+          title: "API Test Successful",
+          description: "Your OpenAI API key is working correctly"
+        });
+      } else {
+        const errorText = await testResponse.text();
+        console.error('OpenAI error:', errorText);
+        toast({
+          title: "API Test Failed",
+          description: "OpenAI API call failed. Check console for details.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Test comparison failed:', error);
+      toast({
+        title: "Test Failed",
+        description: error instanceof Error ? error.message : "Unknown error",
+        variant: "destructive"
+      });
+    }
+  };
+
   const exportUserData = async () => {
     try {
       const data = await clientStorage.exportAllData();
@@ -233,9 +293,14 @@ export function SettingsDialog() {
                 </p>
               </div>
               
-              <Button onClick={saveApiKey} className="w-full">
-                Save API Key
-              </Button>
+              <div className="flex gap-2">
+                <Button onClick={saveApiKey} className="flex-1">
+                  Save API Key
+                </Button>
+                <Button onClick={testComparison} variant="outline" className="flex-1">
+                  Test API
+                </Button>
+              </div>
             </div>
           </div>
 

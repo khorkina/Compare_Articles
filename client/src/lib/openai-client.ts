@@ -10,16 +10,24 @@ class OpenAIClient {
   private baseUrl = 'https://api.openai.com/v1';
 
   async getApiKey(): Promise<string> {
+    console.log('Retrieving OpenAI API key...');
+    
     // Check if user has provided their own API key
-    const userApiKey = await clientStorage.getOpenAIKey();
-    if (userApiKey) {
-      return userApiKey;
+    try {
+      const userApiKey = await clientStorage.getOpenAIKey();
+      console.log('User API key from storage:', userApiKey ? 'Found' : 'Not found');
+      if (userApiKey && userApiKey.trim()) {
+        return userApiKey.trim();
+      }
+    } catch (error) {
+      console.error('Error getting API key from storage:', error);
     }
 
     // Fall back to environment variable (for server-provided key)
     const envApiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    if (envApiKey) {
-      return envApiKey;
+    console.log('Environment API key:', envApiKey ? 'Found' : 'Not found');
+    if (envApiKey && envApiKey.trim()) {
+      return envApiKey.trim();
     }
 
     throw new Error('No OpenAI API key available. Please provide your API key in settings.');
