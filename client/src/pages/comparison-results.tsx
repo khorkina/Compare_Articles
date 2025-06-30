@@ -1,0 +1,213 @@
+import { useRoute, useLocation } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
+import { api } from '@/lib/api';
+import { getLanguageName } from '@/lib/languages';
+import { useToast } from '@/hooks/use-toast';
+
+export default function ComparisonResults() {
+  const [match, params] = useRoute('/comparison/:id');
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  
+  const comparisonId = params?.id ? parseInt(params.id) : null;
+
+  const comparisonQuery = useQuery({
+    queryKey: ['/api/compare', comparisonId],
+    queryFn: () => api.getComparison(comparisonId!),
+    enabled: !!comparisonId,
+  });
+
+  const handleExport = async () => {
+    if (!comparisonId) return;
+    
+    try {
+      const blob = await api.exportComparison(comparisonId);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `wiki-truth-${comparisonQuery.data?.articleTitle}-comparison.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      toast({
+        title: "Export Successful",
+        description: "Comparison has been exported as a Word document.",
+      });
+    } catch (error) {
+      toast({
+        title: "Export Failed",
+        description: "Failed to export the comparison document.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleShare = async (platform: string) => {
+    if (!comparisonId) return;
+    
+    try {
+      const shareText = await api.shareComparison(comparisonId, platform);
+      toast({
+        title: "Copied to Clipboard",
+        description: `Comparison text and link copied for ${platform}.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Share Failed",
+        description: "Failed to prepare sharing content.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (!comparisonId) {
+    return (
+      <main className="lg:col-span-3">
+        <div className="wiki-content-section">
+          <h2 className="font-bold text-2xl mb-4">Invalid Comparison</h2>
+          <p className="text-wiki-gray mb-4">The comparison ID is invalid or missing.</p>
+          <Button onClick={() => setLocation('/')} className="wiki-button">
+            Back to Search
+          </Button>
+        </div>
+      </main>
+    );
+  }
+
+  if (comparisonQuery.isLoading) {
+    return (
+      <main className="lg:col-span-3">
+        <div className="wiki-content-section">
+          <div className="text-center py-12">
+            <i className="fas fa-spinner fa-spin text-4xl text-wiki-gray mb-4"></i>
+            <h2 className="font-bold text-2xl mb-2">Loading Comparison</h2>
+            <p className="text-wiki-gray">Please wait while we load your comparison results...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (comparisonQuery.error || !comparisonQuery.data) {
+    return (
+      <main className="lg:col-span-3">
+        <div className="wiki-content-section">
+          <h2 className="font-bold text-2xl mb-4">Comparison Not Found</h2>
+          <p className="text-wiki-gray mb-4">
+            The requested comparison could not be found or loaded.
+          </p>
+          <Button onClick={() => setLocation('/')} className="wiki-button">
+            Back to Search
+          </Button>
+        </div>
+      </main>
+    );
+  }
+
+  const comparison = comparisonQuery.data;
+  const languageNames = comparison.selectedLanguages.map(getLanguageName).join(', ');
+
+  return (
+    <main className="lg:col-span-3">
+      <div className="wiki-content-section">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
+          <h2 className="font-bold text-2xl mb-4 sm:mb-0">
+            Comparison Results
+            {comparison.isFunnyMode && (
+              <span className="ml-2 inline-block px-2 py-1 text-xs bg-gradient-to-r from-pink-500 to-yellow-500 text-white rounded funny-mode">
+                FUNNY MODE
+              </span>
+            )}
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            <Button onClick={handleExport} className="wiki-button text-sm">
+              <i className="fas fa-file-word mr-2"></i>Export DOCX
+            </Button>
+            <Button 
+              onClick={() => handleShare('general')} 
+              className="wiki-button text-sm"
+            >
+              <i className="fas fa-share mr-2"></i>Share
+            </Button>
+          </div>
+        </div>
+
+        {/* Article Metadata */}
+        <div className="mb-6 p-4 bg-wiki-light-gray border border-wiki-light-border rounded">
+          <h3 className="font-semibold mb-2">
+            Compared Article: <span className="text-wiki-blue">{comparison.articleTitle}</span>
+          </h3>
+          <div className="text-sm text-wiki-gray">
+            Languages compared: <span className="font-medium">{languageNames}</span> • 
+            Output language: <span className="font-medium">{getLanguageName(comparison.outputLanguage)}</span>
+          </div>
+          {comparison.articles && (
+            <div className="text-sm text-wiki-gray mt-2">
+              Article lengths: {comparison.articles.map(a => 
+                `${getLanguageName(a.language)}: ${a.contentLength.toLocaleString()} chars`
+              ).join(' • ')}
+            </div>
+          )}
+        </div>
+
+        {/* Comparison Content */}
+        <div className="prose max-w-none">
+          <div className="whitespace-pre-wrap text-gray-800 leading-relaxed">
+            {comparison.comparisonResult}
+          </div>
+        </div>
+
+        {/* Share Buttons */}
+        <div className="mt-8 pt-6 border-t border-wiki-light-border">
+          <h3 className="font-semibold mb-4">Share this comparison:</h3>
+          <div className="flex flex-wrap gap-3">
+            <Button 
+              onClick={() => handleShare('X')} 
+              className="wiki-button text-sm"
+            >
+              <i className="fab fa-x-twitter mr-2"></i>X (Twitter)
+            </Button>
+            <Button 
+              onClick={() => handleShare('LinkedIn')} 
+              className="wiki-button text-sm"
+            >
+              <i className="fab fa-linkedin mr-2"></i>LinkedIn
+            </Button>
+            <Button 
+              onClick={() => handleShare('Telegram')} 
+              className="wiki-button text-sm"
+            >
+              <i className="fab fa-telegram mr-2"></i>Telegram
+            </Button>
+            <Button 
+              onClick={() => handleShare('WhatsApp')} 
+              className="wiki-button text-sm"
+            >
+              <i className="fab fa-whatsapp mr-2"></i>WhatsApp
+            </Button>
+            <Button 
+              onClick={() => handleShare('Reddit')} 
+              className="wiki-button text-sm"
+            >
+              <i className="fab fa-reddit mr-2"></i>Reddit
+            </Button>
+          </div>
+        </div>
+
+        <div className="mt-6 text-center">
+          <Button
+            variant="ghost"
+            onClick={() => setLocation('/')}
+            className="wiki-link"
+          >
+            ← Start New Comparison
+          </Button>
+        </div>
+      </div>
+    </main>
+  );
+}
