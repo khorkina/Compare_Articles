@@ -115,16 +115,16 @@ export function SettingsDialog() {
       
       // Test simple OpenAI call
       console.log('Testing OpenAI API call...');
-      const testResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      const testResponse = await fetch('/api/openai/chat/completions', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${testKey}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           model: 'gpt-4o',
           messages: [{ role: 'user', content: 'Say "Test successful"' }],
-          max_tokens: 10
+          max_tokens: 10,
+          apiKey: testKey
         })
       });
       

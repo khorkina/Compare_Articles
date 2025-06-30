@@ -7,7 +7,7 @@ export interface ComparisonRequest {
 }
 
 class OpenAIClient {
-  private baseUrl = 'https://api.openai.com/v1';
+  private baseUrl = '/api/openai';
 
   async getApiKey(): Promise<string> {
     console.log('Retrieving OpenAI API key...');
@@ -71,10 +71,12 @@ class OpenAIClient {
       const response = await fetch(`${this.baseUrl}/chat/completions`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify({
+          ...requestBody,
+          apiKey
+        })
       });
 
       console.log('OpenAI API response status:', response.status);

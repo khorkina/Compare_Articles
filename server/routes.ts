@@ -282,6 +282,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // OpenAI API proxy endpoints for CORS bypass
+  app.post('/api/openai/chat/completions', async (req, res) => {
+    try {
+      const { apiKey, ...requestBody } = req.body;
+      
+      if (!apiKey) {
+        return res.status(400).json({ error: 'API key is required' });
+      }
+
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        return res.status(response.status).json(data);
+      }
+
+      res.json(data);
+    } catch (error) {
+      console.error('OpenAI proxy error:', error);
+      res.status(500).json({ error: 'Failed to process OpenAI request' });
+    }
+  });
+
+  // OpenAI models endpoint proxy
+  app.get('/api/openai/models', async (req, res) => {
+    try {
+      const apiKey = req.headers.authorization?.replace('Bearer ', '');
+      
+      if (!apiKey) {
+        return res.status(400).json({ error: 'Authorization header with API key is required' });
+      }
+
+      const response = await fetch('https://api.openai.com/v1/models', {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`
+        }
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        return res.status(response.status).json(data);
+      }
+
+      res.json(data);
+    } catch (error) {
+      console.error('OpenAI models proxy error:', error);
+      res.status(500).json({ error: 'Failed to fetch models' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
