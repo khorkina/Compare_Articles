@@ -100,15 +100,14 @@ export const api = {
 
   // Share functionality
   async shareComparison(id: number, platform: string): Promise<string> {
-    const comparison = await this.getComparison(id);
-    const shareUrl = `${window.location.origin}/comparison/${id}`;
-    const shareText = `Check out this Wikipedia comparison: "${comparison.articleTitle}" across ${comparison.selectedLanguages.length} languages. ${shareUrl}`;
+    const response = await apiRequest('GET', `/api/compare/${id}/share?platform=${encodeURIComponent(platform)}`);
+    const shareData = await response.json();
     
     // Copy to clipboard
     if (navigator.clipboard) {
-      await navigator.clipboard.writeText(shareText);
+      await navigator.clipboard.writeText(shareData.shareText);
     }
     
-    return shareText;
+    return shareData.shareText;
   }
 };

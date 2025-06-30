@@ -226,11 +226,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-      res.setHeader('Content-Disposition', `attachment; filename="wiki-truth-${comparison.articleTitle}-comparison.docx"`);
+      res.setHeader('Content-Disposition', 'attachment; filename="wiki-truth-comparison.docx"');
       res.send(docxBuffer);
     } catch (error) {
       console.error('Export error:', error);
       res.status(500).json({ error: "Failed to export comparison" });
+    }
+  });
+
+  // Share comparison endpoint
+  app.get("/api/compare/:id/share", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { platform } = req.query;
+      const comparison = await storage.getComparison(Number(id));
+      
+      if (!comparison) {
+        return res.status(404).json({ error: "Comparison not found" });
+      }
+
+      const shareUrl = `${req.protocol}://${req.get('host')}/comparison/${id}`;
+      const selectedLangs = comparison.selectedLanguages as string[];
+      const languageList = selectedLangs.join(', ');
+      
+      let shareText = '';
+      
+      switch (platform) {
+        case 'twitter':
+        case 'x':
+          shareText = `Fascinating Wikipedia comparison: "${comparison.articleTitle}" across ${selectedLangs.length} languages reveals cultural differences! ${shareUrl} #WikiTruth #Wikipedia`;
+          break;
+        case 'linkedin':
+          shareText = `I just compared the Wikipedia article "${comparison.articleTitle}" across ${selectedLangs.length} languages (${languageList}). The AI analysis reveals interesting cultural perspectives and factual variations. Check it out: ${shareUrl}`;
+          break;
+        case 'whatsapp':
+        case 'telegram':
+          shareText = `Check out this interesting Wikipedia comparison: "${comparison.articleTitle}" across ${selectedLangs.length} languages. The differences are quite revealing! ${shareUrl}`;
+          break;
+        case 'reddit':
+          shareText = `TIL: The Wikipedia article for "${comparison.articleTitle}" varies significantly across ${selectedLangs.length} languages. Here's an AI analysis of the differences: ${shareUrl}`;
+          break;
+        default:
+          shareText = `Wikipedia Comparison: "${comparison.articleTitle}" across ${selectedLangs.length} languages (${languageList}). See the cultural differences and perspectives: ${shareUrl}`;
+      }
+
+      res.json({ 
+        shareText, 
+        shareUrl,
+        title: comparison.articleTitle,
+        languages: selectedLangs.length
+      });
+    } catch (error) {
+      console.error('Share error:', error);
+      res.status(500).json({ error: "Failed to generate share content" });
     }
   });
 
