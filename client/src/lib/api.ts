@@ -124,8 +124,12 @@ export const api = {
 
       console.log('Fetched articles:', articles.length, articles.map(a => `${a.language}: ${a.title} (${a.contentLength} chars)`));
 
+      if (articles.length < 1) {
+        throw new Error(`No articles could be fetched. Please verify the article exists and try again.`);
+      }
+      
       if (articles.length < 2) {
-        throw new Error(`Only fetched ${articles.length} articles, need at least 2 to compare. Check that the article titles exist in the selected languages.`);
+        console.warn(`Only ${articles.length} article(s) fetched, proceeding with comparison`);
       }
 
       // Prepare content for OpenAI

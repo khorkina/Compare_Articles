@@ -113,61 +113,60 @@ class WikipediaClient {
   }
 
   async getArticleContent(title: string, language: string = 'en'): Promise<WikipediaArticle> {
-    try {
-      console.log(`Fetching article "${title}" in ${language}...`);
-      const apiUrl = this.getApiUrl(language);
-      const params = new URLSearchParams({
-        action: 'query',
-        titles: title,
-        prop: 'extracts',
-        exintro: 'false',
-        explaintext: 'true',
-        exsectionformat: 'plain',
-        format: 'json',
-        origin: '*'
-      });
+    console.log(`Fetching article "${title}" in ${language}...`);
+    
+    const apiUrl = this.getApiUrl(language);
+    const params = new URLSearchParams({
+      action: 'query',
+      titles: title,
+      prop: 'extracts',
+      exintro: 'false',
+      explaintext: 'true',
+      exsectionformat: 'plain',
+      format: 'json',
+      origin: '*'
+    });
 
-      const url = `${apiUrl}?${params}`;
-      console.log(`Making request to: ${url}`);
+    const url = `${apiUrl}?${params}`;
+    
+    try {
       const response = await fetch(url);
       
       if (!response.ok) {
-        throw new Error(`Wikipedia API error: ${response.status} ${response.statusText}`);
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
-      console.log(`Raw response for ${language}:${title}:`, data);
-      
       const pages = data.query?.pages;
       
       if (!pages) {
-        throw new Error('No page data found in response');
+        throw new Error('No pages found in response');
       }
 
       const pageId = Object.keys(pages)[0];
       const page = pages[pageId];
       
-      console.log(`Page ID: ${pageId}, Page data:`, page);
-      
-      if (pageId === '-1') {
-        throw new Error(`Article "${title}" not found in ${language} Wikipedia`);
+      if (pageId === '-1' || !page) {
+        throw new Error(`Article "${title}" not found`);
       }
       
-      if (!page.extract) {
-        throw new Error(`No content found for article "${title}" in ${language}`);
+      const content = page.extract || '';
+      if (content.length < 100) {
+        throw new Error(`Article "${title}" has insufficient content (${content.length} chars)`);
       }
-
-      const content = page.extract;
+      
+      console.log(`✓ Fetched ${language}:${title} (${content.length} chars)`);
       
       return {
-        title: page.title,
+        title: page.title || title,
         content,
         language,
         contentLength: content.length
       };
     } catch (error) {
-      console.error(`Wikipedia content error for ${language}:${title}:`, error);
-      throw error;
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error(`✗ Failed to fetch ${language}:${title}:`, errorMessage);
+      throw new Error(`Failed to fetch ${language} article: ${errorMessage}`);
     }
   }
 
@@ -177,21 +176,51 @@ class WikipediaClient {
   ): Promise<WikipediaArticle[]> {
     const articles: WikipediaArticle[] = [];
     
-    console.log('Fetching articles for:', articlesByLanguage);
+    console.log('Starting article fetch for:', articlesByLanguage);
     
-    for (const [language, title] of Object.entries(articlesByLanguage)) {
-      try {
-        console.log(`Fetching ${language} article: "${title}"`);
-        const article = await this.getArticleContent(title, language);
-        console.log(`Successfully fetched ${language} article: ${article.contentLength} characters`);
-        articles.push(article);
-      } catch (error) {
-        console.error(`Failed to fetch ${language} article "${title}":`, error);
-        // Continue with other languages even if one fails
-      }
+    // Ensure we have at least the base language
+    if (!articlesByLanguage[baseLanguage]) {
+      console.error('Base language not found in article mapping');
+      throw new Error(`Base language "${baseLanguage}" not found in language mapping`);
     }
     
-    console.log(`Total articles fetched: ${articles.length}`);
+    // Fetch articles sequentially to avoid rate limiting
+    for (const [language, title] of Object.entries(articlesByLanguage)) {
+      if (!title || title.trim() === '') {
+        console.warn(`Skipping ${language}: empty title`);
+        continue;
+      }
+      
+      try {
+        const article = await this.getArticleContent(title.trim(), language);
+        articles.push(article);
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.error(`Failed to fetch ${language} article "${title}":`, errorMessage);
+        
+        // If this is the base language and it fails, try with original search term
+        if (language === baseLanguage && articles.length === 0) {
+          console.log(`Retrying base language with fallback...`);
+          try {
+            const fallbackArticle = await this.getArticleContent(title.trim(), language);
+            articles.push(fallbackArticle);
+          } catch (fallbackError) {
+            const fallbackMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
+            console.error(`Fallback also failed:`, fallbackMessage);
+          }
+        }
+      }
+      
+      // Small delay to be respectful to Wikipedia's servers
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    
+    console.log(`Fetched ${articles.length} out of ${Object.keys(articlesByLanguage).length} articles`);
+    
+    if (articles.length === 0) {
+      throw new Error('No articles could be fetched. Please check that the article exists in the selected languages.');
+    }
+    
     return articles;
   }
 }
