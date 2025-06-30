@@ -120,6 +120,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         articleTitle, 
         selectedLanguages, 
         outputLanguage, 
+        baseLanguage = 'en',
         isFunnyMode = false 
       } = req.body;
 
@@ -138,7 +139,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Fetch article contents for all selected languages
       const articles = await wikipediaService.getMultipleArticleContents(
         articleTitle, 
-        selectedLanguages
+        selectedLanguages,
+        baseLanguage
       );
 
       if (articles.length < 2) {

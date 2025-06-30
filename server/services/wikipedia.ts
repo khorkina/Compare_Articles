@@ -97,14 +97,42 @@ export class WikipediaService {
     }
   }
 
-  async getMultipleArticleContents(title: string, languages: string[]): Promise<WikipediaArticle[]> {
-    const promises = languages.map(lang => this.getArticleContent(title, lang));
-    
+  async getMultipleArticleContents(title: string, languages: string[], baseLanguage: string = 'en'): Promise<WikipediaArticle[]> {
     try {
+      // First get language links to find the correct titles for each language
+      const languageLinks = await this.getLanguageLinks(title, baseLanguage);
+      
+      // Create a map of language to title
+      const languageTitleMap: Record<string, string> = {
+        [baseLanguage]: title // Include the base article
+      };
+      
+      languageLinks.forEach(link => {
+        languageTitleMap[link.lang] = link.title;
+      });
+
+      // Fetch articles for the requested languages
+      const promises = languages.map(async (lang) => {
+        const articleTitle = languageTitleMap[lang];
+        if (!articleTitle) {
+          console.warn(`No title found for language ${lang}`);
+          return null;
+        }
+        
+        try {
+          return await this.getArticleContent(articleTitle, lang);
+        } catch (error) {
+          console.warn(`Failed to fetch article for ${lang}:`, error);
+          return null;
+        }
+      });
+      
       const results = await Promise.allSettled(promises);
       
       return results
-        .filter((result): result is PromiseFulfilledResult<WikipediaArticle> => result.status === 'fulfilled')
+        .filter((result): result is PromiseFulfilledResult<WikipediaArticle> => 
+          result.status === 'fulfilled' && result.value !== null
+        )
         .map(result => result.value);
     } catch (error) {
       console.error('Multiple articles fetch error:', error);

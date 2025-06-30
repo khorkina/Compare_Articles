@@ -2,7 +2,7 @@ import { useRoute, useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { api } from '@/lib/api';
-import { getLanguageName } from '@/lib/languages';
+import { getLanguageName, getLanguageNativeName } from '@/lib/languages';
 import { useToast } from '@/hooks/use-toast';
 
 export default function ComparisonResults() {
@@ -108,7 +108,9 @@ export default function ComparisonResults() {
   }
 
   const comparison = comparisonQuery.data;
-  const languageNames = comparison.selectedLanguages.map(getLanguageName).join(', ');
+  const languageNames = comparison.selectedLanguages.map(lang => 
+    `${getLanguageNativeName(lang)} (${getLanguageName(lang)})`
+  ).join(', ');
 
   return (
     <main className="lg:col-span-3">
@@ -148,7 +150,7 @@ export default function ComparisonResults() {
           {comparison.articles && (
             <div className="text-sm text-wiki-gray mt-2">
               Article lengths: {comparison.articles.map(a => 
-                `${getLanguageName(a.language)}: ${a.contentLength.toLocaleString()} chars`
+                `${getLanguageNativeName(a.language)}: ${a.contentLength.toLocaleString()} chars`
               ).join(' • ')}
             </div>
           )}

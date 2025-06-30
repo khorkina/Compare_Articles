@@ -16,6 +16,7 @@ export interface ComparisonRequest {
   articleTitle: string;
   selectedLanguages: string[];
   outputLanguage: string;
+  baseLanguage?: string;
   isFunnyMode?: boolean;
 }
 

@@ -32,6 +32,7 @@ export default function LanguageSelection() {
       articleTitle: title,
       selectedLanguages,
       outputLanguage,
+      baseLanguage: language,
       isFunnyMode
     }),
     onSuccess: (result) => {
@@ -150,10 +151,10 @@ export default function LanguageSelection() {
                   />
                   <div>
                     <div className="font-semibold">
-                      {getLanguageName(lang.lang)}
+                      {getLanguageNativeName(lang.lang)}
                     </div>
                     <div className="text-sm text-wiki-gray">
-                      {getLanguageNativeName(lang.lang)}
+                      {getLanguageName(lang.lang)}
                     </div>
                     <div className="text-xs text-wiki-gray truncate">
                       {lang.title}

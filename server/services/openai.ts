@@ -15,6 +15,12 @@ export class OpenAIService {
   async compareArticles(request: ComparisonRequest): Promise<string> {
     const { articles, outputLanguage, isFunnyMode = false } = request;
     
+    // Log the articles being compared for debugging
+    console.log('Articles being compared:', Object.keys(articles));
+    console.log('Article lengths:', Object.entries(articles).map(([lang, content]) => 
+      `${lang}: ${content.length} characters`
+    ));
+    
     const articleData = JSON.stringify(articles, null, 2);
     
     const systemPrompt = isFunnyMode 

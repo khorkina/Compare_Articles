@@ -100,8 +100,12 @@ Wiki Truth is a full-stack web application that enables users to compare Wikiped
 
 ## Changelog
 
-Changelog:
-- June 30, 2025. Initial setup
+### Recent Changes
+- June 30, 2025: Fixed Wikipedia article fetching to use correct language-specific titles
+- June 30, 2025: Improved language display to show native names prominently 
+- June 30, 2025: Added debugging logs for OpenAI comparison service
+- June 30, 2025: Fixed import errors and type issues preventing application startup
+- June 30, 2025: Initial setup and core functionality implementation
 
 ## User Preferences
 
