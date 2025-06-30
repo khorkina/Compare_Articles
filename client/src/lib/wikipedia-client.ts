@@ -20,7 +20,7 @@ export interface WikipediaArticle {
 class WikipediaClient {
   private getCorsProxyUrl(url: string): string {
     // Use a CORS proxy to bypass browser CORS restrictions
-    return `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+    return `https://corsproxy.io/?${encodeURIComponent(url)}`;
   }
 
   private getApiUrl(language: string): string {
@@ -40,7 +40,7 @@ class WikipediaClient {
       });
 
       const url = `${apiUrl}?${params}`;
-      const response = await fetch(this.getCorsProxyUrl(url));
+      const response = await fetch(url);
       
       if (!response.ok) {
         throw new Error(`Wikipedia API error: ${response.status}`);
@@ -57,7 +57,7 @@ class WikipediaClient {
       return titles.map((title: string, index: number) => ({
         title,
         snippet: snippets[index] || '',
-        pageid: index + 1 // Wikipedia doesn't provide pageids in opensearch, so we use index
+        pageid: index + 1
       }));
     } catch (error) {
       console.error('Wikipedia search error:', error);
@@ -78,7 +78,7 @@ class WikipediaClient {
       });
 
       const url = `${apiUrl}?${params}`;
-      const response = await fetch(this.getCorsProxyUrl(url));
+      const response = await fetch(url);
       
       if (!response.ok) {
         throw new Error(`Wikipedia API error: ${response.status}`);
@@ -127,7 +127,7 @@ class WikipediaClient {
       });
 
       const url = `${apiUrl}?${params}`;
-      const response = await fetch(this.getCorsProxyUrl(url));
+      const response = await fetch(url);
       
       if (!response.ok) {
         throw new Error(`Wikipedia API error: ${response.status}`);
