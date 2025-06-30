@@ -113,14 +113,19 @@ export const api = {
 
   async compareArticles(comparisonData: ComparisonRequest): Promise<ComparisonResult> {
     try {
+      console.log('Starting comparison with data:', comparisonData);
+      
       // Fetch article content for each language
+      console.log('Fetching articles for languages:', comparisonData.languageTitles);
       const articles = await wikipediaClient.getMultipleArticleContents(
         comparisonData.languageTitles,
         comparisonData.baseLanguage
       );
 
+      console.log('Fetched articles:', articles.length, articles.map(a => `${a.language}: ${a.title} (${a.contentLength} chars)`));
+
       if (articles.length < 2) {
-        throw new Error('Need at least 2 articles to compare');
+        throw new Error(`Only fetched ${articles.length} articles, need at least 2 to compare. Check that the article titles exist in the selected languages.`);
       }
 
       // Prepare content for OpenAI

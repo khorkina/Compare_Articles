@@ -114,6 +114,7 @@ class WikipediaClient {
 
   async getArticleContent(title: string, language: string = 'en'): Promise<WikipediaArticle> {
     try {
+      console.log(`Fetching article "${title}" in ${language}...`);
       const apiUrl = this.getApiUrl(language);
       const params = new URLSearchParams({
         action: 'query',
@@ -127,24 +128,33 @@ class WikipediaClient {
       });
 
       const url = `${apiUrl}?${params}`;
+      console.log(`Making request to: ${url}`);
       const response = await fetch(url);
       
       if (!response.ok) {
-        throw new Error(`Wikipedia API error: ${response.status}`);
+        throw new Error(`Wikipedia API error: ${response.status} ${response.statusText}`);
       }
 
       const data = await response.json();
+      console.log(`Raw response for ${language}:${title}:`, data);
+      
       const pages = data.query?.pages;
       
       if (!pages) {
-        throw new Error('No page data found');
+        throw new Error('No page data found in response');
       }
 
       const pageId = Object.keys(pages)[0];
       const page = pages[pageId];
       
-      if (pageId === '-1' || !page.extract) {
-        throw new Error('Article not found');
+      console.log(`Page ID: ${pageId}, Page data:`, page);
+      
+      if (pageId === '-1') {
+        throw new Error(`Article "${title}" not found in ${language} Wikipedia`);
+      }
+      
+      if (!page.extract) {
+        throw new Error(`No content found for article "${title}" in ${language}`);
       }
 
       const content = page.extract;
@@ -167,16 +177,21 @@ class WikipediaClient {
   ): Promise<WikipediaArticle[]> {
     const articles: WikipediaArticle[] = [];
     
+    console.log('Fetching articles for:', articlesByLanguage);
+    
     for (const [language, title] of Object.entries(articlesByLanguage)) {
       try {
+        console.log(`Fetching ${language} article: "${title}"`);
         const article = await this.getArticleContent(title, language);
+        console.log(`Successfully fetched ${language} article: ${article.contentLength} characters`);
         articles.push(article);
       } catch (error) {
-        console.error(`Failed to fetch ${language} article:`, error);
+        console.error(`Failed to fetch ${language} article "${title}":`, error);
         // Continue with other languages even if one fails
       }
     }
     
+    console.log(`Total articles fetched: ${articles.length}`);
     return articles;
   }
 }

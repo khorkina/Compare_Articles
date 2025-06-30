@@ -36,6 +36,10 @@ export default function LanguageSelection() {
         languageTitles[lang] = langLink?.title || title;
       });
 
+      console.log('Language titles mapping:', languageTitles);
+      console.log('Selected languages:', selectedLanguages);
+      console.log('Available language links:', languageLinksQuery.data);
+
       return api.compareArticles({
         articleTitle: title,
         selectedLanguages,
