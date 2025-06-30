@@ -10,7 +10,7 @@ export default function ComparisonResults() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   
-  const comparisonId = params?.id ? parseInt(params.id) : null;
+  const comparisonId = params?.id || null;
 
   const comparisonQuery = useQuery({
     queryKey: ['/api/compare', comparisonId],

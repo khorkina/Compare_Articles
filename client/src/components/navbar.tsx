@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { SettingsDialog } from "./settings-dialog";
 
 export function Navbar() {
   return (
@@ -11,12 +12,15 @@ export function Navbar() {
                 Wiki Truth
               </Link>
             </h1>
-            <span className="text-sm text-wiki-gray">by AI-powered comparison</span>
+            <span className="text-sm text-wiki-gray">Privacy-first comparison</span>
           </div>
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link href="/about" className="wiki-link text-sm">About</Link>
-            <Link href="/how-it-works" className="wiki-link text-sm">How it works</Link>
-            <Link href="/privacy" className="wiki-link text-sm">Privacy</Link>
+          <nav className="flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-6">
+              <Link href="/about" className="wiki-link text-sm">About</Link>
+              <Link href="/how-it-works" className="wiki-link text-sm">How it works</Link>
+              <Link href="/privacy" className="wiki-link text-sm">Privacy</Link>
+            </div>
+            <SettingsDialog />
           </nav>
         </div>
       </div>

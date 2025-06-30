@@ -28,13 +28,23 @@ export default function LanguageSelection() {
 
   // Comparison mutation
   const comparisonMutation = useMutation({
-    mutationFn: (isFunnyMode: boolean) => api.compareArticles({
-      articleTitle: title,
-      selectedLanguages,
-      outputLanguage,
-      baseLanguage: language,
-      isFunnyMode
-    }),
+    mutationFn: (isFunnyMode: boolean) => {
+      // Create language titles mapping
+      const languageTitles: Record<string, string> = {};
+      selectedLanguages.forEach(lang => {
+        const langLink = languageLinksQuery.data?.find(link => link.lang === lang);
+        languageTitles[lang] = langLink?.title || title;
+      });
+
+      return api.compareArticles({
+        articleTitle: title,
+        selectedLanguages,
+        outputLanguage,
+        baseLanguage: language,
+        isFunnyMode,
+        languageTitles
+      });
+    },
     onSuccess: (result) => {
       setLocation(`/comparison/${result.id}`);
     },

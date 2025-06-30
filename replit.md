@@ -1,8 +1,8 @@
-# Wiki Truth - AI-Powered Wikipedia Comparison Platform
+# Wiki Truth - Privacy-First Wikipedia Comparison Platform
 
 ## Overview
 
-Wiki Truth is a full-stack web application that enables users to compare Wikipedia articles across multiple languages using artificial intelligence. The platform reveals how the same topic can be presented differently in various linguistic and cultural contexts, providing insights into cultural biases and narrative variations.
+Wiki Truth is a client-side web application that enables users to compare Wikipedia articles across multiple languages using artificial intelligence. The platform is designed with privacy-first principles, storing all user data locally in the browser while revealing how the same topic can be presented differently in various linguistic and cultural contexts, providing insights into cultural biases and narrative variations.
 
 ## System Architecture
 
@@ -15,17 +15,16 @@ Wiki Truth is a full-stack web application that enables users to compare Wikiped
 - **Build Tool**: Vite with hot module replacement
 
 ### Backend Architecture
-- **Runtime**: Node.js with Express.js framework
+- **Runtime**: Node.js with Express.js framework (minimal server for static files only)
 - **Language**: TypeScript with ES modules
-- **API Design**: RESTful endpoints with structured error handling
-- **File Upload**: Built-in Express middleware for JSON/form data
+- **Static Serving**: Express serves built React application
 - **Development**: tsx for TypeScript execution in development
 
 ### Data Storage Solutions
-- **Database**: PostgreSQL with Drizzle ORM
-- **Schema**: Type-safe database operations with Drizzle Kit migrations
-- **Connection**: Neon Database serverless PostgreSQL
-- **Session Storage**: In-memory storage with fallback to PostgreSQL sessions
+- **Client Storage**: IndexedDB with idb library for structured data
+- **User Accounts**: UUID-based accounts stored in browser localStorage
+- **Session Management**: Local browser storage only
+- **Privacy**: No server-side data storage or tracking
 
 ## Key Components
 
@@ -36,10 +35,11 @@ Wiki Truth is a full-stack web application that enables users to compare Wikiped
 - **Article Selection**: Type-ahead search with snippet previews
 
 ### AI Comparison Engine
-- **Model**: OpenAI GPT-4o for article analysis
+- **Model**: OpenAI GPT-4o for article analysis (client-side API calls)
 - **Comparison Modes**: Standard academic analysis and "funny mode" for entertaining insights
-- **Content Processing**: Structured JSON input with comprehensive analysis output
+- **Content Processing**: Direct browser-to-OpenAI API communication
 - **Cultural Analysis**: Focus on factual differences, framing variations, and cultural perspectives
+- **Privacy**: User can provide their own API key for unlimited usage
 
 ### Export and Sharing
 - **Document Export**: DOCX generation using docx library
@@ -54,20 +54,21 @@ Wiki Truth is a full-stack web application that enables users to compare Wikiped
 
 ## Data Flow
 
-1. **Article Search**: User searches for articles in selected language
-2. **Language Discovery**: System fetches available language versions via Wikipedia API
-3. **Language Selection**: User chooses 2-5 languages for comparison
-4. **Content Retrieval**: System fetches full article content for selected languages
-5. **AI Processing**: Articles sent to OpenAI for comparative analysis
-6. **Result Display**: Formatted comparison displayed with export options
-7. **Session Management**: Search sessions and comparisons stored for continuity
+1. **User Initialization**: UUID-based account automatically created and stored in localStorage
+2. **Article Search**: Direct browser calls to Wikipedia API with CORS proxy
+3. **Language Discovery**: Wikipedia language links fetched client-side
+4. **Language Selection**: User chooses 2-5 languages for comparison
+5. **Content Retrieval**: Multiple Wikipedia articles fetched directly in browser
+6. **AI Processing**: Direct browser-to-OpenAI API calls for comparison analysis
+7. **Local Storage**: Results saved to IndexedDB with full user control
+8. **Privacy Compliance**: No server-side data storage or user tracking
 
 ## External Dependencies
 
 ### APIs and Services
-- **Wikipedia API**: Article search, language links, and content retrieval
-- **OpenAI API**: GPT-4o for article comparison and analysis
-- **Neon Database**: Serverless PostgreSQL hosting
+- **Wikipedia API**: Direct client-side calls for article search, language links, and content retrieval
+- **OpenAI API**: Direct browser-to-API calls for GPT-4o article comparison and analysis
+- **CORS Proxy**: AllOrigins service for bypassing browser CORS restrictions with Wikipedia
 
 ### Development and Build Tools
 - **Vite**: Build tool with React plugin and development server
@@ -101,23 +102,30 @@ Wiki Truth is a full-stack web application that enables users to compare Wikiped
 ## Changelog
 
 ### Recent Changes
-- June 30, 2025: **COMPLETED** - Fixed export functionality with proper filename encoding
-- June 30, 2025: **COMPLETED** - Implemented platform-specific social sharing functionality  
-- June 30, 2025: **COMPLETED** - Fixed Wikipedia article fetching to use correct language-specific titles
-- June 30, 2025: **COMPLETED** - Improved language display to show native names prominently 
-- June 30, 2025: **COMPLETED** - Added debugging logs for OpenAI comparison service
-- June 30, 2025: **COMPLETED** - Fixed import errors and type issues preventing application startup
+- June 30, 2025: **COMPLETED** - Full client-side architecture conversion for privacy compliance
+- June 30, 2025: **COMPLETED** - UUID-based user accounts stored in browser localStorage
+- June 30, 2025: **COMPLETED** - IndexedDB integration for local data storage
+- June 30, 2025: **COMPLETED** - Direct browser-to-OpenAI API calls with user-provided keys
+- June 30, 2025: **COMPLETED** - Client-side Wikipedia content fetching with CORS proxy
+- June 30, 2025: **COMPLETED** - Settings dialog for API key management and data export
+- June 30, 2025: **COMPLETED** - Text-based export functionality (client-side)
+- June 30, 2025: **COMPLETED** - Platform-specific social sharing functionality  
+- June 30, 2025: **COMPLETED** - Wikipedia article fetching with correct language-specific titles
+- June 30, 2025: **COMPLETED** - Native language display throughout interface
 - June 30, 2025: Initial setup and core functionality implementation
 
 ### Project Status
-✅ **FULLY FUNCTIONAL** - All core features implemented and tested:
+✅ **PRIVACY-FIRST & FULLY FUNCTIONAL** - Complete client-side architecture:
+- UUID-based user accounts (browser localStorage only)
+- All data stored locally in IndexedDB (no server storage)
+- Direct Wikipedia API calls from browser with CORS proxy
+- Direct OpenAI API calls from browser (user-provided keys supported)
 - Multi-language Wikipedia article comparison (2-5 languages)
-- AI-powered analysis using GPT-4 with cultural insights
-- DOCX export functionality 
-- Social media sharing with platform-specific messaging
-- Wikipedia-styled responsive design
-- Real-time search with autocomplete
-- Native language display throughout interface
+- AI-powered analysis using GPT-4o with cultural insights
+- Text export functionality and social media sharing
+- Wikipedia-styled responsive design with real-time search
+- Full data export and deletion capabilities for users
+- GDPR and privacy law compliant architecture
 
 ## User Preferences
 
