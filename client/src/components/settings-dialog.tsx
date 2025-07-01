@@ -196,26 +196,42 @@ export function SettingsDialog() {
   };
 
   const handleSubscribe = async () => {
-    // Generate unique payment reference
-    const user = await clientStorage.getCurrentUser();
-    const timestamp = Date.now();
-    const paymentRef = `wt_${user.id.slice(0, 8)}_${timestamp}`;
-    
-    // Create unique payment URL with proper Smart Glocal parameters
-    const baseUrl = 'https://www.smartglocal.com/cps/v1/checkout/widget-pay';
-    const params = new URLSearchParams({
-      cp_key: '81ab8a88e2e1',
-      amount: '100', // $1.00 in cents
-      currency: '840', // USD
-      language: 'en',
-      return_url: `${window.location.origin}/thank-you`,
-      order_id: paymentRef,
-      customer_id: user.id,
-      description: 'Wiki Truth Premium Subscription (30 days)',
-      timestamp: timestamp.toString()
-    });
-    
-    window.location.href = `${baseUrl}?${params.toString()}`;
+    try {
+      // Generate unique payment reference
+      const user = await clientStorage.getCurrentUser();
+      const timestamp = Date.now();
+      const paymentRef = `wt_${user.id.slice(0, 8)}_${timestamp}`;
+      
+      // Create payment session via our server (which will integrate with Smart Glocal properly)
+      const response = await fetch('/api/payments/create-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          amount: 100, // $1.00 in cents
+          currency: 'USD',
+          orderId: paymentRef,
+          customerId: user.id,
+          description: 'Wiki Truth Premium Subscription (30 days)',
+          returnUrl: `${window.location.origin}/thank-you`
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create payment session');
+      }
+
+      const { paymentUrl } = await response.json();
+      window.location.href = paymentUrl;
+    } catch (error) {
+      toast({
+        title: "Payment Error",
+        description: "Unable to process payment. Please try again.",
+        variant: "destructive"
+      });
+      console.error('Payment session creation failed:', error);
+    }
   };
 
   const clearAllData = async () => {

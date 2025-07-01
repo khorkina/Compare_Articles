@@ -13,12 +13,18 @@ export default function ThankYou() {
   useEffect(() => {
     const activatePremium = async () => {
       try {
+        // Check if this is a demo payment or real payment
+        const urlParams = new URLSearchParams(window.location.search);
+        const isDemo = urlParams.get('demo') === 'true';
+        
         // Set premium status with current timestamp
         await clientStorage.setPremiumStatus(true, new Date().toISOString());
         
         toast({
-          title: "Premium Activated!",
-          description: "Your subscription is now active for 30 days."
+          title: isDemo ? "Demo Subscription Activated!" : "Premium Activated!",
+          description: isDemo 
+            ? "Demo subscription active for 30 days. In production, this would be a real payment."
+            : "Your subscription is now active for 30 days."
         });
         
         setIsLoading(false);

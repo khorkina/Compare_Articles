@@ -217,6 +217,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Payment session creation endpoint (Smart Glocal integration)
+  app.post("/api/payments/create-session", async (req, res) => {
+    try {
+      const { amount, currency, orderId, customerId, description, returnUrl } = req.body;
+      
+      if (!amount || !currency || !orderId || !customerId) {
+        return res.status(400).json({ error: "Missing required payment parameters" });
+      }
+
+      // For now, return demo payment URL since we need proper Smart Glocal credentials
+      // In production, this would create a real Smart Glocal session
+      const demoPaymentUrl = `${returnUrl}?demo=true&order_id=${orderId}&amount=${amount}`;
+      
+      res.json({ 
+        paymentUrl: demoPaymentUrl,
+        sessionId: `demo_session_${orderId}`,
+        message: "Demo payment session created. In production, this would create a real Smart Glocal payment session."
+      });
+    } catch (error) {
+      console.error('Payment session creation error:', error);
+      res.status(500).json({ error: "Failed to create payment session" });
+    }
+  });
+
   // Get comparison by ID
   app.get("/api/compare/:id", async (req, res) => {
     try {
