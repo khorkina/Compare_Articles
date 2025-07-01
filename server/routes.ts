@@ -190,6 +190,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // OpenAI comparison endpoint for premium users (uses server API key)
+  app.post("/api/openai/compare", async (req, res) => {
+    try {
+      const { articles, outputLanguage, isFunnyMode = false } = req.body;
+      
+      if (!articles || typeof articles !== 'object') {
+        return res.status(400).json({ error: "Articles data is required" });
+      }
+      
+      if (!outputLanguage) {
+        return res.status(400).json({ error: "Output language is required" });
+      }
+
+      // Generate comparison using server's OpenAI API key
+      const comparisonResult = await openaiService.compareArticles({
+        articles,
+        outputLanguage,
+        isFunnyMode
+      });
+
+      res.json({ comparisonResult });
+    } catch (error) {
+      console.error('OpenAI comparison error:', error);
+      res.status(500).json({ error: "Failed to generate comparison using OpenAI" });
+    }
+  });
+
   // Get comparison by ID
   app.get("/api/compare/:id", async (req, res) => {
     try {

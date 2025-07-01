@@ -30,48 +30,23 @@ class OpenAIClient {
 
   async compareArticles(request: ComparisonRequest): Promise<string> {
     try {
-      console.log('Starting OpenAI comparison...');
-      const apiKey = await this.getApiKey();
+      console.log('Starting OpenAI comparison with server API key...');
       
-      if (!apiKey) {
-        throw new Error('No OpenAI API key available. Please add your API key in Settings.');
+      // Check subscription status first
+      const isValidSubscription = await clientStorage.isSubscriptionValid();
+      if (!isValidSubscription) {
+        throw new Error('Premium subscription required. Please subscribe to use comparison features.');
       }
       
-      console.log('API key retrieved, preparing comparison...');
-      
-      const systemPrompt = request.isFunnyMode 
-        ? this.getFunnyModeSystemPrompt(request.outputLanguage)
-        : this.getStandardSystemPrompt(request.outputLanguage);
+      console.log('Valid subscription found, making comparison request...');
 
-      // Prepare article content for comparison
-      const articleSummary = Object.entries(request.articles)
-        .map(([lang, content]) => `**${lang.toUpperCase()} VERSION:**\n${content.slice(0, 3000)}...`)
-        .join('\n\n');
-
-      const userPrompt = `Please compare these Wikipedia articles about the same topic across different languages:\n\n${articleSummary}`;
-
-      console.log('Making OpenAI API request...');
-      console.log('Articles being compared:', Object.keys(request.articles));
-      
-      const requestBody = {
-        model: 'gpt-4o', // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        max_tokens: 2000,
-        temperature: request.isFunnyMode ? 0.8 : 0.3
-      };
-
-      const response = await fetch(`${this.baseUrl}/chat/completions`, {
+      // Use the new server endpoint that uses server's OpenAI API key
+      const response = await fetch('/api/openai/compare', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          ...requestBody,
-          apiKey
-        })
+        body: JSON.stringify(request)
       });
 
       console.log('OpenAI API response status:', response.status);
@@ -93,7 +68,7 @@ class OpenAIClient {
       const data = await response.json();
       console.log('OpenAI comparison completed successfully');
       
-      return data.choices[0]?.message?.content || 'No comparison generated';
+      return data.comparisonResult || 'No comparison generated';
     } catch (error) {
       console.error('OpenAI comparison error:', error);
       if (error instanceof Error) {

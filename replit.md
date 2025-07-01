@@ -103,6 +103,9 @@ Wiki Truth is a client-side web application that enables users to compare Wikipe
 ## Changelog
 
 ### Recent Changes
+- January 1, 2025: **COMPLETED** - Server-side OpenAI API integration for premium users using environment API key
+- January 1, 2025: **COMPLETED** - Unique Smart Glocal payment links with order tracking and customer IDs
+- January 1, 2025: **COMPLETED** - Enhanced payment parameters (order_id, customer_id, description, timestamp)
 - December 30, 2024: **COMPLETED** - Subscription system implementation with Smart Glocal payment integration
 - December 30, 2024: **COMPLETED** - Premium subscription model ($1/month) replacing API key requirements
 - December 30, 2024: **COMPLETED** - Subscription validation and 30-day expiration tracking

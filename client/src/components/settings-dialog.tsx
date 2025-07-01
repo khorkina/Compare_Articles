@@ -195,10 +195,27 @@ export function SettingsDialog() {
     }
   };
 
-  const handleSubscribe = () => {
-    // Redirect to Smart Glocal payment link
-    window.location.href = 'https://smart-glocal.com/payment/wiki-truth-monthly?amount=1&currency=USD&redirect_url=' + 
-      encodeURIComponent(window.location.origin + '/thank-you');
+  const handleSubscribe = async () => {
+    // Generate unique payment reference
+    const user = await clientStorage.getCurrentUser();
+    const timestamp = Date.now();
+    const paymentRef = `wt_${user.id.slice(0, 8)}_${timestamp}`;
+    
+    // Create unique payment URL with proper Smart Glocal parameters
+    const baseUrl = 'https://www.smartglocal.com/cps/v1/checkout/widget-pay';
+    const params = new URLSearchParams({
+      cp_key: '81ab8a88e2e1',
+      amount: '100', // $1.00 in cents
+      currency: '840', // USD
+      language: 'en',
+      return_url: `${window.location.origin}/thank-you`,
+      order_id: paymentRef,
+      customer_id: user.id,
+      description: 'Wiki Truth Premium Subscription (30 days)',
+      timestamp: timestamp.toString()
+    });
+    
+    window.location.href = `${baseUrl}?${params.toString()}`;
   };
 
   const clearAllData = async () => {
