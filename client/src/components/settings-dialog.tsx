@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Settings, Key, Download, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Settings, Key, Download, Trash2, Eye, EyeOff, Crown, Calendar, CreditCard } from 'lucide-react';
 import { clientStorage, type UserAccount } from '@/lib/storage';
 import { openaiClient } from '@/lib/openai-client';
 import { useToast } from '@/hooks/use-toast';
@@ -19,6 +19,12 @@ export function SettingsDialog() {
   const [isTestingKey, setIsTestingKey] = useState(false);
   const [keyValid, setKeyValid] = useState<boolean | null>(null);
   const [exportData, setExportData] = useState<string>('');
+  const [subscriptionInfo, setSubscriptionInfo] = useState<{
+    isPremium: boolean;
+    isValid: boolean;
+    daysRemaining: number;
+    subscriptionDate?: string;
+  }>({ isPremium: false, isValid: false, daysRemaining: 0 });
   const { toast } = useToast();
 
   useEffect(() => {
@@ -33,6 +39,9 @@ export function SettingsDialog() {
       setUser(userData);
       setApiKey(userData.openaiApiKey || '');
       setKeyValid(userData.openaiApiKey ? true : null);
+      
+      const subInfo = await clientStorage.getSubscriptionInfo();
+      setSubscriptionInfo(subInfo);
     } catch (error) {
       toast({
         title: "Error",
@@ -186,6 +195,12 @@ export function SettingsDialog() {
     }
   };
 
+  const handleSubscribe = () => {
+    // Redirect to Smart Glocal payment link
+    window.location.href = 'https://smart-glocal.com/payment/wiki-truth-monthly?amount=1&currency=USD&redirect_url=' + 
+      encodeURIComponent(window.location.origin + '/thank-you');
+  };
+
   const clearAllData = async () => {
     if (!confirm("Are you sure you want to delete all your data? This cannot be undone.")) {
       return;
@@ -241,67 +256,85 @@ export function SettingsDialog() {
 
           <Separator />
 
-          {/* OpenAI API Key */}
+          {/* Subscription */}
           <div>
-            <h3 className="text-lg font-semibold mb-3">OpenAI API Configuration</h3>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="apiKey" className="flex items-center gap-2">
-                  <Key className="h-4 w-4" />
-                  OpenAI API Key (Optional)
-                </Label>
-                <div className="flex gap-2 mt-2">
-                  <div className="relative flex-1">
-                    <Input
-                      id="apiKey"
-                      type={showApiKey ? "text" : "password"}
-                      value={apiKey}
-                      onChange={(e) => {
-                        setApiKey(e.target.value);
-                        setKeyValid(null);
-                      }}
-                      placeholder="sk-..."
-                      className="pr-20"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3"
-                      onClick={() => setShowApiKey(!showApiKey)}
-                    >
-                      {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </Button>
+            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+              <Crown className="h-5 w-5 text-amber-500" />
+              Premium Subscription
+            </h3>
+            
+            {subscriptionInfo.isValid ? (
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <Badge className="bg-amber-100 text-amber-800 border-amber-200">
+                      <Crown className="h-3 w-3 mr-1" />
+                      Premium Active
+                    </Badge>
+                    <Badge variant="outline" className="text-green-700 border-green-200">
+                      {subscriptionInfo.daysRemaining} days remaining
+                    </Badge>
                   </div>
-                  <Button 
-                    onClick={() => testApiKey(apiKey)}
-                    disabled={!apiKey.trim() || isTestingKey}
-                    variant="outline"
-                  >
-                    {isTestingKey ? "Testing..." : "Test"}
-                  </Button>
+                  
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-amber-600" />
+                      <span>Subscribed: {subscriptionInfo.subscriptionDate ? 
+                        new Date(subscriptionInfo.subscriptionDate).toLocaleDateString() : 'Unknown'}</span>
+                    </div>
+                    <div className="text-amber-700">
+                      ✓ Unlimited Wikipedia comparisons<br/>
+                      ✓ Priority AI processing<br/>
+                      ✓ Advanced export features
+                    </div>
+                  </div>
                 </div>
-                {keyValid === true && (
-                  <p className="text-sm text-green-600 mt-1">✓ API key is valid</p>
-                )}
-                {keyValid === false && (
-                  <p className="text-sm text-red-600 mt-1">✗ API key is invalid</p>
-                )}
-                <p className="text-sm text-muted-foreground mt-2">
-                  Provide your own OpenAI API key for unlimited usage. If not provided, you'll use our shared key with rate limits.
-                  Your key is stored securely in your browser and never sent to our servers.
+                
+                <Button 
+                  onClick={handleSubscribe} 
+                  variant="outline" 
+                  className="w-full"
+                >
+                  <CreditCard className="h-4 w-4 mr-2" />
+                  Renew Subscription ($1/month)
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <div className="text-center mb-4">
+                    <Crown className="h-12 w-12 text-amber-500 mx-auto mb-2" />
+                    <h4 className="font-semibold text-gray-900 mb-1">Unlock Premium Features</h4>
+                    <p className="text-sm text-gray-600">Get unlimited access to all comparison features</p>
+                  </div>
+                  
+                  <div className="space-y-2 text-sm text-gray-700 mb-4">
+                    <div>✓ Unlimited Wikipedia comparisons</div>
+                    <div>✓ Priority AI processing</div>
+                    <div>✓ Advanced export features</div>
+                    <div>✓ No rate limits</div>
+                  </div>
+                  
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-gray-900 mb-1">$1/month</div>
+                    <div className="text-xs text-gray-500 mb-4">30-day subscription period</div>
+                  </div>
+                </div>
+                
+                <Button 
+                  onClick={handleSubscribe} 
+                  className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600"
+                  size="lg"
+                >
+                  <CreditCard className="h-4 w-4 mr-2" />
+                  Subscribe for $1/month
+                </Button>
+                
+                <p className="text-xs text-gray-500 text-center">
+                  Secure payment powered by Smart Glocal. Cancel anytime.
                 </p>
               </div>
-              
-              <div className="flex gap-2">
-                <Button onClick={saveApiKey} className="flex-1">
-                  Save API Key
-                </Button>
-                <Button onClick={testComparison} variant="outline" className="flex-1">
-                  Test API
-                </Button>
-              </div>
-            </div>
+            )}
           </div>
 
           <Separator />

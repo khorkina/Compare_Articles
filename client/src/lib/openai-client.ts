@@ -12,25 +12,20 @@ class OpenAIClient {
   async getApiKey(): Promise<string> {
     console.log('Retrieving OpenAI API key...');
     
-    // Check if user has provided their own API key
-    try {
-      const userApiKey = await clientStorage.getOpenAIKey();
-      console.log('User API key from storage:', userApiKey ? 'Found' : 'Not found');
-      if (userApiKey && userApiKey.trim()) {
-        return userApiKey.trim();
-      }
-    } catch (error) {
-      console.error('Error getting API key from storage:', error);
+    // Check subscription status first
+    const isValidSubscription = await clientStorage.isSubscriptionValid();
+    if (!isValidSubscription) {
+      throw new Error('Premium subscription required. Please subscribe to use comparison features.');
     }
-
-    // Fall back to environment variable (for server-provided key)
+    
+    // Use environment API key for premium users (our server key)
     const envApiKey = import.meta.env.VITE_OPENAI_API_KEY;
     console.log('Environment API key:', envApiKey ? 'Found' : 'Not found');
     if (envApiKey && envApiKey.trim()) {
       return envApiKey.trim();
     }
 
-    throw new Error('No OpenAI API key available. Please provide your API key in settings.');
+    throw new Error('Service temporarily unavailable. Please try again later.');
   }
 
   async compareArticles(request: ComparisonRequest): Promise<string> {

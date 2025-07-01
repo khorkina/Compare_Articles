@@ -11,6 +11,7 @@ import { clientStorage } from "@/lib/storage";
 import Home from "@/pages/home";
 import LanguageSelection from "@/pages/language-selection";
 import ComparisonResults from "@/pages/comparison-results";
+import ThankYou from "@/pages/thank-you";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/select-languages" component={LanguageSelection} />
       <Route path="/comparison/:id" component={ComparisonResults} />
+      <Route path="/thank-you" component={ThankYou} />
       <Route component={NotFound} />
     </Switch>
   );

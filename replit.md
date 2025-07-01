@@ -22,8 +22,9 @@ Wiki Truth is a client-side web application that enables users to compare Wikipe
 
 ### Data Storage Solutions
 - **Client Storage**: IndexedDB with idb library for structured data
-- **User Accounts**: UUID-based accounts stored in browser localStorage
+- **User Accounts**: UUID-based accounts stored in browser localStorage with subscription tracking
 - **Session Management**: Local browser storage only
+- **Subscription Management**: Local browser storage with 30-day validation
 - **Privacy**: No server-side data storage or tracking
 
 ## Key Components
@@ -35,11 +36,11 @@ Wiki Truth is a client-side web application that enables users to compare Wikipe
 - **Article Selection**: Type-ahead search with snippet previews
 
 ### AI Comparison Engine
-- **Model**: OpenAI GPT-4o for article analysis (client-side API calls)
+- **Model**: OpenAI GPT-4o for article analysis (server-proxied API calls)
 - **Comparison Modes**: Standard academic analysis and "funny mode" for entertaining insights
-- **Content Processing**: Direct browser-to-OpenAI API communication
+- **Content Processing**: Browser-to-server-to-OpenAI API communication (CORS bypass)
 - **Cultural Analysis**: Focus on factual differences, framing variations, and cultural perspectives
-- **Privacy**: User can provide their own API key for unlimited usage
+- **Access Control**: Premium subscription required for comparison features
 
 ### Export and Sharing
 - **Document Export**: DOCX generation using docx library
@@ -102,12 +103,17 @@ Wiki Truth is a client-side web application that enables users to compare Wikipe
 ## Changelog
 
 ### Recent Changes
+- December 30, 2024: **COMPLETED** - Subscription system implementation with Smart Glocal payment integration
+- December 30, 2024: **COMPLETED** - Premium subscription model ($1/month) replacing API key requirements
+- December 30, 2024: **COMPLETED** - Subscription validation and 30-day expiration tracking
+- December 30, 2024: **COMPLETED** - Subscription gate on comparison features
+- December 30, 2024: **COMPLETED** - Thank-you page with automatic premium activation
+- December 30, 2024: **COMPLETED** - CORS proxy implementation for OpenAI API calls
 - June 30, 2025: **COMPLETED** - Full client-side architecture conversion for privacy compliance
 - June 30, 2025: **COMPLETED** - UUID-based user accounts stored in browser localStorage
 - June 30, 2025: **COMPLETED** - IndexedDB integration for local data storage
-- June 30, 2025: **COMPLETED** - Direct browser-to-OpenAI API calls with user-provided keys
 - June 30, 2025: **COMPLETED** - Client-side Wikipedia content fetching with CORS proxy
-- June 30, 2025: **COMPLETED** - Settings dialog for API key management and data export
+- June 30, 2025: **COMPLETED** - Settings dialog for subscription management and data export
 - June 30, 2025: **COMPLETED** - Text-based export functionality (client-side)
 - June 30, 2025: **COMPLETED** - Platform-specific social sharing functionality  
 - June 30, 2025: **COMPLETED** - Wikipedia article fetching with correct language-specific titles
@@ -115,14 +121,17 @@ Wiki Truth is a client-side web application that enables users to compare Wikipe
 - June 30, 2025: Initial setup and core functionality implementation
 
 ### Project Status
-✅ **PRIVACY-FIRST & FULLY FUNCTIONAL** - Complete client-side architecture:
+✅ **SUBSCRIPTION-BASED & FULLY FUNCTIONAL** - Complete privacy-first architecture with premium features:
 - UUID-based user accounts (browser localStorage only)
 - All data stored locally in IndexedDB (no server storage)
-- Direct Wikipedia API calls from browser with CORS proxy
-- Direct OpenAI API calls from browser (user-provided keys supported)
+- Wikipedia API calls from browser with CORS proxy
+- OpenAI API calls proxied through server (CORS bypass)
+- Premium subscription system ($1/month, 30-day periods)
 - Multi-language Wikipedia article comparison (2-5 languages)
 - AI-powered analysis using GPT-4o with cultural insights
 - Text export functionality and social media sharing
+- Smart Glocal payment integration with automatic activation
+- Subscription validation and renewal system
 - Wikipedia-styled responsive design with real-time search
 - Full data export and deletion capabilities for users
 - GDPR and privacy law compliant architecture

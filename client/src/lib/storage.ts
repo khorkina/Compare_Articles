@@ -6,6 +6,8 @@ export interface UserAccount {
   id: string;
   createdAt: string;
   openaiApiKey?: string;
+  isPremium: boolean;
+  subscriptionTimestamp?: string;
   preferences: {
     defaultLanguage: string;
     theme: 'light' | 'dark';
@@ -87,6 +89,7 @@ class ClientStorage {
       const newUser: UserAccount = {
         id: userId,
         createdAt: new Date().toISOString(),
+        isPremium: false,
         preferences: {
           defaultLanguage: 'en',
           theme: 'light'
@@ -107,6 +110,7 @@ class ClientStorage {
     const recreatedUser: UserAccount = {
       id: userId,
       createdAt: new Date().toISOString(),
+      isPremium: false,
       preferences: {
         defaultLanguage: 'en',
         theme: 'light'
@@ -134,6 +138,53 @@ class ClientStorage {
   async getOpenAIKey(): Promise<string | undefined> {
     const user = await this.getCurrentUser();
     return user.openaiApiKey;
+  }
+
+  // Subscription management
+  async setPremiumStatus(isPremium: boolean, timestamp?: string): Promise<void> {
+    await this.updateUser({ 
+      isPremium, 
+      subscriptionTimestamp: timestamp || new Date().toISOString() 
+    });
+  }
+
+  async isSubscriptionValid(): Promise<boolean> {
+    const user = await this.getCurrentUser();
+    
+    if (!user.isPremium || !user.subscriptionTimestamp) {
+      return false;
+    }
+
+    const subscriptionDate = new Date(user.subscriptionTimestamp);
+    const now = new Date();
+    const daysDiff = (now.getTime() - subscriptionDate.getTime()) / (1000 * 60 * 60 * 24);
+    
+    return daysDiff <= 30;
+  }
+
+  async getSubscriptionInfo(): Promise<{
+    isPremium: boolean;
+    isValid: boolean;
+    daysRemaining: number;
+    subscriptionDate?: string;
+  }> {
+    const user = await this.getCurrentUser();
+    const isValid = await this.isSubscriptionValid();
+    
+    let daysRemaining = 0;
+    if (user.isPremium && user.subscriptionTimestamp) {
+      const subscriptionDate = new Date(user.subscriptionTimestamp);
+      const now = new Date();
+      const daysPassed = (now.getTime() - subscriptionDate.getTime()) / (1000 * 60 * 60 * 24);
+      daysRemaining = Math.max(0, 30 - daysPassed);
+    }
+
+    return {
+      isPremium: user.isPremium,
+      isValid,
+      daysRemaining: Math.floor(daysRemaining),
+      subscriptionDate: user.subscriptionTimestamp
+    };
   }
 
   // Comparison management

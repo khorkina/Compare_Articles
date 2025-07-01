@@ -4,8 +4,11 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent } from '@/components/ui/card';
+import { Crown, CreditCard } from 'lucide-react';
 import { api, type LanguageLink } from '@/lib/api';
 import { getLanguageName, getLanguageNativeName, SUPPORTED_LANGUAGES } from '@/lib/languages';
+import { clientStorage } from '@/lib/storage';
 import { useToast } from '@/hooks/use-toast';
 
 export default function LanguageSelection() {
@@ -18,6 +21,11 @@ export default function LanguageSelection() {
   
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([language]);
   const [outputLanguage, setOutputLanguage] = useState('en');
+  const [subscriptionInfo, setSubscriptionInfo] = useState<{
+    isPremium: boolean;
+    isValid: boolean;
+    daysRemaining: number;
+  }>({ isPremium: false, isValid: false, daysRemaining: 0 });
 
   // Fetch available language links
   const languageLinksQuery = useQuery({
@@ -25,6 +33,24 @@ export default function LanguageSelection() {
     queryFn: () => api.getLanguageLinks(title, language),
     enabled: !!title,
   });
+
+  // Load subscription status
+  useEffect(() => {
+    const loadSubscription = async () => {
+      try {
+        const info = await clientStorage.getSubscriptionInfo();
+        setSubscriptionInfo(info);
+      } catch (error) {
+        console.error('Error loading subscription:', error);
+      }
+    };
+    loadSubscription();
+  }, []);
+
+  const handleSubscribe = () => {
+    window.location.href = 'https://smart-glocal.com/payment/wiki-truth-monthly?amount=1&currency=USD&redirect_url=' + 
+      encodeURIComponent(window.location.origin + '/thank-you');
+  };
 
   // Comparison mutation
   const comparisonMutation = useMutation({
@@ -107,6 +133,59 @@ export default function LanguageSelection() {
           <Button onClick={() => setLocation('/')} className="wiki-button">
             Back to Search
           </Button>
+        </div>
+      </main>
+    );
+  }
+
+  // Show subscription gate if user doesn't have valid subscription
+  if (!subscriptionInfo.isValid) {
+    return (
+      <main className="lg:col-span-3">
+        <div className="wiki-content-section">
+          <Card className="border border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50">
+            <CardContent className="p-8 text-center">
+              <Crown className="h-16 w-16 text-amber-500 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Premium Feature</h2>
+              <p className="text-gray-700 mb-6">
+                Wikipedia comparisons require a premium subscription to access our AI-powered analysis features.
+              </p>
+              
+              <div className="bg-white rounded-lg p-4 mb-6 border border-amber-200">
+                <h3 className="font-semibold text-gray-900 mb-3">What you'll get:</h3>
+                <div className="space-y-2 text-sm text-gray-700">
+                  <div>✓ Unlimited Wikipedia article comparisons</div>
+                  <div>✓ AI-powered cultural analysis</div>
+                  <div>✓ Advanced export features</div>
+                  <div>✓ Priority processing</div>
+                </div>
+              </div>
+              
+              <div className="mb-6">
+                <div className="text-3xl font-bold text-gray-900 mb-1">$1/month</div>
+                <div className="text-sm text-gray-600">30-day subscription period</div>
+              </div>
+              
+              <div className="space-y-3">
+                <Button 
+                  onClick={handleSubscribe}
+                  className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600"
+                  size="lg"
+                >
+                  <CreditCard className="h-4 w-4 mr-2" />
+                  Subscribe Now
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  onClick={() => setLocation('/')}
+                  className="w-full"
+                >
+                  Back to Home
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </main>
     );
