@@ -23,6 +23,13 @@ export interface ComparisonRequest {
   isFunnyMode?: boolean;
   isPremium?: boolean;
   languageTitles: Record<string, string>; // language -> article title
+  premiumOptions?: {
+    outputFormat: 'bullet-points' | 'narrative';
+    focusPoints: string;
+    formality: 'formal' | 'casual' | 'academic';
+    aiModel: 'free' | 'premium';
+    analysisMode: 'academic' | 'biography' | 'funny';
+  };
 }
 
 export interface ComparisonResult {

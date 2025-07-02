@@ -301,6 +301,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Chat with comparison findings (Premium feature using free model)
+  app.post("/api/chat-comparison", async (req, res) => {
+    try {
+      const { message, comparisonContext, articleTitle, selectedLanguages, chatHistory } = req.body;
+      
+      if (!message || !comparisonContext) {
+        return res.status(400).json({ error: "Message and comparison context are required" });
+      }
+
+      // Build context for the chat
+      const contextPrompt = `You are a helpful assistant discussing a Wikipedia comparison analysis. The user has received a comparison of "${articleTitle}" across languages: ${selectedLanguages.join(', ')}.
+
+Here is the comparison analysis they received:
+${comparisonContext}
+
+The user is now asking about this analysis. Please provide helpful, conversational responses based on the comparison findings. Be friendly and informative.`;
+
+      // Use OpenRouter free model for chat
+      const chatResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          'HTTP-Referer': process.env.YOUR_SITE_URL || 'http://localhost:5000',
+          'X-Title': 'WikiTruth',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: "meta-llama/llama-3.1-8b-instruct:free",
+          messages: [
+            { role: "system", content: contextPrompt },
+            { role: "user", content: message }
+          ],
+          temperature: 0.7,
+          max_tokens: 500
+        })
+      });
+
+      if (!chatResponse.ok) {
+        throw new Error(`OpenRouter API error: ${chatResponse.status}`);
+      }
+
+      const chatData = await chatResponse.json();
+      const response = chatData.choices[0]?.message?.content || 'Sorry, I could not generate a response.';
+
+      res.json({ response });
+    } catch (error) {
+      console.error('Chat error:', error);
+      res.status(500).json({ error: "Failed to generate chat response" });
+    }
+  });
+
   // Payment session creation endpoint (Smart Glocal integration)
   app.post("/api/payments/create-session", async (req, res) => {
     try {

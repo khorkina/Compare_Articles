@@ -9,6 +9,7 @@ import { getLanguageName, getLanguageNativeName, SUPPORTED_LANGUAGES } from '@/l
 import { clientStorage } from '@/lib/storage';
 import { useToast } from '@/hooks/use-toast';
 import { PlanSelection } from '@/components/plan-selection';
+import { PremiumComparisonOptions, type ComparisonOptions } from '@/components/premium-comparison-options';
 
 export default function LanguageSelection() {
   const [match, params] = useRoute('/select-languages');
@@ -32,8 +33,9 @@ export default function LanguageSelection() {
     
     setOutputLanguage(getUserLanguage());
   }, []);
-  const [currentMode, setCurrentMode] = useState<'academic' | 'funny' | null>(null);
+  const [currentMode, setCurrentMode] = useState<'academic' | 'funny' | 'biography' | null>(null);
   const [showPlanSelection, setShowPlanSelection] = useState(false);
+  const [showPremiumOptions, setShowPremiumOptions] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<'free' | 'premium' | null>(null);
   const [userSubscriptionStatus, setUserSubscriptionStatus] = useState<{ isValid: boolean; daysRemaining?: number }>({ isValid: false });
 
@@ -55,12 +57,13 @@ export default function LanguageSelection() {
 
   // Comparison mutation supporting both free and premium plans
   const comparisonMutation = useMutation({
-    mutationFn: async ({ articleTitle, selectedLanguages, outputLanguage, isFunnyMode, isPremium }: {
+    mutationFn: async ({ articleTitle, selectedLanguages, outputLanguage, isFunnyMode, isPremium, premiumOptions }: {
       articleTitle: string;
       selectedLanguages: string[];
       outputLanguage: string;
       isFunnyMode?: boolean;
       isPremium?: boolean;
+      premiumOptions?: ComparisonOptions;
     }) => {
       console.log(`Starting ${isPremium ? 'premium' : 'free'} comparison process...`);
       
@@ -127,21 +130,45 @@ export default function LanguageSelection() {
       return;
     }
 
-    // Use stored subscription status (refresh it to be sure)
+    // Check subscription status
     const subscriptionStatus = await clientStorage.checkSubscriptionStatus();
     setUserSubscriptionStatus(subscriptionStatus);
     const isPremium = subscriptionStatus.isValid;
 
-    // Store the mode and start comparison directly
+    // If user is premium, show premium options first
+    if (isPremium) {
+      setShowPremiumOptions(true);
+      return;
+    }
+
+    // For free users, proceed directly with simple comparison
     setCurrentMode(isFunnyMode ? 'funny' : 'academic');
     
-    // Proceed with comparison using current subscription status
     comparisonMutation.mutate({
       articleTitle: title,
       selectedLanguages,
       outputLanguage,
       isFunnyMode,
-      isPremium
+      isPremium: false
+    }, {
+      onSettled: () => {
+        setCurrentMode(null);
+      }
+    });
+  };
+
+  const handlePremiumComparisonStart = (options: ComparisonOptions) => {
+    setShowPremiumOptions(false);
+    setCurrentMode(options.analysisMode);
+    
+    // Start comparison with premium options
+    comparisonMutation.mutate({
+      articleTitle: title,
+      selectedLanguages,
+      outputLanguage,
+      isFunnyMode: options.analysisMode === 'funny',
+      isPremium: options.aiModel === 'premium',
+      premiumOptions: options
     }, {
       onSettled: () => {
         setCurrentMode(null);
@@ -184,6 +211,21 @@ export default function LanguageSelection() {
         selectedLanguages={selectedLanguages}
         articleTitle={title}
       />
+    );
+  }
+
+  // Show premium comparison options for premium users
+  if (showPremiumOptions) {
+    return (
+      <main className="lg:col-span-3">
+        <PremiumComparisonOptions
+          selectedLanguages={selectedLanguages}
+          articleTitle={title}
+          outputLanguage={outputLanguage}
+          onStartComparison={handlePremiumComparisonStart}
+          onBack={() => setShowPremiumOptions(false)}
+        />
+      </main>
     );
   }
 

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useRoute, useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,8 @@ import { Crown, Globe } from 'lucide-react';
 import { api } from '@/lib/api';
 import { getLanguageName, getLanguageNativeName } from '@/lib/languages';
 import { useToast } from '@/hooks/use-toast';
+import { ComparisonChat } from '@/components/comparison-chat';
+import { clientStorage } from '@/lib/storage';
 
 
 // Enhanced markdown formatter function
@@ -105,9 +108,25 @@ function formatInlineMarkdown(text: string): string {
 export default function ComparisonResults() {
   const [match, params] = useRoute('/results/:id');
   const [, setLocation] = useLocation();
+  const [isPremiumUser, setIsPremiumUser] = useState(false);
+  const [isChatVisible, setIsChatVisible] = useState(false);
   const { toast } = useToast();
   
   const comparisonId = params?.id || null;
+
+  // Check premium status
+  useEffect(() => {
+    const checkPremiumStatus = async () => {
+      try {
+        const user = await clientStorage.getCurrentUser();
+        const status = await clientStorage.checkSubscriptionStatus();
+        setIsPremiumUser(status.isValid && user.subscription.isPremium);
+      } catch (error) {
+        console.error('Failed to check premium status:', error);
+      }
+    };
+    checkPremiumStatus();
+  }, []);
 
   const comparisonQuery = useQuery({
     queryKey: ['/api/compare', comparisonId],
@@ -344,6 +363,17 @@ export default function ComparisonResults() {
           </Button>
         </div>
       </div>
+
+      {/* Premium Chat Feature */}
+      {isPremiumUser && (
+        <ComparisonChat
+          comparisonResult={comparison.comparisonResult}
+          articleTitle={comparison.articleTitle}
+          selectedLanguages={comparison.selectedLanguages}
+          isVisible={isChatVisible}
+          onToggle={() => setIsChatVisible(!isChatVisible)}
+        />
+      )}
     </main>
   );
 }
