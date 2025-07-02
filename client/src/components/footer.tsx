@@ -16,15 +16,15 @@ export function Footer() {
             <ul className="space-y-2 text-sm">
               <li><Link href="/how-it-works" className="wiki-link">How it works</Link></li>
               <li><Link href="/privacy" className="wiki-link">Privacy policy</Link></li>
-              <li><Link href="/terms" className="wiki-link">Terms of service</Link></li>
+              <li><Link href="/terms-of-service" className="wiki-link">Terms of service</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-semibold mb-3">Support</h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/help" className="wiki-link">Help center</Link></li>
-              <li><Link href="/contact" className="wiki-link">Contact us</Link></li>
-              <li><Link href="/report" className="wiki-link">Report issues</Link></li>
+              <li><Link href="/contact-us" className="wiki-link">Contact us</Link></li>
+              <li><Link href="/report-issues" className="wiki-link">Report issues</Link></li>
             </ul>
           </div>
           <div>

@@ -21,6 +21,9 @@ import PrivacyPage from "@/pages/privacy";
 import LanguageSelection from "@/pages/language-selection";
 import ComparisonResults from "@/pages/comparison-results";
 import ThankYou from "@/pages/thank-you";
+import TermsOfServicePage from "@/pages/terms-of-service";
+import ContactUsPage from "@/pages/contact-us";
+import ReportIssuesPage from "@/pages/report-issues";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -39,6 +42,9 @@ function Router() {
       <Route path="/select-languages" component={LanguageSelection} />
       <Route path="/results/:id" component={ComparisonResults} />
       <Route path="/thank-you" component={ThankYou} />
+      <Route path="/terms-of-service" component={TermsOfServicePage} />
+      <Route path="/contact-us" component={ContactUsPage} />
+      <Route path="/report-issues" component={ReportIssuesPage} />
       <Route component={NotFound} />
     </Switch>
   );
