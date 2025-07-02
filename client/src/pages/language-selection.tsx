@@ -276,15 +276,15 @@ export default function LanguageSelection() {
         
         {/* Service Notice */}
         {userSubscriptionStatus.isValid ? (
-          <div className="bg-yellow-50 border border-yellow-200 rounded p-3 mb-4">
-            <p className="text-yellow-800 text-sm">
+          <div className="bg-green-50 border border-green-200 rounded p-3 mb-4">
+            <p className="text-green-800 text-sm">
               <i className="fas fa-crown mr-2"></i>
               <strong>Premium Plan Active:</strong> Advanced AI analysis with full article processing 
               {userSubscriptionStatus.daysRemaining && (
                 <span className="ml-2 text-xs">({userSubscriptionStatus.daysRemaining} days remaining)</span>
               )}
             </p>
-            <p className="text-yellow-700 text-xs mt-1">
+            <p className="text-green-700 text-xs mt-1">
               <i className="fas fa-cog mr-1"></i>
               Click any analysis button below to configure your premium comparison settings
             </p>
