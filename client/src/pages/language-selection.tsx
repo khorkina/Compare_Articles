@@ -8,6 +8,7 @@ import { api, type LanguageLink } from '@/lib/api';
 import { getLanguageName, getLanguageNativeName, SUPPORTED_LANGUAGES } from '@/lib/languages';
 import { clientStorage } from '@/lib/storage';
 import { useToast } from '@/hooks/use-toast';
+import { PlanSelection } from '@/components/plan-selection';
 
 export default function LanguageSelection() {
   const [match, params] = useRoute('/select-languages');
@@ -20,6 +21,8 @@ export default function LanguageSelection() {
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([language]);
   const [outputLanguage, setOutputLanguage] = useState('en');
   const [currentMode, setCurrentMode] = useState<'academic' | 'funny' | null>(null);
+  const [showPlanSelection, setShowPlanSelection] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<'free' | 'premium' | null>(null);
 
   // Fetch available language links
   const languageLinksQuery = useQuery({
@@ -28,15 +31,16 @@ export default function LanguageSelection() {
     enabled: !!title,
   });
 
-  // Comparison mutation using OpenRouter (free for all users)
+  // Comparison mutation supporting both free and premium plans
   const comparisonMutation = useMutation({
-    mutationFn: async ({ articleTitle, selectedLanguages, outputLanguage, isFunnyMode }: {
+    mutationFn: async ({ articleTitle, selectedLanguages, outputLanguage, isFunnyMode, isPremium }: {
       articleTitle: string;
       selectedLanguages: string[];
       outputLanguage: string;
       isFunnyMode?: boolean;
+      isPremium?: boolean;
     }) => {
-      console.log('Starting free comparison process...');
+      console.log(`Starting ${isPremium ? 'premium' : 'free'} comparison process...`);
       
       // Get language-specific article titles
       const languageTitles: Record<string, string> = {};
@@ -63,7 +67,8 @@ export default function LanguageSelection() {
         outputLanguage,
         baseLanguage: language,
         isFunnyMode,
-        languageTitles
+        languageTitles,
+        isPremium
       });
     },
     onSuccess: (result) => {
@@ -100,16 +105,36 @@ export default function LanguageSelection() {
       return;
     }
 
+    // Store the mode and show plan selection
     setCurrentMode(isFunnyMode ? 'funny' : 'academic');
-    
+    setShowPlanSelection(true);
+  };
+
+  const handlePlanSelected = async (isPremium: boolean) => {
+    setSelectedPlan(isPremium ? 'premium' : 'free');
+    setShowPlanSelection(false);
+
+    if (isPremium) {
+      // Check if user already has premium subscription
+      const subscriptionStatus = await clientStorage.checkSubscriptionStatus();
+      if (!subscriptionStatus.isValid) {
+        // User selected premium but doesn't have active subscription
+        // PlanSelection component will handle redirect to payment
+        return;
+      }
+    }
+
+    // Proceed with comparison using selected plan
     comparisonMutation.mutate({
       articleTitle: title,
       selectedLanguages,
       outputLanguage,
-      isFunnyMode
+      isFunnyMode: currentMode === 'funny',
+      isPremium
     }, {
       onSettled: () => {
         setCurrentMode(null);
+        setSelectedPlan(null);
       }
     });
   };
@@ -121,6 +146,17 @@ export default function LanguageSelection() {
 
   if (!title) {
     return <div>Loading...</div>;
+  }
+
+  // Show plan selection when user clicks compare
+  if (showPlanSelection) {
+    return (
+      <PlanSelection
+        onPlanSelected={handlePlanSelected}
+        selectedLanguages={selectedLanguages}
+        articleTitle={title}
+      />
+    );
   }
 
   return (

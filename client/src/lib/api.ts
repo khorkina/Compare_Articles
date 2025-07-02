@@ -21,6 +21,7 @@ export interface ComparisonRequest {
   outputLanguage: string;
   baseLanguage?: string;
   isFunnyMode?: boolean;
+  isPremium?: boolean;
   languageTitles: Record<string, string>; // language -> article title
 }
 
@@ -31,6 +32,7 @@ export interface ComparisonResult {
   outputLanguage: string;
   comparisonResult: string;
   isFunnyMode: boolean;
+  isPremium: boolean;
   createdAt: string;
   articles: Array<{
     language: string;
@@ -175,6 +177,7 @@ export const api = {
         baseLanguage: comparisonData.baseLanguage || comparisonData.selectedLanguages[0],
         comparisonResult,
         isFunnyMode: comparisonData.isFunnyMode || false,
+        isPremium: comparisonData.isPremium || false,
         articles
       });
 

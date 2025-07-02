@@ -9,6 +9,7 @@ export const comparisons = pgTable("comparisons", {
   outputLanguage: text("output_language").notNull(),
   comparisonResult: text("comparison_result"),
   isFunnyMode: boolean("is_funny_mode").default(false),
+  isPremium: boolean("is_premium").default(false),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

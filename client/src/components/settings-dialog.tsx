@@ -6,6 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import { Settings, Download, Trash2, Globe, Heart } from 'lucide-react';
 import { clientStorage, type UserAccount } from '@/lib/storage';
 import { useToast } from '@/hooks/use-toast';
+import { SubscriptionStatus } from './subscription-status';
 
 export function SettingsDialog() {
   const [open, setOpen] = useState(false);
@@ -109,25 +110,10 @@ export function SettingsDialog() {
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Service Information */}
+          {/* Subscription Status */}
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <Globe className="h-5 w-5 text-green-600" />
-              Free Service Status
-            </h3>
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <div className="flex items-center gap-2 text-green-800 mb-2">
-                <Heart className="h-4 w-4" />
-                <span className="font-medium">WikiTruth is completely free!</span>
-              </div>
-              <ul className="text-sm text-green-700 space-y-1">
-                <li>• Unlimited article comparisons</li>
-                <li>• All language pairs supported</li>
-                <li>• No registration or subscription required</li>
-                <li>• Privacy-first design - all data stays in your browser</li>
-                <li>• Powered by OpenRouter.ai free models</li>
-              </ul>
-            </div>
+            <h3 className="text-lg font-semibold">Subscription Status</h3>
+            <SubscriptionStatus />
           </div>
 
           <Separator />

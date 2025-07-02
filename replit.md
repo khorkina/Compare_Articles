@@ -2,7 +2,7 @@
 
 ## Overview
 
-Wiki Truth is a completely free web application that enables users to compare Wikipedia articles across multiple languages using artificial intelligence. The platform is designed with privacy-first principles, storing all user data locally in the browser while revealing how the same topic can be presented differently in various linguistic and cultural contexts, providing insights into cultural biases and narrative variations. No subscription or registration required.
+Wiki Truth is a freemium web application that enables users to compare Wikipedia articles across multiple languages using artificial intelligence. The platform offers both free and premium tiers - free users get Meta Llama AI analysis while premium subscribers ($5/month) receive OpenAI GPT-4o analysis with enhanced features. The platform is designed with privacy-first principles, storing all user data locally in the browser while revealing how the same topic can be presented differently in various linguistic and cultural contexts.
 
 ## System Architecture
 
@@ -22,9 +22,9 @@ Wiki Truth is a completely free web application that enables users to compare Wi
 
 ### Data Storage Solutions
 - **Client Storage**: IndexedDB with idb library for structured data
-- **User Accounts**: UUID-based accounts stored in browser localStorage with subscription tracking
+- **User Accounts**: UUID-based accounts stored in browser localStorage with premium subscription tracking
 - **Session Management**: Local browser storage only
-- **Subscription Management**: Local browser storage with 30-day validation
+- **Subscription Management**: Browser-based premium subscription with 30-day validation and Smart Glocal payment integration
 - **Privacy**: No server-side data storage or tracking
 
 ## Key Components
@@ -36,11 +36,12 @@ Wiki Truth is a completely free web application that enables users to compare Wi
 - **Article Selection**: Type-ahead search with snippet previews
 
 ### AI Comparison Engine
-- **Model**: OpenRouter.ai with Meta Llama 3.1 8B Instruct (free model)
+- **Free Tier**: OpenRouter.ai with Meta Llama 3.1 8B Instruct (unlimited usage)
+- **Premium Tier**: OpenAI GPT-4o with full article processing and enhanced analysis ($5/month)
 - **Comparison Modes**: Standard academic analysis and "funny mode" for entertaining insights
-- **Content Processing**: Browser-to-server-to-OpenRouter API communication (CORS bypass)
+- **Content Processing**: Browser-to-server API communication with plan-based routing
 - **Cultural Analysis**: Focus on factual differences, framing variations, and cultural perspectives
-- **Access Control**: Completely free for all users, no subscription required
+- **Payment Processing**: Smart Glocal integration with browser-based subscription validation
 
 ### Export and Sharing
 - **Document Export**: DOCX generation using docx library
@@ -103,15 +104,17 @@ Wiki Truth is a completely free web application that enables users to compare Wi
 ## Changelog
 
 ### Recent Changes
+- January 2, 2025: **COMPLETED** - Premium subscription system with Smart Glocal payment integration ($5/month)
+- January 2, 2025: **COMPLETED** - Freemium model: Free Meta Llama vs Premium OpenAI GPT-4o analysis
+- January 2, 2025: **COMPLETED** - Browser-based subscription validation with 30-day expiration tracking
+- January 2, 2025: **COMPLETED** - Policy acceptance dialog with subscription terms and conditions
+- January 2, 2025: **COMPLETED** - Plan selection interface with feature comparison
+- January 2, 2025: **COMPLETED** - Subscription status component in settings with upgrade options
+- January 2, 2025: **COMPLETED** - Comparison results badges showing which AI model was used
 - January 2, 2025: **COMPLETED** - Complete navigation system with all missing pages added
-- January 2, 2025: **COMPLETED** - Fixed large article truncation for AI token limit compliance  
+- January 2, 2025: **COMPLETED** - Fixed large article truncation for AI token limit compliance
 - January 2, 2025: **COMPLETED** - Fixed output language selection and button loading states
 - January 2, 2025: **COMPLETED** - Added clipboard copy functionality for comparison results
-- January 2, 2025: **COMPLETED** - Complete removal of subscription system and premium features
-- January 2, 2025: **COMPLETED** - Migration from OpenAI API to OpenRouter.ai API for free service
-- January 2, 2025: **COMPLETED** - Updated all UI components to reflect free service availability
-- January 2, 2025: **COMPLETED** - Simplified user storage schema without subscription fields
-- January 2, 2025: **COMPLETED** - Free unlimited comparisons using Meta Llama 3.1 8B Instruct model
 - December 30, 2024: **COMPLETED** - Subscription system implementation with Smart Glocal payment integration
 - December 30, 2024: **COMPLETED** - Premium subscription model ($1/month) replacing API key requirements
 - December 30, 2024: **COMPLETED** - Subscription validation and 30-day expiration tracking

@@ -1,13 +1,18 @@
 import { openDB, type IDBPDatabase } from 'idb';
 import { v4 as uuidv4 } from 'uuid';
 
-// Database schema - simplified, subscription-free
+// Database schema with premium subscription support
 export interface UserAccount {
   id: string;
   createdAt: string;
   preferences: {
     defaultLanguage: string;
     theme: 'light' | 'dark';
+  };
+  subscription: {
+    isPremium: boolean;
+    subscriptionDate?: string;
+    expiryDate?: string;
   };
 }
 
@@ -20,6 +25,7 @@ export interface StorageComparisonResult {
   baseLanguage: string;
   comparisonResult: string;
   isFunnyMode: boolean;
+  isPremium: boolean;
   createdAt: string;
   articles: Array<{
     language: string;
@@ -45,7 +51,7 @@ export interface SearchSession {
 class ClientStorage {
   private db: IDBPDatabase | null = null;
   private dbName = 'WikiTruthDB';
-  private dbVersion = 2; // Incremented for schema change
+  private dbVersion = 3; // Incremented for subscription support
 
   async init(): Promise<void> {
     this.db = await openDB(this.dbName, this.dbVersion, {
@@ -89,6 +95,9 @@ class ClientStorage {
         preferences: {
           defaultLanguage: 'en',
           theme: 'light'
+        },
+        subscription: {
+          isPremium: false
         }
       };
       
@@ -106,6 +115,9 @@ class ClientStorage {
         preferences: user.preferences || {
           defaultLanguage: 'en',
           theme: 'light'
+        },
+        subscription: user.subscription || {
+          isPremium: false
         }
       };
       return cleanUser;
@@ -118,6 +130,9 @@ class ClientStorage {
       preferences: {
         defaultLanguage: 'en',
         theme: 'light'
+      },
+      subscription: {
+        isPremium: false
       }
     };
     
@@ -233,6 +248,55 @@ class ClientStorage {
     ]);
     
     localStorage.removeItem('wikiTruthUserId');
+  }
+
+  // Premium subscription management
+  async activatePremiumSubscription(): Promise<UserAccount> {
+    const currentUser = await this.getCurrentUser();
+    const subscriptionDate = new Date().toISOString();
+    const expiryDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days from now
+    
+    const updatedUser = await this.updateUser({
+      subscription: {
+        isPremium: true,
+        subscriptionDate,
+        expiryDate
+      }
+    });
+    
+    return updatedUser;
+  }
+
+  async checkSubscriptionStatus(): Promise<{ isValid: boolean; daysRemaining?: number }> {
+    const user = await this.getCurrentUser();
+    
+    if (!user.subscription.isPremium || !user.subscription.expiryDate) {
+      return { isValid: false };
+    }
+    
+    const expiryDate = new Date(user.subscription.expiryDate);
+    const now = new Date();
+    
+    if (now > expiryDate) {
+      // Subscription expired, deactivate it
+      await this.updateUser({
+        subscription: {
+          isPremium: false
+        }
+      });
+      return { isValid: false };
+    }
+    
+    const daysRemaining = Math.ceil((expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    return { isValid: true, daysRemaining };
+  }
+
+  async deactivateSubscription(): Promise<UserAccount> {
+    return await this.updateUser({
+      subscription: {
+        isPremium: false
+      }
+    });
   }
 }
 

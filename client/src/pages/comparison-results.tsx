@@ -1,6 +1,8 @@
 import { useRoute, useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Crown, Globe } from 'lucide-react';
 import { api } from '@/lib/api';
 import { getLanguageName, getLanguageNativeName } from '@/lib/languages';
 import { useToast } from '@/hooks/use-toast';
@@ -117,14 +119,29 @@ export default function ComparisonResults() {
       <div className="wiki-content-section">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
-          <h2 className="font-bold text-2xl mb-4 sm:mb-0">
-            Comparison Results
-            {comparison.isFunnyMode && (
-              <span className="ml-2 inline-block px-2 py-1 text-xs bg-gradient-to-r from-pink-500 to-yellow-500 text-white rounded funny-mode">
-                FUNNY MODE
-              </span>
-            )}
-          </h2>
+          <div className="flex flex-col gap-2">
+            <h2 className="font-bold text-2xl">
+              Comparison Results
+            </h2>
+            <div className="flex flex-wrap items-center gap-2">
+              {comparison.isPremium ? (
+                <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">
+                  <Crown className="h-3 w-3 mr-1" />
+                  Premium Analysis (OpenAI GPT-4o)
+                </Badge>
+              ) : (
+                <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-300">
+                  <Globe className="h-3 w-3 mr-1" />
+                  Free Analysis (Meta Llama)
+                </Badge>
+              )}
+              {comparison.isFunnyMode && (
+                <Badge className="bg-gradient-to-r from-pink-500 to-yellow-500 text-white">
+                  FUNNY MODE
+                </Badge>
+              )}
+            </div>
+          </div>
           <div className="flex flex-wrap gap-2">
             <Button onClick={handleExport} className="wiki-button text-sm">
               <i className="fas fa-file-word mr-2"></i>Export DOCX

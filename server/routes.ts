@@ -114,7 +114,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Compare articles
+  // Compare articles with plan selection support
   app.post("/api/compare", async (req, res) => {
     try {
       const { 
@@ -122,7 +122,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         selectedLanguages, 
         outputLanguage, 
         baseLanguage = 'en',
-        isFunnyMode = false 
+        isFunnyMode = false,
+        isPremium = false
       } = req.body;
 
       if (!articleTitle || !selectedLanguages || !outputLanguage) {
@@ -150,18 +151,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Prepare articles for OpenAI
+      // Prepare articles for AI processing
       const articleData: Record<string, string> = {};
       articles.forEach(article => {
         articleData[article.language] = article.content;
       });
 
-      // Generate comparison using OpenAI
-      const comparisonResult = await openaiService.compareArticles({
-        articles: articleData,
-        outputLanguage,
-        isFunnyMode
-      });
+      // Generate comparison using selected plan (Premium = OpenAI, Free = OpenRouter)
+      let comparisonResult: string;
+      if (isPremium) {
+        console.log('Using OpenAI GPT-4o for premium comparison');
+        comparisonResult = await openaiService.compareArticles({
+          articles: articleData,
+          outputLanguage,
+          isFunnyMode
+        });
+      } else {
+        console.log('Using OpenRouter Meta Llama for free comparison');
+        comparisonResult = await openRouterService.compareArticles({
+          articles: articleData,
+          outputLanguage,
+          isFunnyMode
+        });
+      }
 
       // Save comparison to storage
       const comparisonData = insertComparisonSchema.parse({
@@ -169,7 +181,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         selectedLanguages,
         outputLanguage,
         comparisonResult,
-        isFunnyMode
+        isFunnyMode,
+        isPremium
       });
 
       const savedComparison = await storage.createComparison(comparisonData);
