@@ -149,3 +149,10 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+
+### Subscription Flow Preferences
+- Free users should not see which AI model is being used (hide technical details)
+- Don't interrupt users with plan selection during comparison workflow
+- Auto-start comparisons with user's current plan (free or premium)
+- Provide optional upgrade button that doesn't disrupt user experience
+- Use demo payment links for Smart Glocal integration testing

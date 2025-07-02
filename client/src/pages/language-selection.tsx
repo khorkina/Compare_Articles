@@ -95,7 +95,7 @@ export default function LanguageSelection() {
     });
   };
 
-  const handleCompare = (isFunnyMode: boolean = false) => {
+  const handleCompare = async (isFunnyMode: boolean = false) => {
     if (selectedLanguages.length < 2) {
       toast({
         title: "Select More Languages",
@@ -105,15 +105,34 @@ export default function LanguageSelection() {
       return;
     }
 
-    // Store the mode and show plan selection
+    // Check if user has premium subscription
+    const subscriptionStatus = await clientStorage.checkSubscriptionStatus();
+    const isPremium = subscriptionStatus.isValid;
+
+    // Store the mode and start comparison directly
     setCurrentMode(isFunnyMode ? 'funny' : 'academic');
+    
+    // Proceed with comparison using current subscription status
+    comparisonMutation.mutate({
+      articleTitle: title,
+      selectedLanguages,
+      outputLanguage,
+      isFunnyMode,
+      isPremium
+    }, {
+      onSettled: () => {
+        setCurrentMode(null);
+      }
+    });
+  };
+
+  const handleUpgradeToPremium = () => {
     setShowPlanSelection(true);
   };
 
   const handlePlanSelected = async (isPremium: boolean) => {
-    setSelectedPlan(isPremium ? 'premium' : 'free');
     setShowPlanSelection(false);
-
+    
     if (isPremium) {
       // Check if user already has premium subscription
       const subscriptionStatus = await clientStorage.checkSubscriptionStatus();
@@ -123,20 +142,6 @@ export default function LanguageSelection() {
         return;
       }
     }
-
-    // Proceed with comparison using selected plan
-    comparisonMutation.mutate({
-      articleTitle: title,
-      selectedLanguages,
-      outputLanguage,
-      isFunnyMode: currentMode === 'funny',
-      isPremium
-    }, {
-      onSettled: () => {
-        setCurrentMode(null);
-        setSelectedPlan(null);
-      }
-    });
   };
 
   const availableLanguages = languageLinksQuery.data || [];
@@ -168,12 +173,23 @@ export default function LanguageSelection() {
           Select languages to compare and analyze cultural perspectives
         </p>
         
-        {/* Free Service Notice */}
-        <div className="bg-green-50 border border-green-200 rounded p-3 mb-4">
-          <p className="text-green-800 text-sm">
-            <i className="fas fa-check-circle mr-2"></i>
-            <strong>Completely Free:</strong> Unlimited comparisons powered by AI
-          </p>
+        {/* Service Notice */}
+        <div className="bg-blue-50 border border-blue-200 rounded p-3 mb-4">
+          <div className="flex items-center justify-between">
+            <p className="text-blue-800 text-sm">
+              <i className="fas fa-check-circle mr-2"></i>
+              <strong>Free Analysis:</strong> Unlimited comparisons with AI
+            </p>
+            <Button 
+              onClick={handleUpgradeToPremium}
+              size="sm"
+              variant="outline"
+              className="ml-4 text-xs"
+            >
+              <i className="fas fa-crown mr-1"></i>
+              Upgrade to Premium
+            </Button>
+          </div>
         </div>
       </div>
 

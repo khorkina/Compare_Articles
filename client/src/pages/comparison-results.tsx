@@ -124,15 +124,10 @@ export default function ComparisonResults() {
               Comparison Results
             </h2>
             <div className="flex flex-wrap items-center gap-2">
-              {comparison.isPremium ? (
+              {comparison.isPremium && (
                 <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">
                   <Crown className="h-3 w-3 mr-1" />
-                  Premium Analysis (OpenAI GPT-4o)
-                </Badge>
-              ) : (
-                <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-300">
-                  <Globe className="h-3 w-3 mr-1" />
-                  Free Analysis (Meta Llama)
+                  Premium Analysis
                 </Badge>
               )}
               {comparison.isFunnyMode && (

@@ -35,10 +35,14 @@ export function PlanSelection({ onPlanSelected, selectedLanguages, articleTitle 
 
     setIsLoading(true);
     
-    // Redirect to Smart Glocal payment link (hardcoded for demo) with return URL
+    // Redirect to demo payment page (simulating Smart Glocal payment)
     const returnUrl = encodeURIComponent(window.location.origin + "/thank-you?premium=true");
-    const paymentUrl = `https://payments.smartglocal.com/pay/demo-5-usd-monthly?return_url=${returnUrl}`;
-    window.location.href = paymentUrl;
+    const paymentUrl = `https://httpbin.org/delay/3?return_url=${returnUrl}`;
+    
+    // For demo purposes, simulate successful payment after 3 seconds
+    setTimeout(() => {
+      window.location.href = window.location.origin + "/thank-you?premium=true";
+    }, 3000);
   };
 
   const SubscriptionPolicy = () => (
