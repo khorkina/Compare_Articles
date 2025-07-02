@@ -24,6 +24,7 @@ import ThankYou from "@/pages/thank-you";
 import TermsOfServicePage from "@/pages/terms-of-service";
 import ContactUsPage from "@/pages/contact-us";
 import ReportIssuesPage from "@/pages/report-issues";
+import ComparisonLoading from "@/pages/comparison-loading";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -40,6 +41,7 @@ function Router() {
       <Route path="/how-it-works" component={HowItWorksPage} />
       <Route path="/privacy" component={PrivacyPage} />
       <Route path="/select-languages" component={LanguageSelection} />
+      <Route path="/comparison-loading" component={ComparisonLoading} />
       <Route path="/results/:id" component={ComparisonResults} />
       <Route path="/thank-you" component={ThankYou} />
       <Route path="/terms-of-service" component={TermsOfServicePage} />

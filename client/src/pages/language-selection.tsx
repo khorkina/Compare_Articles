@@ -141,39 +141,70 @@ export default function LanguageSelection() {
       return;
     }
 
-    // For free users, proceed directly with simple comparison
-    setCurrentMode(isFunnyMode ? 'funny' : 'academic');
+    // For free users, navigate to loading page
+    // Build language titles mapping
+    const languageTitles: Record<string, string> = {};
+    const availableLinks = languageLinksQuery.data || [];
     
-    comparisonMutation.mutate({
-      articleTitle: title,
-      selectedLanguages,
-      outputLanguage,
-      isFunnyMode,
-      isPremium: false
-    }, {
-      onSettled: () => {
-        setCurrentMode(null);
+    // Add the base language
+    languageTitles[language] = title;
+    
+    // Map selected languages to their article titles
+    for (const selectedLang of selectedLanguages) {
+      if (selectedLang === language) {
+        languageTitles[selectedLang] = title;
+      } else {
+        const langLink = availableLinks.find(link => link.lang === selectedLang);
+        if (langLink) {
+          languageTitles[selectedLang] = langLink.title;
+        }
       }
+    }
+
+    const params = new URLSearchParams({
+      title,
+      languages: JSON.stringify(selectedLanguages),
+      outputLanguage,
+      isFunnyMode: isFunnyMode.toString(),
+      isPremium: 'false',
+      languageTitles: JSON.stringify(languageTitles)
     });
+    setLocation(`/comparison-loading?${params.toString()}`);
   };
 
   const handlePremiumComparisonStart = (options: ComparisonOptions) => {
     setShowPremiumOptions(false);
-    setCurrentMode(options.analysisMode);
     
-    // Start comparison with premium options
-    comparisonMutation.mutate({
-      articleTitle: title,
-      selectedLanguages,
-      outputLanguage,
-      isFunnyMode: options.analysisMode === 'funny',
-      isPremium: options.aiModel === 'premium',
-      premiumOptions: options
-    }, {
-      onSettled: () => {
-        setCurrentMode(null);
+    // Build language titles mapping for premium
+    const languageTitles: Record<string, string> = {};
+    const availableLinks = languageLinksQuery.data || [];
+    
+    // Add the base language
+    languageTitles[language] = title;
+    
+    // Map selected languages to their article titles
+    for (const selectedLang of selectedLanguages) {
+      if (selectedLang === language) {
+        languageTitles[selectedLang] = title;
+      } else {
+        const langLink = availableLinks.find(link => link.lang === selectedLang);
+        if (langLink) {
+          languageTitles[selectedLang] = langLink.title;
+        }
       }
+    }
+    
+    // Navigate to loading page for premium comparison
+    const params = new URLSearchParams({
+      title,
+      languages: JSON.stringify(selectedLanguages),
+      outputLanguage,
+      isFunnyMode: (options.analysisMode === 'funny').toString(),
+      isPremium: (options.aiModel === 'premium').toString(),
+      languageTitles: JSON.stringify(languageTitles),
+      premiumOptions: JSON.stringify(options)
     });
+    setLocation(`/comparison-loading?${params.toString()}`);
   };
 
   const handleUpgradeToPremium = () => {
