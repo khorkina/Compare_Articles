@@ -133,8 +133,8 @@ export function ComparisonChat({
   }
 
   return (
-    <div className="fixed bottom-6 right-6 w-96 h-[500px] z-50">
-      <Card className="h-full flex flex-col shadow-xl">
+    <div className="fixed bottom-6 right-6 w-[420px] max-w-[calc(100vw-3rem)] h-[550px] max-h-[calc(100vh-3rem)] z-50">
+      <Card className="h-full flex flex-col shadow-xl border-2 bg-white dark:bg-gray-900">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -163,9 +163,9 @@ export function ComparisonChat({
         
         <Separator />
         
-        <CardContent className="flex-1 flex flex-col p-0">
-          <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
-            <div className="space-y-4">
+        <CardContent className="flex-1 flex flex-col p-0 overflow-hidden">
+          <ScrollArea className="flex-1 px-4 py-2" ref={scrollAreaRef}>
+            <div className="space-y-3 min-h-0">
               {messages.map((message) => (
                 <div
                   key={message.id}
@@ -180,14 +180,16 @@ export function ComparisonChat({
                   )}
                   
                   <div
-                    className={`max-w-[80%] rounded-lg px-3 py-2 ${
+                    className={`max-w-[85%] rounded-lg px-4 py-3 ${
                       message.role === 'user'
                         ? 'bg-purple-600 text-white'
-                        : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
+                        : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white border'
                     }`}
                   >
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                    <p className={`text-xs mt-1 ${
+                    <div className="text-sm leading-6 whitespace-pre-wrap break-words font-normal">
+                      {message.content}
+                    </div>
+                    <div className={`text-xs mt-2 ${
                       message.role === 'user' 
                         ? 'text-purple-200' 
                         : 'text-gray-500 dark:text-gray-400'
@@ -196,7 +198,7 @@ export function ComparisonChat({
                         hour: '2-digit', 
                         minute: '2-digit' 
                       })}
-                    </p>
+                    </div>
                   </div>
                   
                   {message.role === 'user' && (
