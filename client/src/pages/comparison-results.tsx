@@ -6,7 +6,7 @@ import { getLanguageName, getLanguageNativeName } from '@/lib/languages';
 import { useToast } from '@/hooks/use-toast';
 
 export default function ComparisonResults() {
-  const [match, params] = useRoute('/comparison/:id');
+  const [match, params] = useRoute('/results/:id');
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   
