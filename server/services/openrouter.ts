@@ -40,7 +40,7 @@ export class OpenRouterService {
             { role: "user", content: userPrompt }
           ],
           temperature: isFunnyMode ? 0.8 : 0.3,
-          max_tokens: 4000
+          max_tokens: 2000
         })
       });
 
@@ -58,8 +58,32 @@ export class OpenRouterService {
     }
   }
 
+  private truncateArticle(content: string, maxChars: number = 15000): string {
+    if (content.length <= maxChars) {
+      return content;
+    }
+
+    // Take first portion (intro/overview) and last portion (conclusion/recent info)
+    const frontChars = Math.floor(maxChars * 0.7);
+    const backChars = Math.floor(maxChars * 0.3);
+    
+    const frontPart = content.substring(0, frontChars);
+    const backPart = content.substring(content.length - backChars);
+    
+    return `${frontPart}\n\n[... CONTENT TRUNCATED FOR SIZE ...]\n\n${backPart}`;
+  }
+
   private buildUserPrompt(articles: Record<string, string>, isFunnyMode: boolean): string {
-    const articleData = JSON.stringify(articles, null, 2);
+    // Truncate articles to fit within token limits
+    const truncatedArticles: Record<string, string> = {};
+    const maxCharsPerArticle = Math.floor(25000 / Object.keys(articles).length); // Distribute available space
+    
+    for (const [lang, content] of Object.entries(articles)) {
+      truncatedArticles[lang] = this.truncateArticle(content, maxCharsPerArticle);
+      console.log(`Truncated ${lang} article: ${content.length} -> ${truncatedArticles[lang].length} characters`);
+    }
+    
+    const articleData = JSON.stringify(truncatedArticles, null, 2);
     
     return `Please analyze and compare these Wikipedia articles about the same topic across different languages:
 
