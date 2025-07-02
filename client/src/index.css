@@ -102,7 +102,45 @@
   }
   
   .wiki-content-section {
-    @apply bg-white border border-gray-300 rounded-lg p-6;
+    @apply bg-white border border-gray-300 rounded-lg p-6 mb-4;
+  }
+  
+  .wiki-article-title {
+    @apply text-2xl font-bold text-gray-900 border-b border-gray-200 pb-2 mb-4;
+    font-family: 'Libre Baskerville', 'Linux Libertine', Georgia, serif;
+  }
+  
+  .wiki-section-title {
+    @apply text-xl font-semibold text-gray-900 mb-3;
+    font-family: 'Libre Baskerville', 'Linux Libertine', Georgia, serif;
+  }
+  
+  .wiki-button-secondary {
+    @apply px-4 py-2 bg-gray-100 text-gray-700 border border-gray-300 rounded hover:bg-gray-200 transition-all duration-150 font-medium;
+  }
+  
+  .wiki-tag {
+    @apply inline-block px-2 py-1 text-sm rounded;
+  }
+  
+  .wiki-message {
+    @apply p-4 rounded border;
+  }
+  
+  .wiki-message-error {
+    @apply bg-red-50 border-red-200 text-red-800;
+  }
+  
+  .wiki-message-success {
+    @apply bg-green-50 border-green-200 text-green-800;
+  }
+  
+  .wiki-gray {
+    color: var(--wiki-gray);
+  }
+  
+  .wiki-blue {
+    color: var(--wiki-blue);
   }
 }
 
