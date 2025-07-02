@@ -216,12 +216,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           contentLength: a.contentLength 
         }))
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Comparison error:', error);
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Invalid comparison data", details: error.errors });
       }
-      res.status(500).json({ error: "Failed to generate comparison" });
+      const errorMessage = error.message || "Failed to generate comparison";
+      res.status(500).json({ error: errorMessage });
     }
   });
 

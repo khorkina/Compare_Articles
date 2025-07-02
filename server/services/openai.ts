@@ -12,6 +12,24 @@ export interface ComparisonRequest {
 }
 
 export class OpenAIService {
+  private truncateArticle(content: string, maxChars: number = 6000): string {
+    if (content.length <= maxChars) {
+      return content;
+    }
+    
+    const truncated = content.substring(0, maxChars);
+    const lastPeriod = truncated.lastIndexOf('.');
+    const lastNewline = truncated.lastIndexOf('\n');
+    
+    // Try to end at a natural break point
+    const breakPoint = Math.max(lastPeriod, lastNewline);
+    if (breakPoint > maxChars * 0.8) {
+      return truncated.substring(0, breakPoint + 1);
+    }
+    
+    return truncated + "...";
+  }
+
   async compareArticles(request: ComparisonRequest): Promise<string> {
     const { articles, outputLanguage, isFunnyMode = false } = request;
     
@@ -21,7 +39,17 @@ export class OpenAIService {
       `${lang}: ${content.length} characters`
     ));
     
-    const articleData = JSON.stringify(articles, null, 2);
+    // Truncate articles to prevent token limit issues
+    const truncatedArticles: Record<string, string> = {};
+    Object.entries(articles).forEach(([lang, content]) => {
+      const truncated = this.truncateArticle(content, 6000);
+      truncatedArticles[lang] = truncated;
+      if (truncated.length < content.length) {
+        console.log(`Truncated ${lang} article: ${content.length} -> ${truncated.length} characters`);
+      }
+    });
+    
+    const articleData = JSON.stringify(truncatedArticles, null, 2);
     
     const systemPrompt = isFunnyMode 
       ? this.getFunnyModeSystemPrompt(outputLanguage)
@@ -50,13 +78,32 @@ ${isFunnyMode
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
         ],
-        max_tokens: 4000,
+        max_tokens: 3000,
         temperature: isFunnyMode ? 0.8 : 0.3,
       });
 
       return response.choices[0].message.content || "No comparison generated";
-    } catch (error) {
+    } catch (error: any) {
       console.error('OpenAI API error:', error);
+      
+      // Handle specific rate limit errors
+      if (error.code === 'rate_limit_exceeded') {
+        if (error.type === 'tokens') {
+          throw new Error('Articles are too large for analysis. Please try with fewer languages or shorter articles.');
+        } else {
+          throw new Error('OpenAI rate limit exceeded. Please try again in a moment.');
+        }
+      }
+      
+      // Handle other API errors
+      if (error.status === 429) {
+        throw new Error('Service temporarily overloaded. Please try again in a moment.');
+      }
+      
+      if (error.status === 401) {
+        throw new Error('Authentication error with AI service.');
+      }
+      
       throw new Error('Failed to generate article comparison');
     }
   }
