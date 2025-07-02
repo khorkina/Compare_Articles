@@ -91,9 +91,9 @@ export default function ComparisonLoading() {
   const CurrentIcon = steps[currentStep].icon;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="container mx-auto px-4 py-6 lg:py-8">
-        <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="w-full max-w-none mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+        <div className="w-full max-w-7xl mx-auto">
           
           <div className="text-center mb-8 lg:mb-12">
             <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 lg:mb-6">
@@ -104,10 +104,10 @@ export default function ComparisonLoading() {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-5 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
             
-            <div className="lg:col-span-3 space-y-6">
-              <Card className="shadow-lg border">
+            <div className="lg:col-span-7 space-y-6">
+              <Card className="w-full shadow-lg border">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-xl lg:text-2xl flex items-center gap-3">
                     <CurrentIcon className="h-6 w-6 lg:h-8 lg:w-8 text-blue-600 animate-pulse" />
@@ -143,7 +143,7 @@ export default function ComparisonLoading() {
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 w-full">
                     {steps.map((step, index) => {
                       const StepIcon = step.icon;
                       const isActive = index === currentStep;
@@ -172,7 +172,7 @@ export default function ComparisonLoading() {
               </Card>
             </div>
 
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-5 space-y-6">
               
               <Card className="shadow-lg h-fit">
                 <CardHeader className="pb-3">
