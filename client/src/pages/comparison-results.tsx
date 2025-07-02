@@ -162,15 +162,52 @@ export default function ComparisonResults() {
   };
 
   const handleShare = async (platform: string) => {
-    if (!comparisonId) return;
+    if (!comparisonId || !comparisonQuery.data) return;
     
     try {
-      const shareText = await api.shareComparison(comparisonId, platform);
+      const comparison = comparisonQuery.data;
+      const wikiTruthUrl = window.location.origin;
+      const currentUrl = window.location.href;
+      
+      // Create full text for clipboard
+      const fullText = `Wiki Truth Comparison: "${comparison.articleTitle}"\n\nLanguages compared: ${comparison.selectedLanguages.map(lang => lang.toUpperCase()).join(', ')}\n\n${comparison.comparisonResult}\n\nDiscover more at ${wikiTruthUrl}`;
+      
+      // Copy to clipboard
+      await navigator.clipboard.writeText(fullText);
+      
+      // Create platform-specific messages and URLs
+      const platformMessages: Record<string, string> = {
+        twitter: `🌍 Fascinating Wikipedia comparison: "${comparison.articleTitle}" across ${comparison.selectedLanguages.length} languages reveals cultural differences! #WikiTruth #Wikipedia`,
+        facebook: `Check out this interesting Wikipedia comparison of "${comparison.articleTitle}" across ${comparison.selectedLanguages.length} languages. The cultural perspectives are fascinating!`,
+        linkedin: `I just compared the Wikipedia article "${comparison.articleTitle}" across ${comparison.selectedLanguages.length} languages. The AI analysis reveals interesting cultural perspectives and factual variations.`,
+        whatsapp: `Check out this interesting Wikipedia comparison: "${comparison.articleTitle}" across ${comparison.selectedLanguages.length} languages. The differences are quite revealing!`,
+        telegram: `📖 Multi-language Wikipedia comparison: "${comparison.articleTitle}" - revealing cultural perspectives and narrative differences across ${comparison.selectedLanguages.length} languages`,
+        reddit: `TIL: The Wikipedia article for "${comparison.articleTitle}" varies significantly across ${comparison.selectedLanguages.length} languages. Here's an AI analysis of the differences:`
+      };
+
+      const message = platformMessages[platform] || `Check out this Wikipedia comparison: "${comparison.articleTitle}"`;
+      
+      // Create platform-specific share URLs
+      const shareUrls: Record<string, string> = {
+        twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(currentUrl)}`,
+        facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}&quote=${encodeURIComponent(message)}`,
+        linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}&summary=${encodeURIComponent(message)}`,
+        whatsapp: `https://wa.me/?text=${encodeURIComponent(message + ' ' + currentUrl)}`,
+        telegram: `https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(message)}`,
+        reddit: `https://reddit.com/submit?url=${encodeURIComponent(currentUrl)}&title=${encodeURIComponent(message)}`
+      };
+
+      // Open social media sharing window
+      if (shareUrls[platform]) {
+        window.open(shareUrls[platform], '_blank', 'width=600,height=400');
+      }
+      
       toast({
-        title: "Copied to Clipboard",
-        description: `Comparison text and link copied for ${platform}.`,
+        title: "Ready to Share",
+        description: `Content copied to clipboard and ${platform} sharing opened.`,
       });
     } catch (error) {
+      console.error('Share error:', error);
       toast({
         title: "Share Failed",
         description: "Failed to prepare sharing content.",
@@ -294,17 +331,20 @@ export default function ComparisonResults() {
 
         {/* Share Buttons */}
         <div className="mt-8 pt-6 border-t border-wiki-light-border">
-          <h3 className="font-semibold mb-4">Share this comparison:</h3>
-          <div className="mb-3">
+          <h3 className="font-semibold text-lg mb-6 text-center">Share this comparison</h3>
+          
+          {/* Copy to Clipboard */}
+          <div className="mb-6 flex justify-center">
             <Button 
               onClick={async () => {
                 try {
                   const comparison = comparisonQuery.data!;
-                  const fullText = `Wiki Truth Comparison: "${comparison.articleTitle}"\n${comparison.selectedLanguages.map(lang => `• ${lang.toUpperCase()}`).join('\n')}\n\n${comparison.comparisonResult}`;
+                  const wikiTruthUrl = window.location.origin;
+                  const fullText = `Wiki Truth Comparison: "${comparison.articleTitle}"\n\nLanguages compared: ${comparison.selectedLanguages.map(lang => lang.toUpperCase()).join(', ')}\n\n${comparison.comparisonResult}\n\nDiscover more at ${wikiTruthUrl}`;
                   await navigator.clipboard.writeText(fullText);
                   toast({
                     title: "Copied to Clipboard",
-                    description: "Full comparison text copied to clipboard",
+                    description: "Comparison and Wiki Truth link copied to clipboard",
                   });
                 } catch (error) {
                   toast({
@@ -314,41 +354,67 @@ export default function ComparisonResults() {
                   });
                 }
               }} 
-              className="wiki-button-primary"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
             >
-              <i className="fas fa-copy mr-2"></i>Copy Full Text to Clipboard
+              <i className="fas fa-copy mr-3 text-lg"></i>
+              <span className="font-semibold">Copy Full Text + Link</span>
             </Button>
           </div>
-          <div className="flex flex-wrap gap-3">
+
+          {/* Social Media Buttons */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 lg:gap-4">
+            {/* Twitter/X */}
             <Button 
-              onClick={() => handleShare('X')} 
-              className="wiki-button text-sm"
+              onClick={() => handleShare('twitter')} 
+              className="bg-black hover:bg-gray-800 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex flex-col items-center gap-2 h-auto min-h-[80px] group"
             >
-              <i className="fab fa-x-twitter mr-2"></i>X (Twitter)
+              <i className="fab fa-x-twitter text-2xl group-hover:animate-pulse"></i>
+              <span className="text-sm font-medium">Twitter</span>
             </Button>
+
+            {/* Facebook */}
             <Button 
-              onClick={() => handleShare('LinkedIn')} 
-              className="wiki-button text-sm"
+              onClick={() => handleShare('facebook')} 
+              className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex flex-col items-center gap-2 h-auto min-h-[80px] group"
             >
-              <i className="fab fa-linkedin mr-2"></i>LinkedIn
+              <i className="fab fa-facebook-f text-2xl group-hover:animate-pulse"></i>
+              <span className="text-sm font-medium">Facebook</span>
             </Button>
+
+            {/* LinkedIn */}
             <Button 
-              onClick={() => handleShare('Telegram')} 
-              className="wiki-button text-sm"
+              onClick={() => handleShare('linkedin')} 
+              className="bg-blue-700 hover:bg-blue-800 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex flex-col items-center gap-2 h-auto min-h-[80px] group"
             >
-              <i className="fab fa-telegram mr-2"></i>Telegram
+              <i className="fab fa-linkedin text-2xl group-hover:animate-pulse"></i>
+              <span className="text-sm font-medium">LinkedIn</span>
             </Button>
+
+            {/* WhatsApp */}
             <Button 
-              onClick={() => handleShare('WhatsApp')} 
-              className="wiki-button text-sm"
+              onClick={() => handleShare('whatsapp')} 
+              className="bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex flex-col items-center gap-2 h-auto min-h-[80px] group"
             >
-              <i className="fab fa-whatsapp mr-2"></i>WhatsApp
+              <i className="fab fa-whatsapp text-2xl group-hover:animate-pulse"></i>
+              <span className="text-sm font-medium">WhatsApp</span>
             </Button>
+
+            {/* Telegram */}
             <Button 
-              onClick={() => handleShare('Reddit')} 
-              className="wiki-button text-sm"
+              onClick={() => handleShare('telegram')} 
+              className="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex flex-col items-center gap-2 h-auto min-h-[80px] group"
             >
-              <i className="fab fa-reddit mr-2"></i>Reddit
+              <i className="fab fa-telegram text-2xl group-hover:animate-pulse"></i>
+              <span className="text-sm font-medium">Telegram</span>
+            </Button>
+
+            {/* Reddit */}
+            <Button 
+              onClick={() => handleShare('reddit')} 
+              className="bg-orange-600 hover:bg-orange-700 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex flex-col items-center gap-2 h-auto min-h-[80px] group"
+            >
+              <i className="fab fa-reddit text-2xl group-hover:animate-pulse"></i>
+              <span className="text-sm font-medium">Reddit</span>
             </Button>
           </div>
         </div>
