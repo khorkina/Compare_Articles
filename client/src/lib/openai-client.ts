@@ -1,47 +1,18 @@
-import { clientStorage } from './storage';
-
 export interface ComparisonRequest {
   articles: Record<string, string>; // language code -> article content
   outputLanguage: string;
   isFunnyMode?: boolean;
 }
 
-class OpenAIClient {
-  private baseUrl = '/api/openai';
-
-  async getApiKey(): Promise<string> {
-    console.log('Retrieving OpenAI API key...');
-    
-    // Check subscription status first
-    const isValidSubscription = await clientStorage.isSubscriptionValid();
-    if (!isValidSubscription) {
-      throw new Error('Premium subscription required. Please subscribe to use comparison features.');
-    }
-    
-    // Use environment API key for premium users (our server key)
-    const envApiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    console.log('Environment API key:', envApiKey ? 'Found' : 'Not found');
-    if (envApiKey && envApiKey.trim()) {
-      return envApiKey.trim();
-    }
-
-    throw new Error('Service temporarily unavailable. Please try again later.');
-  }
+class OpenRouterClient {
+  private baseUrl = '/api/openrouter';
 
   async compareArticles(request: ComparisonRequest): Promise<string> {
     try {
-      console.log('Starting OpenAI comparison with server API key...');
-      
-      // Check subscription status first
-      const isValidSubscription = await clientStorage.isSubscriptionValid();
-      if (!isValidSubscription) {
-        throw new Error('Premium subscription required. Please subscribe to use comparison features.');
-      }
-      
-      console.log('Valid subscription found, making comparison request...');
+      console.log('Starting comparison with OpenRouter API...');
 
-      // Use the new server endpoint that uses server's OpenAI API key
-      const response = await fetch('/api/openai/compare', {
+      // OpenRouter API endpoint - completely free for all users
+      const response = await fetch('/api/openrouter/compare', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -49,11 +20,11 @@ class OpenAIClient {
         body: JSON.stringify(request)
       });
 
-      console.log('OpenAI API response status:', response.status);
+      console.log('OpenRouter API response status:', response.status);
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('OpenAI API error response:', errorText);
+        console.error('OpenRouter API error response:', errorText);
         
         let errorData;
         try {
@@ -62,15 +33,15 @@ class OpenAIClient {
           errorData = { error: { message: errorText } };
         }
         
-        throw new Error(`OpenAI API error: ${response.status} - ${errorData.error?.message || errorText}`);
+        throw new Error(`OpenRouter API error: ${response.status} - ${errorData.error?.message || errorText}`);
       }
 
       const data = await response.json();
-      console.log('OpenAI comparison completed successfully');
+      console.log('OpenRouter comparison completed successfully');
       
       return data.comparisonResult || 'No comparison generated';
     } catch (error) {
-      console.error('OpenAI comparison error:', error);
+      console.error('OpenRouter comparison error:', error);
       if (error instanceof Error) {
         throw error;
       }
@@ -119,22 +90,6 @@ OUTPUT STYLE:
 
 Remember: We're laughing WITH cultural differences, not AT them. Keep it light, fun, and insightful while avoiding anything mean-spirited or offensive.`;
   }
-
-  async testApiKey(apiKey: string): Promise<boolean> {
-    try {
-      console.log('Testing OpenAI API key...');
-      const response = await fetch(`${this.baseUrl}/models`, {
-        headers: {
-          'Authorization': `Bearer ${apiKey}`
-        }
-      });
-      console.log('API key test response:', response.status);
-      return response.ok;
-    } catch (error) {
-      console.error('API key test failed:', error);
-      return false;
-    }
-  }
 }
 
-export const openaiClient = new OpenAIClient();
+export const openaiClient = new OpenRouterClient();

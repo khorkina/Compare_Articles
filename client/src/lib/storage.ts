@@ -1,13 +1,10 @@
 import { openDB, type IDBPDatabase } from 'idb';
 import { v4 as uuidv4 } from 'uuid';
 
-// Database schema
+// Database schema - simplified, subscription-free
 export interface UserAccount {
   id: string;
   createdAt: string;
-  openaiApiKey?: string;
-  isPremium: boolean;
-  subscriptionTimestamp?: string;
   preferences: {
     defaultLanguage: string;
     theme: 'light' | 'dark';
@@ -48,7 +45,7 @@ export interface SearchSession {
 class ClientStorage {
   private db: IDBPDatabase | null = null;
   private dbName = 'WikiTruthDB';
-  private dbVersion = 1;
+  private dbVersion = 2; // Incremented for schema change
 
   async init(): Promise<void> {
     this.db = await openDB(this.dbName, this.dbVersion, {
@@ -74,7 +71,7 @@ class ClientStorage {
     });
   }
 
-  // User account management
+  // User account management - simplified
   async getCurrentUser(): Promise<UserAccount> {
     if (!this.db) await this.init();
     
@@ -89,7 +86,6 @@ class ClientStorage {
       const newUser: UserAccount = {
         id: userId,
         createdAt: new Date().toISOString(),
-        isPremium: false,
         preferences: {
           defaultLanguage: 'en',
           theme: 'light'
@@ -103,14 +99,22 @@ class ClientStorage {
     // Get existing user
     const user = await this.db!.get('users', userId);
     if (user) {
-      return user;
+      // Clean up any old subscription fields that might exist
+      const cleanUser: UserAccount = {
+        id: user.id,
+        createdAt: user.createdAt,
+        preferences: user.preferences || {
+          defaultLanguage: 'en',
+          theme: 'light'
+        }
+      };
+      return cleanUser;
     }
 
     // User ID exists in localStorage but not in IndexedDB - recreate
     const recreatedUser: UserAccount = {
       id: userId,
       createdAt: new Date().toISOString(),
-      isPremium: false,
       preferences: {
         defaultLanguage: 'en',
         theme: 'light'
@@ -122,69 +126,10 @@ class ClientStorage {
   }
 
   async updateUser(updates: Partial<UserAccount>): Promise<UserAccount> {
-    if (!this.db) await this.init();
-    
     const currentUser = await this.getCurrentUser();
     const updatedUser = { ...currentUser, ...updates };
-    
     await this.db!.put('users', updatedUser);
     return updatedUser;
-  }
-
-  async setOpenAIKey(apiKey: string): Promise<void> {
-    await this.updateUser({ openaiApiKey: apiKey || undefined });
-  }
-
-  async getOpenAIKey(): Promise<string | undefined> {
-    const user = await this.getCurrentUser();
-    return user.openaiApiKey;
-  }
-
-  // Subscription management
-  async setPremiumStatus(isPremium: boolean, timestamp?: string): Promise<void> {
-    await this.updateUser({ 
-      isPremium, 
-      subscriptionTimestamp: timestamp || new Date().toISOString() 
-    });
-  }
-
-  async isSubscriptionValid(): Promise<boolean> {
-    const user = await this.getCurrentUser();
-    
-    if (!user.isPremium || !user.subscriptionTimestamp) {
-      return false;
-    }
-
-    const subscriptionDate = new Date(user.subscriptionTimestamp);
-    const now = new Date();
-    const daysDiff = (now.getTime() - subscriptionDate.getTime()) / (1000 * 60 * 60 * 24);
-    
-    return daysDiff <= 30;
-  }
-
-  async getSubscriptionInfo(): Promise<{
-    isPremium: boolean;
-    isValid: boolean;
-    daysRemaining: number;
-    subscriptionDate?: string;
-  }> {
-    const user = await this.getCurrentUser();
-    const isValid = await this.isSubscriptionValid();
-    
-    let daysRemaining = 0;
-    if (user.isPremium && user.subscriptionTimestamp) {
-      const subscriptionDate = new Date(user.subscriptionTimestamp);
-      const now = new Date();
-      const daysPassed = (now.getTime() - subscriptionDate.getTime()) / (1000 * 60 * 60 * 24);
-      daysRemaining = Math.max(0, 30 - daysPassed);
-    }
-
-    return {
-      isPremium: user.isPremium,
-      isValid,
-      daysRemaining: Math.floor(daysRemaining),
-      subscriptionDate: user.subscriptionTimestamp
-    };
   }
 
   // Comparison management
@@ -198,20 +143,20 @@ class ClientStorage {
       createdAt: new Date().toISOString(),
       ...comparison
     };
-    
+
     await this.db!.put('comparisons', fullComparison);
     return fullComparison;
   }
 
   async getComparison(id: string): Promise<StorageComparisonResult | undefined> {
     if (!this.db) await this.init();
-    return this.db!.get('comparisons', id);
+    return await this.db!.get('comparisons', id);
   }
 
   async getUserComparisons(): Promise<StorageComparisonResult[]> {
     if (!this.db) await this.init();
-    
     const user = await this.getCurrentUser();
+    
     const tx = this.db!.transaction('comparisons', 'readonly');
     const index = tx.store.index('userId');
     const comparisons = await index.getAll(user.id);
@@ -224,7 +169,7 @@ class ClientStorage {
     await this.db!.delete('comparisons', id);
   }
 
-  // Search session management
+  // Session management
   async saveSession(session: Omit<SearchSession, 'id' | 'userId' | 'createdAt'>): Promise<SearchSession> {
     if (!this.db) await this.init();
     
@@ -235,28 +180,27 @@ class ClientStorage {
       createdAt: new Date().toISOString(),
       ...session
     };
-    
+
     await this.db!.put('sessions', fullSession);
     return fullSession;
   }
 
   async getSession(id: string): Promise<SearchSession | undefined> {
     if (!this.db) await this.init();
-    return this.db!.get('sessions', id);
+    return await this.db!.get('sessions', id);
   }
 
   async updateSession(id: string, updates: Partial<SearchSession>): Promise<SearchSession | undefined> {
     if (!this.db) await this.init();
-    
-    const session = await this.getSession(id);
-    if (!session) return undefined;
-    
-    const updatedSession = { ...session, ...updates };
-    await this.db!.put('sessions', updatedSession);
-    return updatedSession;
+    const existing = await this.getSession(id);
+    if (!existing) return undefined;
+
+    const updated: SearchSession = { ...existing, ...updates };
+    await this.db!.put('sessions', updated);
+    return updated;
   }
 
-  // Data export for user
+  // Data export and management
   async exportAllData(): Promise<{
     user: UserAccount;
     comparisons: StorageComparisonResult[];
@@ -264,40 +208,30 @@ class ClientStorage {
   }> {
     const user = await this.getCurrentUser();
     const comparisons = await this.getUserComparisons();
-    
-    if (!this.db) await this.init();
-    const tx = this.db!.transaction('sessions', 'readonly');
-    const index = tx.store.index('userId');
-    const sessions = await index.getAll(user.id);
+    const sessions = await this.getAllSessions();
     
     return { user, comparisons, sessions };
   }
 
-  // Clear all user data
+  async getAllSessions(): Promise<SearchSession[]> {
+    if (!this.db) await this.init();
+    const user = await this.getCurrentUser();
+    
+    const tx = this.db!.transaction('sessions', 'readonly');
+    const index = tx.store.index('userId');
+    return await index.getAll(user.id);
+  }
+
   async clearAllData(): Promise<void> {
     if (!this.db) await this.init();
     
-    const user = await this.getCurrentUser();
+    const tx = this.db!.transaction(['users', 'comparisons', 'sessions'], 'readwrite');
+    await Promise.all([
+      tx.objectStore('users').clear(),
+      tx.objectStore('comparisons').clear(),
+      tx.objectStore('sessions').clear()
+    ]);
     
-    // Clear IndexedDB data
-    const tx = this.db!.transaction(['comparisons', 'sessions', 'users'], 'readwrite');
-    
-    const comparisonsIndex = tx.objectStore('comparisons').index('userId');
-    const userComparisons = await comparisonsIndex.getAllKeys(user.id);
-    for (const key of userComparisons) {
-      await tx.objectStore('comparisons').delete(key);
-    }
-    
-    const sessionsIndex = tx.objectStore('sessions').index('userId');
-    const userSessions = await sessionsIndex.getAllKeys(user.id);
-    for (const key of userSessions) {
-      await tx.objectStore('sessions').delete(key);
-    }
-    
-    await tx.objectStore('users').delete(user.id);
-    await tx.done;
-    
-    // Clear localStorage
     localStorage.removeItem('wikiTruthUserId');
   }
 }

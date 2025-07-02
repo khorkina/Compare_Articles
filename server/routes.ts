@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { wikipediaService } from "./services/wikipedia";
 import { openaiService } from "./services/openai";
+import { openRouterService } from "./services/openrouter";
 import { exportService } from "./services/export";
 import { insertComparisonSchema, insertSearchSessionSchema } from "@shared/schema";
 import { z } from "zod";
@@ -190,7 +191,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // OpenAI comparison endpoint for premium users (uses server API key)
+  // OpenRouter comparison endpoint - Free for all users
+  app.post("/api/openrouter/compare", async (req, res) => {
+    try {
+      const { articles, outputLanguage, isFunnyMode = false } = req.body;
+      
+      if (!articles || typeof articles !== 'object') {
+        return res.status(400).json({ error: "Articles data is required" });
+      }
+      
+      if (!outputLanguage) {
+        return res.status(400).json({ error: "Output language is required" });
+      }
+
+      // Generate comparison using OpenRouter API - completely free
+      const comparisonResult = await openRouterService.compareArticles({
+        articles,
+        outputLanguage,
+        isFunnyMode
+      });
+
+      res.json({ comparisonResult });
+    } catch (error) {
+      console.error('OpenRouter comparison error:', error);
+      res.status(500).json({ error: "Failed to generate comparison using OpenRouter" });
+    }
+  });
+
+  // Legacy OpenAI endpoint for premium users (deprecated - keeping for compatibility)
   app.post("/api/openai/compare", async (req, res) => {
     try {
       const { articles, outputLanguage, isFunnyMode = false } = req.body;

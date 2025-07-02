@@ -1,103 +1,78 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
-import { CheckCircle, ArrowRight, Sparkles } from 'lucide-react';
+import { CheckCircle, ArrowRight, Sparkles, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { clientStorage } from '@/lib/storage';
-import { useToast } from '@/hooks/use-toast';
 
 export default function ThankYou() {
-  const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
+  const [showConfetti, setShowConfetti] = useState(true);
 
   useEffect(() => {
-    const activatePremium = async () => {
-      try {
-        // Check if this is a demo payment or real payment
-        const urlParams = new URLSearchParams(window.location.search);
-        const isDemo = urlParams.get('demo') === 'true';
-        
-        // Set premium status with current timestamp
-        await clientStorage.setPremiumStatus(true, new Date().toISOString());
-        
-        toast({
-          title: isDemo ? "Demo Subscription Activated!" : "Premium Activated!",
-          description: isDemo 
-            ? "Demo subscription active for 30 days. In production, this would be a real payment."
-            : "Your subscription is now active for 30 days."
-        });
-        
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error activating premium:', error);
-        toast({
-          title: "Activation Error",
-          description: "There was an issue activating your premium subscription. Please contact support.",
-          variant: "destructive"
-        });
-        setIsLoading(false);
-      }
-    };
-
-    activatePremium();
-  }, [toast]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Activating your premium subscription...</p>
-        </div>
-      </div>
-    );
-  }
+    // Remove confetti after animation
+    const timer = setTimeout(() => setShowConfetti(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <Card className="max-w-md w-full shadow-lg">
-        <CardContent className="p-8 text-center">
-          <div className="mb-6">
-            <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Thank You for Subscribing!
-            </h1>
-            <p className="text-gray-600">
-              Your premium subscription has been activated successfully.
-            </p>
-          </div>
-
-          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-4 mb-6">
-            <div className="flex items-center justify-center mb-2">
-              <Sparkles className="h-5 w-5 text-indigo-600 mr-2" />
-              <span className="font-semibold text-indigo-900">Premium Benefits</span>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
+      {showConfetti && (
+        <div className="fixed inset-0 pointer-events-none">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-200/20 to-transparent animate-pulse"></div>
+        </div>
+      )}
+      
+      <Card className="w-full max-w-2xl shadow-xl border-0 bg-white/90 backdrop-blur">
+        <CardContent className="p-12 text-center">
+          <div className="flex justify-center mb-6">
+            <div className="relative">
+              <CheckCircle className="h-20 w-20 text-green-500" />
+              <div className="absolute -top-2 -right-2">
+                <Sparkles className="h-8 w-8 text-yellow-400 animate-bounce" />
+              </div>
             </div>
-            <ul className="text-sm text-indigo-800 space-y-1">
-              <li>• Unlimited Wikipedia comparisons</li>
-              <li>• Priority AI processing</li>
-              <li>• Advanced export features</li>
-              <li>• 30-day subscription period</li>
-            </ul>
           </div>
 
-          <div className="space-y-3">
-            <Link href="/">
-              <Button className="w-full" size="lg">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Welcome to WikiTruth!
+          </h1>
+          
+          <p className="text-xl text-gray-600 mb-8">
+            Your free, unlimited Wikipedia comparison service is ready to use
+          </p>
+
+          <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-8">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <Globe className="h-6 w-6 text-green-600" />
+              <h2 className="text-xl font-semibold text-green-800">
+                Everything is Free!
+              </h2>
+            </div>
+            <div className="space-y-2 text-green-700">
+              <p>✅ Unlimited article comparisons</p>
+              <p>✅ All language pairs supported</p>
+              <p>✅ Both academic and fun mode analysis</p>
+              <p>✅ No registration required</p>
+              <p>✅ Privacy-first design</p>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
+              <Link href="/">
+                <ArrowRight className="mr-2 h-5 w-5" />
                 Start Comparing Articles
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-            </Link>
+              </Link>
+            </Button>
             
-            <Link href="/settings">
-              <Button variant="outline" className="w-full">
-                View Subscription Details
-              </Button>
-            </Link>
+            <Button asChild variant="outline" size="lg">
+              <Link href="/">
+                Browse Wikipedia
+              </Link>
+            </Button>
           </div>
 
-          <p className="text-xs text-gray-500 mt-6">
-            Your subscription will automatically expire after 30 days. 
-            You can renew anytime from the Settings page.
+          <p className="text-sm text-gray-500 mt-8">
+            All your data stays in your browser. We respect your privacy.
           </p>
         </CardContent>
       </Card>

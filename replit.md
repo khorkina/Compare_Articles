@@ -2,7 +2,7 @@
 
 ## Overview
 
-Wiki Truth is a client-side web application that enables users to compare Wikipedia articles across multiple languages using artificial intelligence. The platform is designed with privacy-first principles, storing all user data locally in the browser while revealing how the same topic can be presented differently in various linguistic and cultural contexts, providing insights into cultural biases and narrative variations.
+Wiki Truth is a completely free web application that enables users to compare Wikipedia articles across multiple languages using artificial intelligence. The platform is designed with privacy-first principles, storing all user data locally in the browser while revealing how the same topic can be presented differently in various linguistic and cultural contexts, providing insights into cultural biases and narrative variations. No subscription or registration required.
 
 ## System Architecture
 
@@ -36,11 +36,11 @@ Wiki Truth is a client-side web application that enables users to compare Wikipe
 - **Article Selection**: Type-ahead search with snippet previews
 
 ### AI Comparison Engine
-- **Model**: OpenAI GPT-4o for article analysis (server-proxied API calls)
+- **Model**: OpenRouter.ai with Meta Llama 3.1 8B Instruct (free model)
 - **Comparison Modes**: Standard academic analysis and "funny mode" for entertaining insights
-- **Content Processing**: Browser-to-server-to-OpenAI API communication (CORS bypass)
+- **Content Processing**: Browser-to-server-to-OpenRouter API communication (CORS bypass)
 - **Cultural Analysis**: Focus on factual differences, framing variations, and cultural perspectives
-- **Access Control**: Premium subscription required for comparison features
+- **Access Control**: Completely free for all users, no subscription required
 
 ### Export and Sharing
 - **Document Export**: DOCX generation using docx library
@@ -68,7 +68,7 @@ Wiki Truth is a client-side web application that enables users to compare Wikipe
 
 ### APIs and Services
 - **Wikipedia API**: Direct client-side calls for article search, language links, and content retrieval
-- **OpenAI API**: Direct browser-to-API calls for GPT-4o article comparison and analysis
+- **OpenRouter.ai API**: Server-side calls to free Llama models for article comparison and analysis
 - **CORS Proxy**: AllOrigins service for bypassing browser CORS restrictions with Wikipedia
 
 ### Development and Build Tools
@@ -96,17 +96,18 @@ Wiki Truth is a client-side web application that enables users to compare Wikipe
 - **Database**: Production PostgreSQL with connection pooling
 
 ### Environment Configuration
-- **Database URL**: Required environment variable for PostgreSQL connection
-- **OpenAI API Key**: Required for AI comparison functionality
+- **Database URL**: Optional environment variable for PostgreSQL connection (using in-memory storage by default)
+- **OpenRouter API Key**: Required for free AI comparison functionality
 - **Node Environment**: Development/production mode switching
 
 ## Changelog
 
 ### Recent Changes
-- January 1, 2025: **COMPLETED** - Server-side OpenAI API integration for premium users using environment API key
-- January 1, 2025: **COMPLETED** - Proper Smart Glocal API integration with session-based payment flow
-- January 1, 2025: **COMPLETED** - Demo payment system for development and testing purposes
-- January 1, 2025: **COMPLETED** - Enhanced payment session creation with proper API structure
+- January 2, 2025: **COMPLETED** - Complete removal of subscription system and premium features
+- January 2, 2025: **COMPLETED** - Migration from OpenAI API to OpenRouter.ai API for free service
+- January 2, 2025: **COMPLETED** - Updated all UI components to reflect free service availability
+- January 2, 2025: **COMPLETED** - Simplified user storage schema without subscription fields
+- January 2, 2025: **COMPLETED** - Free unlimited comparisons using Meta Llama 3.1 8B Instruct model
 - December 30, 2024: **COMPLETED** - Subscription system implementation with Smart Glocal payment integration
 - December 30, 2024: **COMPLETED** - Premium subscription model ($1/month) replacing API key requirements
 - December 30, 2024: **COMPLETED** - Subscription validation and 30-day expiration tracking
@@ -125,17 +126,15 @@ Wiki Truth is a client-side web application that enables users to compare Wikipe
 - June 30, 2025: Initial setup and core functionality implementation
 
 ### Project Status
-✅ **SUBSCRIPTION-BASED & FULLY FUNCTIONAL** - Complete privacy-first architecture with premium features:
+✅ **COMPLETELY FREE & FULLY FUNCTIONAL** - Complete privacy-first architecture with unlimited features:
 - UUID-based user accounts (browser localStorage only)
 - All data stored locally in IndexedDB (no server storage)
 - Wikipedia API calls from browser with CORS proxy
-- OpenAI API calls proxied through server (CORS bypass)
-- Premium subscription system ($1/month, 30-day periods)
+- OpenRouter.ai API calls for free unlimited comparisons
+- No subscription or registration required
 - Multi-language Wikipedia article comparison (2-5 languages)
-- AI-powered analysis using GPT-4o with cultural insights
+- AI-powered analysis using Meta Llama 3.1 8B with cultural insights
 - Text export functionality and social media sharing
-- Smart Glocal payment integration with automatic activation
-- Subscription validation and renewal system
 - Wikipedia-styled responsive design with real-time search
 - Full data export and deletion capabilities for users
 - GDPR and privacy law compliant architecture
