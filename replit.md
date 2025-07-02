@@ -104,6 +104,9 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 ## Changelog
 
 ### Recent Changes
+- January 2, 2025: **COMPLETED** - Updated social sharing buttons to round circular design with X logo for Twitter
+- January 2, 2025: **COMPLETED** - Added platform labels below each round social button for clarity
+- January 2, 2025: **COMPLETED** - Enhanced visual design with perfect circles and improved hover effects
 - January 2, 2025: **COMPLETED** - Created unique, attractive social sharing buttons with proper platform integration
 - January 2, 2025: **COMPLETED** - Implemented comprehensive clipboard copying with Wiki Truth link inclusion
 - January 2, 2025: **COMPLETED** - Added platform-specific messaging and sharing URLs for all major social networks

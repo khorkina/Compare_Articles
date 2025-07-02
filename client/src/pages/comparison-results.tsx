@@ -177,7 +177,7 @@ export default function ComparisonResults() {
       
       // Create platform-specific messages and URLs
       const platformMessages: Record<string, string> = {
-        twitter: `🌍 Fascinating Wikipedia comparison: "${comparison.articleTitle}" across ${comparison.selectedLanguages.length} languages reveals cultural differences! #WikiTruth #Wikipedia`,
+        twitter: `🌍 Fascinating Wikipedia comparison: "${comparison.articleTitle}" across ${comparison.selectedLanguages.length} languages reveals cultural differences! #WikiTruth #Wikipedia #X`,
         facebook: `Check out this interesting Wikipedia comparison of "${comparison.articleTitle}" across ${comparison.selectedLanguages.length} languages. The cultural perspectives are fascinating!`,
         linkedin: `I just compared the Wikipedia article "${comparison.articleTitle}" across ${comparison.selectedLanguages.length} languages. The AI analysis reveals interesting cultural perspectives and factual variations.`,
         whatsapp: `Check out this interesting Wikipedia comparison: "${comparison.articleTitle}" across ${comparison.selectedLanguages.length} languages. The differences are quite revealing!`,
@@ -362,60 +362,78 @@ export default function ComparisonResults() {
           </div>
 
           {/* Social Media Buttons */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 lg:gap-4">
-            {/* Twitter/X */}
-            <Button 
-              onClick={() => handleShare('twitter')} 
-              className="bg-black hover:bg-gray-800 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex flex-col items-center gap-2 h-auto min-h-[80px] group"
-            >
-              <i className="fab fa-x-twitter text-2xl group-hover:animate-pulse"></i>
-              <span className="text-sm font-medium">Twitter</span>
-            </Button>
+          <div className="flex flex-wrap justify-center gap-4">
+            {/* X (Twitter) */}
+            <div className="flex flex-col items-center gap-2">
+              <Button 
+                onClick={() => handleShare('twitter')} 
+                className="bg-black hover:bg-gray-800 text-white w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
+                title="Share on X"
+              >
+                <i className="fab fa-x-twitter text-xl group-hover:animate-pulse"></i>
+              </Button>
+              <span className="text-xs text-gray-600 font-medium">X</span>
+            </div>
 
             {/* Facebook */}
-            <Button 
-              onClick={() => handleShare('facebook')} 
-              className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex flex-col items-center gap-2 h-auto min-h-[80px] group"
-            >
-              <i className="fab fa-facebook-f text-2xl group-hover:animate-pulse"></i>
-              <span className="text-sm font-medium">Facebook</span>
-            </Button>
+            <div className="flex flex-col items-center gap-2">
+              <Button 
+                onClick={() => handleShare('facebook')} 
+                className="bg-blue-600 hover:bg-blue-700 text-white w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
+                title="Share on Facebook"
+              >
+                <i className="fab fa-facebook-f text-xl group-hover:animate-pulse"></i>
+              </Button>
+              <span className="text-xs text-gray-600 font-medium">Facebook</span>
+            </div>
 
             {/* LinkedIn */}
-            <Button 
-              onClick={() => handleShare('linkedin')} 
-              className="bg-blue-700 hover:bg-blue-800 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex flex-col items-center gap-2 h-auto min-h-[80px] group"
-            >
-              <i className="fab fa-linkedin text-2xl group-hover:animate-pulse"></i>
-              <span className="text-sm font-medium">LinkedIn</span>
-            </Button>
+            <div className="flex flex-col items-center gap-2">
+              <Button 
+                onClick={() => handleShare('linkedin')} 
+                className="bg-blue-700 hover:bg-blue-800 text-white w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
+                title="Share on LinkedIn"
+              >
+                <i className="fab fa-linkedin text-xl group-hover:animate-pulse"></i>
+              </Button>
+              <span className="text-xs text-gray-600 font-medium">LinkedIn</span>
+            </div>
 
             {/* WhatsApp */}
-            <Button 
-              onClick={() => handleShare('whatsapp')} 
-              className="bg-green-500 hover:bg-green-600 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex flex-col items-center gap-2 h-auto min-h-[80px] group"
-            >
-              <i className="fab fa-whatsapp text-2xl group-hover:animate-pulse"></i>
-              <span className="text-sm font-medium">WhatsApp</span>
-            </Button>
+            <div className="flex flex-col items-center gap-2">
+              <Button 
+                onClick={() => handleShare('whatsapp')} 
+                className="bg-green-500 hover:bg-green-600 text-white w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
+                title="Share on WhatsApp"
+              >
+                <i className="fab fa-whatsapp text-xl group-hover:animate-pulse"></i>
+              </Button>
+              <span className="text-xs text-gray-600 font-medium">WhatsApp</span>
+            </div>
 
             {/* Telegram */}
-            <Button 
-              onClick={() => handleShare('telegram')} 
-              className="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex flex-col items-center gap-2 h-auto min-h-[80px] group"
-            >
-              <i className="fab fa-telegram text-2xl group-hover:animate-pulse"></i>
-              <span className="text-sm font-medium">Telegram</span>
-            </Button>
+            <div className="flex flex-col items-center gap-2">
+              <Button 
+                onClick={() => handleShare('telegram')} 
+                className="bg-blue-500 hover:bg-blue-600 text-white w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
+                title="Share on Telegram"
+              >
+                <i className="fab fa-telegram text-xl group-hover:animate-pulse"></i>
+              </Button>
+              <span className="text-xs text-gray-600 font-medium">Telegram</span>
+            </div>
 
             {/* Reddit */}
-            <Button 
-              onClick={() => handleShare('reddit')} 
-              className="bg-orange-600 hover:bg-orange-700 text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex flex-col items-center gap-2 h-auto min-h-[80px] group"
-            >
-              <i className="fab fa-reddit text-2xl group-hover:animate-pulse"></i>
-              <span className="text-sm font-medium">Reddit</span>
-            </Button>
+            <div className="flex flex-col items-center gap-2">
+              <Button 
+                onClick={() => handleShare('reddit')} 
+                className="bg-orange-600 hover:bg-orange-700 text-white w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
+                title="Share on Reddit"
+              >
+                <i className="fab fa-reddit text-xl group-hover:animate-pulse"></i>
+              </Button>
+              <span className="text-xs text-gray-600 font-medium">Reddit</span>
+            </div>
           </div>
         </div>
 
