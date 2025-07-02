@@ -104,6 +104,9 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 ## Changelog
 
 ### Recent Changes
+- January 2, 2025: **COMPLETED** - Changed all premium plan notifications from yellow to green color scheme
+- January 2, 2025: **COMPLETED** - Updated premium badges, buttons, and status indicators across all components
+- January 2, 2025: **COMPLETED** - Applied green theme to plan selection, thank-you page, and subscription status
 - January 2, 2025: **COMPLETED** - Updated social sharing buttons to round circular design with X logo for Twitter
 - January 2, 2025: **COMPLETED** - Added platform labels below each round social button for clarity
 - January 2, 2025: **COMPLETED** - Enhanced visual design with perfect circles and improved hover effects

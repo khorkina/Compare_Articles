@@ -68,8 +68,8 @@ export default function ThankYou() {
           {isPremium ? (
             <>
               <div className="flex justify-center items-center gap-2 mb-4">
-                <Crown className="h-8 w-8 text-yellow-500" />
-                <Badge className="bg-yellow-100 text-yellow-800 px-3 py-1 text-lg font-semibold">
+                <Crown className="h-8 w-8 text-green-500" />
+                <Badge className="bg-green-100 text-green-800 px-3 py-1 text-lg font-semibold">
                   PREMIUM ACTIVATED
                 </Badge>
               </div>
@@ -82,14 +82,14 @@ export default function ThankYou() {
                 Your premium subscription is now active with enhanced AI analysis
               </p>
 
-              <div className="bg-gradient-to-r from-yellow-50 to-amber-50 border border-yellow-200 rounded-lg p-6 mb-8">
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-6 mb-8">
                 <div className="flex items-center justify-center gap-3 mb-3">
-                  <Zap className="h-6 w-6 text-yellow-600" />
-                  <h2 className="text-xl font-semibold text-yellow-800">
+                  <Zap className="h-6 w-6 text-green-600" />
+                  <h2 className="text-xl font-semibold text-green-800">
                     Premium Features Unlocked
                   </h2>
                 </div>
-                <div className="space-y-2 text-yellow-700">
+                <div className="space-y-2 text-green-700">
                   <p>⭐ Advanced AI analysis</p>
                   <p>⭐ Full Wikipedia articles (no size limits)</p>
                   <p>⭐ Enhanced document processing</p>

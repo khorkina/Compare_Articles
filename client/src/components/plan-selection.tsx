@@ -158,9 +158,9 @@ export function PlanSelection({ onPlanSelected, selectedLanguages, articleTitle 
         </Card>
 
         {/* Premium Plan */}
-        <Card className="relative border-2 border-yellow-300">
+        <Card className="relative border-2 border-green-300">
           <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-            <Badge className="bg-yellow-400 text-black font-semibold px-3 py-1">
+            <Badge className="bg-green-400 text-white font-semibold px-3 py-1">
               <Sparkles className="h-3 w-3 mr-1" />
               PREMIUM
             </Badge>
@@ -169,10 +169,10 @@ export function PlanSelection({ onPlanSelected, selectedLanguages, articleTitle 
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-yellow-600" />
+                <Zap className="h-5 w-5 text-green-600" />
                 Premium Plan
               </CardTitle>
-              <Badge variant="default" className="bg-yellow-100 text-yellow-800">Recommended</Badge>
+              <Badge variant="default" className="bg-green-100 text-green-800">Recommended</Badge>
             </div>
             <CardDescription>
               Advanced AI analysis with full article processing and enhanced insights

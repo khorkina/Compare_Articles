@@ -76,7 +76,7 @@ export function SubscriptionStatus() {
           </CardTitle>
           <Badge variant={subscriptionStatus.isValid ? "default" : "secondary"} className={
             subscriptionStatus.isValid 
-              ? "bg-yellow-100 text-yellow-800 border-yellow-300" 
+              ? "bg-green-100 text-green-800 border-green-300" 
               : "bg-gray-100 text-gray-800"
           }>
             {subscriptionStatus.isValid ? "ACTIVE" : "FREE"}
@@ -156,7 +156,7 @@ export function SubscriptionStatus() {
 
             <Button 
               onClick={handleUpgrade}
-              className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+              className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold"
             >
               <Crown className="h-4 w-4 mr-2" />
               Upgrade to Premium ($5/month)
