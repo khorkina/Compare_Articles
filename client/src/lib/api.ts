@@ -150,21 +150,39 @@ export const api = {
         articleContents[article.language] = article.content;
       });
 
-      console.log('Sending to OpenAI for comparison...');
+      console.log('Sending to AI service for comparison...');
       console.log('Article content lengths:', Object.entries(articleContents).map(([lang, content]) => `${lang}: ${content.length} chars`));
       
-      // Get AI comparison
+      // Send to server for AI comparison (routes between OpenRouter/OpenAI based on subscription)
       let comparisonResult;
       try {
-        comparisonResult = await openaiClient.compareArticles({
-          articles: articleContents,
-          outputLanguage: comparisonData.outputLanguage,
-          isFunnyMode: comparisonData.isFunnyMode
+        const response = await fetch('/api/compare', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            articleTitle: comparisonData.articleTitle,
+            selectedLanguages: comparisonData.selectedLanguages,
+            outputLanguage: comparisonData.outputLanguage,
+            baseLanguage: comparisonData.baseLanguage || 'en',
+            isFunnyMode: comparisonData.isFunnyMode,
+            isPremium: comparisonData.isPremium,
+            articles: articleContents
+          })
         });
-        console.log('OpenAI comparison result length:', comparisonResult.length);
-      } catch (openaiError) {
-        console.error('OpenAI comparison failed:', openaiError);
-        throw new Error(`AI comparison failed: ${openaiError instanceof Error ? openaiError.message : 'Unknown error'}`);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Server error: ${response.status} - ${errorText}`);
+        }
+
+        const result = await response.json();
+        comparisonResult = result.comparisonResult;
+        console.log('AI comparison result length:', comparisonResult.length);
+      } catch (serverError) {
+        console.error('Server comparison failed:', serverError);
+        throw new Error(`AI comparison failed: ${serverError instanceof Error ? serverError.message : 'Unknown error'}`);
       }
 
       console.log('OpenAI comparison completed, saving to local storage...');

@@ -114,7 +114,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Compare articles with plan selection support
+  // Compare articles with plan selection support (accepts client-provided articles)
   app.post("/api/compare", async (req, res) => {
     try {
       const { 
@@ -123,7 +123,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         outputLanguage, 
         baseLanguage = 'en',
         isFunnyMode = false,
-        isPremium = false
+        isPremium = false,
+        articles = null // Client can provide pre-fetched articles
       } = req.body;
 
       if (!articleTitle || !selectedLanguages || !outputLanguage) {
@@ -138,24 +139,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Fetch article contents for all selected languages
-      const articles = await wikipediaService.getMultipleArticleContents(
-        articleTitle, 
-        selectedLanguages,
-        baseLanguage
-      );
+      let articleData: Record<string, string> = {};
+      let fetchedArticles: Array<{title: string, content: string, language: string, contentLength: number}> = [];
 
-      if (articles.length < 2) {
-        return res.status(400).json({ 
-          error: "Could not fetch articles for at least 2 languages" 
+      // Use client-provided articles if available, otherwise fetch from server
+      if (articles && typeof articles === 'object') {
+        articleData = articles;
+        // Create mock article objects for storage
+        fetchedArticles = Object.entries(articles).map(([language, content]) => ({
+          title: articleTitle,
+          content: content as string,
+          language,
+          contentLength: (content as string).length
+        }));
+      } else {
+        // Fetch article contents for all selected languages (server-side)
+        const serverFetchedArticles = await wikipediaService.getMultipleArticleContents(
+          articleTitle, 
+          selectedLanguages,
+          baseLanguage
+        );
+
+        if (serverFetchedArticles.length < 2) {
+          return res.status(400).json({ 
+            error: "Could not fetch articles for at least 2 languages" 
+          });
+        }
+
+        // Prepare articles for AI processing
+        serverFetchedArticles.forEach(article => {
+          articleData[article.language] = article.content;
         });
+        fetchedArticles = serverFetchedArticles.map(article => ({
+          title: article.title,
+          content: article.content,
+          language: article.language,
+          contentLength: article.content.length
+        }));
       }
-
-      // Prepare articles for AI processing
-      const articleData: Record<string, string> = {};
-      articles.forEach(article => {
-        articleData[article.language] = article.content;
-      });
 
       // Generate comparison using selected plan
       let comparisonResult: string;
@@ -189,10 +210,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json({
         ...savedComparison,
-        articles: articles.map(a => ({ 
+        articles: fetchedArticles.map(a => ({ 
           language: a.language, 
           title: a.title,
-          contentLength: a.content.length 
+          contentLength: a.contentLength 
         }))
       });
     } catch (error) {
