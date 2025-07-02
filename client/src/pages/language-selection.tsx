@@ -135,9 +135,14 @@ export default function LanguageSelection() {
     setUserSubscriptionStatus(subscriptionStatus);
     const isPremium = subscriptionStatus.isValid;
 
-    // If user is premium, show premium options first
+    // Premium users MUST configure their comparison settings first
     if (isPremium) {
       setShowPremiumOptions(true);
+      toast({
+        title: "Premium Settings Required",
+        description: "Please configure your premium comparison options before starting",
+        variant: "default"
+      });
       return;
     }
 
@@ -279,6 +284,10 @@ export default function LanguageSelection() {
                 <span className="ml-2 text-xs">({userSubscriptionStatus.daysRemaining} days remaining)</span>
               )}
             </p>
+            <p className="text-yellow-700 text-xs mt-1">
+              <i className="fas fa-cog mr-1"></i>
+              Click any analysis button below to configure your premium comparison settings
+            </p>
           </div>
         ) : (
           <div className="bg-blue-50 border border-blue-200 rounded p-3 mb-4">
@@ -401,7 +410,7 @@ export default function LanguageSelection() {
             ) : (
               <span>
                 <i className="fas fa-search mr-2"></i>
-                Start Academic Analysis
+                {userSubscriptionStatus.isValid ? 'Configure Premium Analysis' : 'Start Academic Analysis'}
               </span>
             )}
           </Button>
@@ -419,7 +428,7 @@ export default function LanguageSelection() {
             ) : (
               <span>
                 <i className="fas fa-smile mr-2"></i>
-                Fun Mode Analysis
+                {userSubscriptionStatus.isValid ? 'Configure Fun Analysis' : 'Fun Mode Analysis'}
               </span>
             )}
           </Button>
