@@ -257,7 +257,7 @@ export default function ComparisonResults() {
           {comparison.articles && (
             <div className="text-sm text-wiki-gray mt-2">
               Article lengths: {comparison.articles.map(a => 
-                `${getLanguageNativeName(a.language)}: ${a.contentLength.toLocaleString()} chars`
+                `${getLanguageNativeName(a.language)}: ${(a.contentLength || 0).toLocaleString()} chars`
               ).join(' • ')}
             </div>
           )}

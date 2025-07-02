@@ -85,11 +85,13 @@ export class WikipediaService {
         throw new Error(`Article "${title}" not found in ${language} Wikipedia`);
       }
 
+      const content = page.extract || '';
       return {
         pageid: page.pageid,
         title: page.title,
-        content: page.extract || '',
-        language
+        content: content,
+        language,
+        contentLength: content.length
       };
     } catch (error) {
       console.error('Wikipedia content error:', error);

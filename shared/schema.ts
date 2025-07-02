@@ -55,6 +55,7 @@ export const wikipediaArticleSchema = z.object({
   title: z.string(),
   content: z.string(),
   language: z.string(),
+  contentLength: z.number(),
 });
 
 export type WikipediaSearchResult = z.infer<typeof wikipediaSearchResultSchema>;
