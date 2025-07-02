@@ -8,22 +8,98 @@ import { getLanguageName, getLanguageNativeName } from '@/lib/languages';
 import { useToast } from '@/hooks/use-toast';
 
 
-// Simple markdown formatter function
+// Enhanced markdown formatter function
 function formatMarkdownContent(content: string) {
-  return content
-    // Replace ### headers with proper HTML
-    .replace(/^### (.+)$/gm, '<h3 class="text-lg font-semibold mb-2 text-blue-800 mt-6">$1</h3>')
-    // Replace ## headers with proper HTML  
-    .replace(/^## (.+)$/gm, '<h2 class="text-xl font-semibold mb-3 text-blue-800 mt-8 border-b border-gray-300 pb-2">$1</h2>')
-    // Replace # headers with proper HTML
-    .replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold mb-6 mt-0 text-blue-800 border-b-2 border-blue-600 pb-3">$1</h1>')
+  // Split content into lines for better processing
+  let lines = content.split('\n');
+  let result = [];
+  let inList = false;
+  
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+    
+    // Handle headers (#### ### ## #)
+    if (line.match(/^#{1,4}\s+/)) {
+      const level = line.match(/^(#{1,4})/)?.[1].length || 1;
+      const text = line.replace(/^#{1,4}\s+/, '').trim();
+      
+      switch (level) {
+        case 1:
+          result.push(`<h1 class="text-2xl font-bold mb-6 mt-0 text-blue-800 border-b-2 border-blue-600 pb-3">${text}</h1>`);
+          break;
+        case 2:
+          result.push(`<h2 class="text-xl font-semibold mb-3 text-blue-800 mt-8 border-b border-gray-300 pb-2">${text}</h2>`);
+          break;
+        case 3:
+          result.push(`<h3 class="text-lg font-semibold mb-2 text-blue-800 mt-6">${text}</h3>`);
+          break;
+        case 4:
+          result.push(`<h4 class="text-base font-semibold mb-2 text-blue-800 mt-4">${text}</h4>`);
+          break;
+      }
+      continue;
+    }
+    
+    // Handle bullet points
+    if (line.match(/^[\s]*[-*+]\s+/)) {
+      if (!inList) {
+        result.push('<ul class="list-disc pl-6 mb-4 space-y-1">');
+        inList = true;
+      }
+      const text = line.replace(/^[\s]*[-*+]\s+/, '').trim();
+      result.push(`<li class="leading-relaxed text-gray-800">${formatInlineMarkdown(text)}</li>`);
+      continue;
+    }
+    
+    // Handle numbered lists
+    if (line.match(/^[\s]*\d+\.\s+/)) {
+      if (!inList) {
+        result.push('<ol class="list-decimal pl-6 mb-4 space-y-1">');
+        inList = true;
+      }
+      const text = line.replace(/^[\s]*\d+\.\s+/, '').trim();
+      result.push(`<li class="leading-relaxed text-gray-800">${formatInlineMarkdown(text)}</li>`);
+      continue;
+    }
+    
+    // Close list if we're in one and hit non-list content
+    if (inList && !line.match(/^[\s]*[-*+\d]/)) {
+      result.push(inList ? '</ul>' : '</ol>');
+      inList = false;
+    }
+    
+    // Handle empty lines
+    if (line.trim() === '') {
+      if (!inList) {
+        result.push('');
+      }
+      continue;
+    }
+    
+    // Handle regular paragraphs
+    if (!inList) {
+      result.push(`<p class="mb-4 leading-relaxed text-gray-800">${formatInlineMarkdown(line)}</p>`);
+    }
+  }
+  
+  // Close any open list
+  if (inList) {
+    result.push('</ul>');
+  }
+  
+  return result.join('\n');
+}
+
+// Helper function for inline markdown (bold, italic, etc.)
+function formatInlineMarkdown(text: string): string {
+  return text
     // Replace **bold** text with proper HTML
     .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-blue-800">$1</strong>')
-    // Replace line breaks with proper paragraph breaks
-    .replace(/\n\n/g, '</p><p class="mb-4 leading-relaxed text-gray-800">')
-    // Wrap the whole content in a paragraph
-    .replace(/^/, '<p class="mb-4 leading-relaxed text-gray-800">')
-    .replace(/$/, '</p>');
+    // Replace *italic* text with proper HTML (but not bullet points)
+    .replace(/(?<!\*)\*([^*]+?)\*(?!\*)/g, '<em class="italic text-gray-700">$1</em>')
+    // Clean up any remaining stray markdown symbols
+    .replace(/#{5,}/g, '')
+    .replace(/^\s*[#]+\s*$/g, '');
 }
 
 export default function ComparisonResults() {
