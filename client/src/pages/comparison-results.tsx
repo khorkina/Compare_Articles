@@ -370,7 +370,7 @@ export default function ComparisonResults() {
                 className="bg-black hover:bg-gray-800 text-white w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
                 title="Share on X"
               >
-                <i className="fab fa-x-twitter text-xl group-hover:animate-pulse"></i>
+                <span className="text-2xl font-bold group-hover:animate-pulse">𝕏</span>
               </Button>
               <span className="text-xs text-gray-600 font-medium">X</span>
             </div>
