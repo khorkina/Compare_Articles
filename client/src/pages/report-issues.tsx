@@ -5,9 +5,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { AlertTriangle, Bug, Zap, FileText, Mail, Info } from "lucide-react";
-import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AlertTriangle, Bug, Zap, FileText, Mail, Info, ArrowLeft, Monitor, Smartphone, Copy, ExternalLink } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "wouter";
 
 export default function ReportIssuesPage() {
   const [formData, setFormData] = useState({
@@ -23,7 +27,33 @@ export default function ReportIssuesPage() {
     os: '',
     includeData: false
   });
+  const [activeTab, setActiveTab] = useState("report");
+  const [systemInfo, setSystemInfo] = useState<any>(null);
   const { toast } = useToast();
+
+  // Auto-detect system information on mount
+  useEffect(() => {
+    const info = {
+      userAgent: navigator.userAgent,
+      platform: navigator.platform,
+      language: navigator.language,
+      cookieEnabled: navigator.cookieEnabled,
+      onLine: navigator.onLine,
+      screenResolution: `${screen.width}x${screen.height}`,
+      viewport: `${window.innerWidth}x${window.innerHeight}`,
+      colorDepth: screen.colorDepth,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      timestamp: new Date().toISOString()
+    };
+    setSystemInfo(info);
+    
+    // Auto-fill browser and OS
+    setFormData(prev => ({
+      ...prev,
+      browser: detectBrowser(),
+      os: detectOS()
+    }));
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -121,15 +151,59 @@ User has consented to include local data for debugging purposes.
     return 'Other';
   };
 
+  const copySystemInfo = () => {
+    if (systemInfo) {
+      navigator.clipboard.writeText(JSON.stringify(systemInfo, null, 2));
+      toast({
+        title: "System Info Copied",
+        description: "System information has been copied to your clipboard",
+      });
+    }
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="space-y-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Report Issues
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Desktop Header */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Wiki Truth
+                </Link>
+              </Button>
+              <Separator orientation="vertical" className="h-6" />
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Issue Reporter</h1>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                <Bug className="h-3 w-3 mr-1" />
+                Bug Tracker
+              </Badge>
+              {systemInfo && (
+                <Button variant="outline" size="sm" onClick={copySystemInfo}>
+                  <Copy className="h-4 w-4 mr-2" />
+                  Copy System Info
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-6 py-8 max-w-7xl">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 bg-red-100 dark:bg-red-900/30 px-3 py-1 rounded-full text-sm text-red-700 dark:text-red-300 mb-4">
+            <AlertTriangle className="h-4 w-4" />
+            Issue Reporting
+          </div>
+          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Help us improve Wiki Truth
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
-            Help us improve Wiki Truth by reporting bugs and issues
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Report bugs, performance issues, or suggest improvements. Your feedback helps us build a better experience for everyone.
           </p>
         </div>
 

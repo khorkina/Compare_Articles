@@ -4,9 +4,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Mail, MessageSquare, Globe, Shield, HelpCircle } from "lucide-react";
-import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Mail, MessageSquare, Globe, Shield, HelpCircle, ArrowLeft, Copy, ExternalLink, Clock, Users, Zap } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "wouter";
 
 export default function ContactUsPage() {
   const [formData, setFormData] = useState({
@@ -16,7 +19,36 @@ export default function ContactUsPage() {
     category: '',
     message: ''
   });
+  const [isFormValid, setIsFormValid] = useState(false);
   const { toast } = useToast();
+
+  // Auto-validation and keyboard shortcuts
+  useEffect(() => {
+    const isValid = formData.name && formData.email && formData.subject && formData.category && formData.message;
+    setIsFormValid(Boolean(isValid));
+
+    // Keyboard shortcuts for desktop
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+Enter to submit form
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && isValid) {
+        e.preventDefault();
+        handleSubmit(e as any);
+      }
+      // Escape to clear form
+      if (e.key === 'Escape') {
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          category: '',
+          message: ''
+        });
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [formData, isFormValid]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,15 +71,52 @@ export default function ContactUsPage() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const copyEmailToClipboard = (email: string) => {
+    navigator.clipboard.writeText(email);
+    toast({
+      title: "Email Copied",
+      description: `${email} has been copied to your clipboard`,
+    });
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="space-y-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Contact Us
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Desktop Header with Navigation */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Wiki Truth
+                </Link>
+              </Button>
+              <Separator orientation="vertical" className="h-6" />
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Contact & Support</h1>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                <Clock className="h-3 w-3 mr-1" />
+                24-48h Response
+              </Badge>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-6 py-8 max-w-7xl">
+        {/* Hero Section */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 px-3 py-1 rounded-full text-sm text-blue-700 dark:text-blue-300 mb-4">
+            <MessageSquare className="h-4 w-4" />
+            Support Center
+          </div>
+          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            How can we help you?
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
-            We'd love to hear from you. Get in touch with our team.
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Get technical support, report issues, or share feedback. Our team is here to help you get the most out of Wiki Truth.
           </p>
         </div>
 
@@ -126,10 +195,31 @@ export default function ContactUsPage() {
                   />
                 </div>
 
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" disabled={!isFormValid}>
                   <Mail className="mr-2 h-4 w-4" />
                   Send Message
+                  <kbd className="ml-auto hidden lg:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                    <span className="text-xs">⌘</span>↵
+                  </kbd>
                 </Button>
+
+                <div className="mt-2 text-center">
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => setFormData({
+                      name: '',
+                      email: '',
+                      subject: '',
+                      category: '',
+                      message: ''
+                    })}
+                    className="text-xs text-gray-500"
+                  >
+                    Clear Form <kbd className="ml-1 font-mono text-[10px]">ESC</kbd>
+                  </Button>
+                </div>
               </form>
 
               <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
@@ -151,10 +241,13 @@ export default function ContactUsPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div>
-                  <h4 className="font-medium">General Support</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">support@wikitruth.app</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Response within 24-48 hours</p>
+                <div className="group cursor-pointer" onClick={() => copyEmailToClipboard('support@wikitruth.app')}>
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium">General Support</h4>
+                    <Copy className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 group-hover:text-blue-600">support@wikitruth.app</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Response within 24-48 hours • Click to copy</p>
                 </div>
                 <div>
                   <h4 className="font-medium">Technical Issues</h4>
