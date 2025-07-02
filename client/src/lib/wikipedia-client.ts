@@ -19,8 +19,8 @@ export interface WikipediaArticle {
 
 class WikipediaClient {
   private getCorsProxyUrl(url: string): string {
-    // Use a CORS proxy to bypass browser CORS restrictions
-    return `https://corsproxy.io/?${encodeURIComponent(url)}`;
+    // Use AllOrigins as a more reliable CORS proxy
+    return `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
   }
 
   private getApiUrl(language: string): string {

@@ -53,8 +53,13 @@ export interface SearchSession {
 export const api = {
   async searchArticles(query: string, language: string = 'en', limit: number = 10): Promise<SearchResult[]> {
     try {
-      const results = await wikipediaClient.searchArticles(query, language, limit);
-      return results.map(result => ({
+      // Use server endpoint to avoid CORS issues
+      const response = await fetch(`/api/wikipedia/search?query=${encodeURIComponent(query)}&language=${language}&limit=${limit}`);
+      if (!response.ok) {
+        throw new Error(`Search failed: ${response.status}`);
+      }
+      const results = await response.json();
+      return results.map((result: any) => ({
         title: result.title,
         snippet: result.snippet,
         pageid: result.pageid
@@ -67,8 +72,13 @@ export const api = {
 
   async getLanguageLinks(title: string, language: string = 'en'): Promise<LanguageLink[]> {
     try {
-      const links = await wikipediaClient.getLanguageLinks(title, language);
-      return links.map(link => ({
+      // Use server endpoint to avoid CORS issues
+      const response = await fetch(`/api/wikipedia/languages?title=${encodeURIComponent(title)}&language=${language}`);
+      if (!response.ok) {
+        throw new Error(`Language links failed: ${response.status}`);
+      }
+      const links = await response.json();
+      return links.map((link: any) => ({
         lang: link.lang,
         title: link.title,
         url: link.url
@@ -117,22 +127,21 @@ export const api = {
   async compareArticles(comparisonData: ComparisonRequest): Promise<ComparisonResult> {
     try {
       console.log('Starting comparison with data:', comparisonData);
-      
-      // Test Wikipedia connection first
-      const connectionOk = await simpleWikipedia.testConnection();
-      if (!connectionOk) {
-        throw new Error('Cannot connect to Wikipedia API');
-      }
 
-      // Fetch articles using simple client
+      // Fetch articles using server endpoints to avoid CORS issues
       const articles = [];
       console.log('Fetching articles for languages:', comparisonData.languageTitles);
       
       for (const [language, title] of Object.entries(comparisonData.languageTitles)) {
         try {
-          const article = await simpleWikipedia.fetchArticle(title, language);
+          // Use server endpoint to avoid CORS issues
+          const response = await fetch(`/api/wikipedia/article?title=${encodeURIComponent(title)}&language=${language}`);
+          if (!response.ok) {
+            throw new Error(`Article fetch failed: ${response.status}`);
+          }
+          const article = await response.json();
           articles.push(article);
-          console.log(`✓ Fetched ${language}: ${article.title} (${article.contentLength} chars)`);
+          console.log(`✓ Fetched ${language}: ${article.title} (${article.content.length} chars)`);
         } catch (error) {
           console.error(`✗ Failed to fetch ${language}: ${title}`, error);
         }

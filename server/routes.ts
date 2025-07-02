@@ -54,6 +54,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get article content
+  app.get("/api/wikipedia/article", async (req, res) => {
+    try {
+      const { title, language = 'en' } = req.query;
+      
+      if (!title || typeof title !== 'string') {
+        return res.status(400).json({ error: "Title parameter is required" });
+      }
+
+      const article = await wikipediaService.getArticleContent(
+        title,
+        language as string
+      );
+      
+      res.json(article);
+    } catch (error) {
+      console.error('Article content error:', error);
+      res.status(500).json({ error: "Failed to fetch article content" });
+    }
+  });
+
   // Create search session
   app.post("/api/sessions", async (req, res) => {
     try {
