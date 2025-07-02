@@ -15,13 +15,11 @@ export function useWikipediaSearch(language: string = 'en') {
     return () => clearTimeout(timer);
   }, [query]);
 
-  // Search query
-  const searchQuery = useQuery({
-    queryKey: ['/api/wikipedia/search', debouncedQuery, language],
-    queryFn: () => api.searchArticles(debouncedQuery, language, 10),
-    enabled: debouncedQuery.length >= 2,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+  // Reset search when language changes
+  useEffect(() => {
+    setQuery('');
+    setDebouncedQuery('');
+  }, [language]);
 
   const search = useCallback((searchTerm: string) => {
     setQuery(searchTerm);
@@ -31,6 +29,14 @@ export function useWikipediaSearch(language: string = 'en') {
     setQuery('');
     setDebouncedQuery('');
   }, []);
+
+  // Search query
+  const searchQuery = useQuery({
+    queryKey: ['/api/wikipedia/search', debouncedQuery, language],
+    queryFn: () => api.searchArticles(debouncedQuery, language, 10),
+    enabled: debouncedQuery.length >= 2,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
   return {
     query,

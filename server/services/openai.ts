@@ -55,7 +55,7 @@ export class OpenAIService {
       ? this.getFunnyModeSystemPrompt(outputLanguage)
       : this.getStandardSystemPrompt(outputLanguage);
     
-    const userPrompt = `Please analyze and compare these Wikipedia articles about the same topic across different languages:
+    const userPrompt = `Please analyze and compare these Wikipedia articles about the same topic across different languages. Write your ENTIRE response in ${outputLanguage} language only.
 
 ${articleData}
 
@@ -69,7 +69,9 @@ Please provide a comprehensive comparison focusing on:
 ${isFunnyMode 
   ? 'Make this comparison humorous, sarcastic, and entertaining while still being informative. Point out absurd differences and cultural quirks in a witty way.'
   : 'Provide a scholarly, detailed analysis that would be suitable for academic or research purposes.'
-}`;
+}
+
+IMPORTANT: Write your response ONLY in ${outputLanguage}. Do not use any other language.`;
 
     try {
       const response = await openai.chat.completions.create({
@@ -111,11 +113,13 @@ ${isFunnyMode
   private getStandardSystemPrompt(outputLanguage: string): string {
     return `You are an expert comparative linguist and cultural analyst specializing in Wikipedia content analysis. Your task is to provide detailed, scholarly comparisons of the same Wikipedia article across different languages.
 
+CRITICAL REQUIREMENT: You MUST write your entire response in ${outputLanguage} and ONLY in ${outputLanguage}. Do not use any other language regardless of the content of the input articles.
+
 Your analysis should be:
 - Objective and academically rigorous
 - Focused on factual differences, cultural perspectives, and narrative variations
 - Well-structured with clear sections
-- Written in ${outputLanguage}
+- Written EXCLUSIVELY in ${outputLanguage} (never mix languages)
 - Comprehensive and detailed
 
 Identify specific examples where different language versions:
@@ -125,16 +129,20 @@ Identify specific examples where different language versions:
 - Include or exclude certain information
 - Frame topics differently
 
-Provide specific quotes and examples to support your analysis.`;
+When quoting text from articles in other languages, always translate the quotes to ${outputLanguage} and indicate the original language in parentheses.
+
+REMINDER: Your entire response must be in ${outputLanguage} only.`;
   }
 
   private getFunnyModeSystemPrompt(outputLanguage: string): string {
     return `You are a witty, sarcastic cultural commentator with a PhD in "Wikipedia Weirdness Studies." Your job is to hilariously roast the differences between Wikipedia articles across languages while still being informative.
 
+CRITICAL REQUIREMENT: You MUST write your entire response in ${outputLanguage} and ONLY in ${outputLanguage}. Do not use any other language regardless of the content of the input articles.
+
 Your tone should be:
 - Sarcastic and humorous but not mean-spirited
 - Entertaining and engaging
-- Written in ${outputLanguage}
+- Written EXCLUSIVELY in ${outputLanguage} (never mix languages)
 - Like a comedy writer who happens to be really smart about cultural differences
 
 Point out:
@@ -144,7 +152,11 @@ Point out:
 - Cultural stereotypes reflected in the content
 - Funny ways different cultures frame the same facts
 
-Use humor, pop culture references, and witty observations while still providing genuine insights into cultural differences.`;
+When referencing text from articles in other languages, always translate it to ${outputLanguage} and indicate the original language in parentheses.
+
+Use humor, pop culture references, and witty observations while still providing genuine insights into cultural differences.
+
+REMINDER: Your entire response must be in ${outputLanguage} only.`;
   }
 }
 

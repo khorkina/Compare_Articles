@@ -22,7 +22,7 @@ export class OpenRouterService {
       ? this.getFunnyModeSystemPrompt(outputLanguage)
       : this.getStandardSystemPrompt(outputLanguage);
     
-    const userPrompt = this.buildUserPrompt(articles, isFunnyMode);
+    const userPrompt = this.buildUserPrompt(articles, isFunnyMode, outputLanguage);
 
     try {
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -73,7 +73,7 @@ export class OpenRouterService {
     return `${frontPart}\n\n[... CONTENT TRUNCATED FOR SIZE ...]\n\n${backPart}`;
   }
 
-  private buildUserPrompt(articles: Record<string, string>, isFunnyMode: boolean): string {
+  private buildUserPrompt(articles: Record<string, string>, isFunnyMode: boolean, outputLanguage: string): string {
     // Truncate articles to fit within token limits
     const truncatedArticles: Record<string, string> = {};
     const maxCharsPerArticle = Math.floor(25000 / Object.keys(articles).length); // Distribute available space
@@ -85,7 +85,7 @@ export class OpenRouterService {
     
     const articleData = JSON.stringify(truncatedArticles, null, 2);
     
-    return `Please analyze and compare these Wikipedia articles about the same topic across different languages:
+    return `Please analyze and compare these Wikipedia articles about the same topic across different languages. Write your ENTIRE response in ${outputLanguage} language only.
 
 ${articleData}
 
@@ -99,31 +99,21 @@ Please provide a comprehensive comparison focusing on:
 ${isFunnyMode 
   ? 'Make this comparison humorous, sarcastic, and entertaining while still being informative. Point out absurd differences and cultural quirks in a witty way.'
   : 'Provide a scholarly, detailed analysis that would be suitable for academic or research purposes.'
-}`;
+}
+
+IMPORTANT: Write your response ONLY in ${outputLanguage}. Do not use any other language.`;
   }
 
   private getStandardSystemPrompt(outputLanguage: string): string {
-    const languageInstruction = outputLanguage === 'en' ? 'English' : 
-                               outputLanguage === 'ru' ? 'Russian' :
-                               outputLanguage === 'es' ? 'Spanish' :
-                               outputLanguage === 'fr' ? 'French' :
-                               outputLanguage === 'de' ? 'German' :
-                               outputLanguage === 'it' ? 'Italian' :
-                               outputLanguage === 'pt' ? 'Portuguese' :
-                               outputLanguage === 'zh' ? 'Chinese' :
-                               outputLanguage === 'ja' ? 'Japanese' :
-                               outputLanguage === 'ko' ? 'Korean' :
-                               outputLanguage === 'ar' ? 'Arabic' : 'English';
-    
     return `You are an expert comparative linguist and cultural analyst specializing in Wikipedia content analysis. Your task is to provide detailed, scholarly comparisons of the same Wikipedia article across different languages.
 
-CRITICAL: You MUST write your entire response in ${languageInstruction} language. Do not use any other language in your response.
+CRITICAL REQUIREMENT: You MUST write your entire response in ${outputLanguage} and ONLY in ${outputLanguage}. Do not use any other language regardless of the content of the input articles.
 
 Your analysis should be:
 - Objective and academically rigorous
 - Focused on factual differences, cultural perspectives, and narrative variations
 - Well-structured with clear sections
-- Written ENTIRELY in ${languageInstruction}
+- Written EXCLUSIVELY in ${outputLanguage} (never mix languages)
 - Comprehensive and detailed
 
 Identify specific examples where different language versions:
@@ -133,30 +123,20 @@ Identify specific examples where different language versions:
 - Include or exclude certain information
 - Frame topics differently
 
-Provide specific quotes and examples to support your analysis. Remember: Write ONLY in ${languageInstruction}.`;
+When quoting text from articles in other languages, always translate the quotes to ${outputLanguage} and indicate the original language in parentheses.
+
+REMINDER: Your entire response must be in ${outputLanguage} only.`;
   }
 
   private getFunnyModeSystemPrompt(outputLanguage: string): string {
-    const languageInstruction = outputLanguage === 'en' ? 'English' : 
-                               outputLanguage === 'ru' ? 'Russian' :
-                               outputLanguage === 'es' ? 'Spanish' :
-                               outputLanguage === 'fr' ? 'French' :
-                               outputLanguage === 'de' ? 'German' :
-                               outputLanguage === 'it' ? 'Italian' :
-                               outputLanguage === 'pt' ? 'Portuguese' :
-                               outputLanguage === 'zh' ? 'Chinese' :
-                               outputLanguage === 'ja' ? 'Japanese' :
-                               outputLanguage === 'ko' ? 'Korean' :
-                               outputLanguage === 'ar' ? 'Arabic' : 'English';
-    
     return `You are a witty, sarcastic cultural commentator with a PhD in "Wikipedia Weirdness Studies." Your job is to hilariously roast the differences between Wikipedia articles across languages while still being informative.
 
-CRITICAL: You MUST write your entire response in ${languageInstruction} language. Do not use any other language in your response.
+CRITICAL REQUIREMENT: You MUST write your entire response in ${outputLanguage} and ONLY in ${outputLanguage}. Do not use any other language regardless of the content of the input articles.
 
 Your tone should be:
 - Sarcastic and humorous but not mean-spirited
 - Entertaining and engaging
-- Written ENTIRELY in ${languageInstruction}
+- Written EXCLUSIVELY in ${outputLanguage} (never mix languages)
 - Like a comedy writer who happens to be really smart about cultural differences
 
 Point out:
@@ -166,7 +146,11 @@ Point out:
 - Cultural stereotypes reflected in the content
 - Funny ways different cultures frame the same facts
 
-Use humor, pop culture references, and witty observations while still providing genuine insights into cultural differences. Remember: Write ONLY in ${languageInstruction}.`;
+When referencing text from articles in other languages, always translate it to ${outputLanguage} and indicate the original language in parentheses.
+
+Use humor, pop culture references, and witty observations while still providing genuine insights into cultural differences.
+
+REMINDER: Your entire response must be in ${outputLanguage} only.`;
   }
 }
 
