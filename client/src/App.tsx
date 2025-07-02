@@ -9,6 +9,15 @@ import { Sidebar } from "@/components/sidebar";
 import { Footer } from "@/components/footer";
 import { clientStorage } from "@/lib/storage";
 import Home from "@/pages/home";
+import MainPage from "@/pages/main";
+import SearchPage from "@/pages/search";
+import ComparePage from "@/pages/compare";
+import ToolsPage from "@/pages/tools";
+import RecentComparisonsPage from "@/pages/recent-comparisons";
+import HelpPage from "@/pages/help";
+import AboutPage from "@/pages/about";
+import HowItWorksPage from "@/pages/how-it-works";
+import PrivacyPage from "@/pages/privacy";
 import LanguageSelection from "@/pages/language-selection";
 import ComparisonResults from "@/pages/comparison-results";
 import ThankYou from "@/pages/thank-you";
@@ -18,6 +27,15 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/main" component={MainPage} />
+      <Route path="/search" component={SearchPage} />
+      <Route path="/compare" component={ComparePage} />
+      <Route path="/tools" component={ToolsPage} />
+      <Route path="/recent" component={RecentComparisonsPage} />
+      <Route path="/help" component={HelpPage} />
+      <Route path="/about" component={AboutPage} />
+      <Route path="/how-it-works" component={HowItWorksPage} />
+      <Route path="/privacy" component={PrivacyPage} />
       <Route path="/select-languages" component={LanguageSelection} />
       <Route path="/results/:id" component={ComparisonResults} />
       <Route path="/thank-you" component={ThankYou} />

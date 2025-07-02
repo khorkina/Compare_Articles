@@ -16,9 +16,10 @@ export function Navbar() {
           </div>
           <nav className="flex items-center space-x-4">
             <div className="hidden md:flex items-center space-x-6">
+              <Link href="/search" className="wiki-link text-sm">Search</Link>
+              <Link href="/recent" className="wiki-link text-sm">History</Link>
+              <Link href="/help" className="wiki-link text-sm">Help</Link>
               <Link href="/about" className="wiki-link text-sm">About</Link>
-              <Link href="/how-it-works" className="wiki-link text-sm">How it works</Link>
-              <Link href="/privacy" className="wiki-link text-sm">Privacy</Link>
             </div>
             <SettingsDialog />
           </nav>

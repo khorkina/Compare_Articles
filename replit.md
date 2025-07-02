@@ -103,6 +103,10 @@ Wiki Truth is a completely free web application that enables users to compare Wi
 ## Changelog
 
 ### Recent Changes
+- January 2, 2025: **COMPLETED** - Complete navigation system with all missing pages added
+- January 2, 2025: **COMPLETED** - Fixed large article truncation for AI token limit compliance  
+- January 2, 2025: **COMPLETED** - Fixed output language selection and button loading states
+- January 2, 2025: **COMPLETED** - Added clipboard copy functionality for comparison results
 - January 2, 2025: **COMPLETED** - Complete removal of subscription system and premium features
 - January 2, 2025: **COMPLETED** - Migration from OpenAI API to OpenRouter.ai API for free service
 - January 2, 2025: **COMPLETED** - Updated all UI components to reflect free service availability
