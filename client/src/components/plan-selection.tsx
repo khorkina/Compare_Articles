@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { CheckCircle, Sparkles, Globe, BookOpen, Zap, FileText, Shield } from "lucide-react";
 import { clientStorage } from "@/lib/storage";
 import { useToast } from "@/hooks/use-toast";
+import { PrivacyPolicyDialog } from "@/components/privacy-policy-dialog";
 
 interface PlanSelectionProps {
   onPlanSelected: (isPremium: boolean) => void;
@@ -17,6 +18,7 @@ interface PlanSelectionProps {
 export function PlanSelection({ onPlanSelected, selectedLanguages, articleTitle }: PlanSelectionProps) {
   const [isPolicyAccepted, setIsPolicyAccepted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPrivacyDialog, setShowPrivacyDialog] = useState(false);
   const { toast } = useToast();
 
   const handleFreePlan = () => {
@@ -24,15 +26,12 @@ export function PlanSelection({ onPlanSelected, selectedLanguages, articleTitle 
   };
 
   const handlePremiumPlan = async () => {
-    if (!isPolicyAccepted) {
-      toast({
-        title: "Policy Acceptance Required",
-        description: "Please read and accept the subscription terms and policy.",
-        variant: "destructive",
-      });
-      return;
-    }
+    // Show privacy policy dialog first
+    setShowPrivacyDialog(true);
+  };
 
+  const handlePrivacyAccept = async () => {
+    // User accepted privacy policy, proceed with payment
     setIsLoading(true);
     
     // Redirect to demo payment page (simulating Smart Glocal payment)
@@ -259,6 +258,13 @@ export function PlanSelection({ onPlanSelected, selectedLanguages, articleTitle 
           <span>Both plans include text export and sharing features</span>
         </div>
       </div>
+
+      {/* Privacy Policy Dialog */}
+      <PrivacyPolicyDialog
+        isOpen={showPrivacyDialog}
+        onClose={() => setShowPrivacyDialog(false)}
+        onAccept={handlePrivacyAccept}
+      />
     </div>
   );
 }

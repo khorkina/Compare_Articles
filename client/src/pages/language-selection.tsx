@@ -20,6 +20,18 @@ export default function LanguageSelection() {
   
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([language]);
   const [outputLanguage, setOutputLanguage] = useState('en');
+  
+  // Set output language based on user's browser language preference on component mount
+  useEffect(() => {
+    const getUserLanguage = () => {
+      const browserLang = navigator.language.split('-')[0];
+      // Check if browser language is supported, otherwise default to English
+      const supportedLang = SUPPORTED_LANGUAGES.find(lang => lang.code === browserLang);
+      return supportedLang ? browserLang : 'en';
+    };
+    
+    setOutputLanguage(getUserLanguage());
+  }, []);
   const [currentMode, setCurrentMode] = useState<'academic' | 'funny' | null>(null);
   const [showPlanSelection, setShowPlanSelection] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<'free' | 'premium' | null>(null);
