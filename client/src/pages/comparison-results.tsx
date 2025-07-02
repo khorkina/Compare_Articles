@@ -127,7 +127,7 @@ export default function ComparisonResults() {
               {comparison.isPremium && (
                 <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">
                   <Crown className="h-3 w-3 mr-1" />
-                  Premium Analysis
+                  Premium
                 </Badge>
               )}
               {comparison.isFunnyMode && (

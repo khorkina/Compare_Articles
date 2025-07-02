@@ -23,6 +23,16 @@ export default function LanguageSelection() {
   const [currentMode, setCurrentMode] = useState<'academic' | 'funny' | null>(null);
   const [showPlanSelection, setShowPlanSelection] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<'free' | 'premium' | null>(null);
+  const [userSubscriptionStatus, setUserSubscriptionStatus] = useState<{ isValid: boolean; daysRemaining?: number }>({ isValid: false });
+
+  // Check subscription status on page load
+  useEffect(() => {
+    const checkSubscription = async () => {
+      const status = await clientStorage.checkSubscriptionStatus();
+      setUserSubscriptionStatus(status);
+    };
+    checkSubscription();
+  }, []);
 
   // Fetch available language links
   const languageLinksQuery = useQuery({
@@ -105,8 +115,9 @@ export default function LanguageSelection() {
       return;
     }
 
-    // Check if user has premium subscription
+    // Use stored subscription status (refresh it to be sure)
     const subscriptionStatus = await clientStorage.checkSubscriptionStatus();
+    setUserSubscriptionStatus(subscriptionStatus);
     const isPremium = subscriptionStatus.isValid;
 
     // Store the mode and start comparison directly
@@ -174,23 +185,35 @@ export default function LanguageSelection() {
         </p>
         
         {/* Service Notice */}
-        <div className="bg-blue-50 border border-blue-200 rounded p-3 mb-4">
-          <div className="flex items-center justify-between">
-            <p className="text-blue-800 text-sm">
-              <i className="fas fa-check-circle mr-2"></i>
-              <strong>Free Analysis:</strong> Unlimited comparisons with AI
+        {userSubscriptionStatus.isValid ? (
+          <div className="bg-yellow-50 border border-yellow-200 rounded p-3 mb-4">
+            <p className="text-yellow-800 text-sm">
+              <i className="fas fa-crown mr-2"></i>
+              <strong>Premium Plan Active:</strong> Advanced AI analysis with full article processing 
+              {userSubscriptionStatus.daysRemaining && (
+                <span className="ml-2 text-xs">({userSubscriptionStatus.daysRemaining} days remaining)</span>
+              )}
             </p>
-            <Button 
-              onClick={handleUpgradeToPremium}
-              size="sm"
-              variant="outline"
-              className="ml-4 text-xs"
-            >
-              <i className="fas fa-crown mr-1"></i>
-              Upgrade to Premium
-            </Button>
           </div>
-        </div>
+        ) : (
+          <div className="bg-blue-50 border border-blue-200 rounded p-3 mb-4">
+            <div className="flex items-center justify-between">
+              <p className="text-blue-800 text-sm">
+                <i className="fas fa-check-circle mr-2"></i>
+                <strong>Free Analysis:</strong> Unlimited comparisons with AI
+              </p>
+              <Button 
+                onClick={handleUpgradeToPremium}
+                size="sm"
+                variant="outline"
+                className="ml-4 text-xs"
+              >
+                <i className="fas fa-crown mr-1"></i>
+                Upgrade to Premium
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Language Selection Section */}

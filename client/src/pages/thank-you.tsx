@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { CheckCircle, ArrowRight, Sparkles, Globe, Crown, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { clientStorage } from '@/lib/storage';
 import { useToast } from '@/hooks/use-toast';
@@ -48,15 +47,15 @@ export default function ThankYou() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
-      {showConfetti && (
-        <div className="fixed inset-0 pointer-events-none">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-200/20 to-transparent animate-pulse"></div>
-        </div>
-      )}
-      
-      <Card className="w-full max-w-2xl shadow-xl border-0 bg-white/90 backdrop-blur">
-        <CardContent className="p-12 text-center">
+    <main className="lg:col-span-3">
+      <div className="wiki-content-section">
+        {showConfetti && (
+          <div className="fixed inset-0 pointer-events-none z-10">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-200/20 to-transparent animate-pulse"></div>
+          </div>
+        )}
+        
+        <div className="text-center py-8">
           <div className="flex justify-center mb-6">
             <div className="relative">
               <CheckCircle className="h-20 w-20 text-green-500" />
@@ -91,7 +90,7 @@ export default function ThankYou() {
                   </h2>
                 </div>
                 <div className="space-y-2 text-yellow-700">
-                  <p>⭐ OpenAI GPT-4o advanced analysis</p>
+                  <p>⭐ Advanced AI analysis</p>
                   <p>⭐ Full Wikipedia articles (no size limits)</p>
                   <p>⭐ Enhanced document processing</p>
                   <p>⭐ Priority processing speed</p>
@@ -118,7 +117,7 @@ export default function ThankYou() {
                   </h2>
                 </div>
                 <div className="space-y-2 text-green-700">
-                  <p>✅ Meta Llama AI analysis</p>
+                  <p>✅ AI-powered analysis</p>
                   <p>✅ Multi-language comparisons</p>
                   <p>✅ Academic and fun mode</p>
                   <p>✅ No registration required</p>
@@ -146,8 +145,8 @@ export default function ThankYou() {
           <p className="text-sm text-gray-500 mt-8">
             All your data stays in your browser. We respect your privacy.
           </p>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </div>
+    </main>
   );
 }

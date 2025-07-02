@@ -119,7 +119,7 @@ export function PlanSelection({ onPlanSelected, selectedLanguages, articleTitle 
               <Badge variant="secondary">Always Free</Badge>
             </div>
             <CardDescription>
-              Basic Wikipedia comparison powered by Meta Llama AI
+              Basic Wikipedia comparison with AI analysis
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -176,7 +176,7 @@ export function PlanSelection({ onPlanSelected, selectedLanguages, articleTitle 
               <Badge variant="default" className="bg-yellow-100 text-yellow-800">Recommended</Badge>
             </div>
             <CardDescription>
-              Advanced analysis powered by OpenAI GPT-4o with full article processing
+              Advanced AI analysis with full article processing and enhanced insights
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -185,7 +185,7 @@ export function PlanSelection({ onPlanSelected, selectedLanguages, articleTitle 
             <ul className="space-y-2">
               <li className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4 text-green-600" />
-                <span className="text-sm font-medium">OpenAI GPT-4o analysis</span>
+                <span className="text-sm font-medium">Advanced AI analysis</span>
               </li>
               <li className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4 text-green-600" />

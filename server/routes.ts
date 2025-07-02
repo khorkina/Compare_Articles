@@ -157,17 +157,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         articleData[article.language] = article.content;
       });
 
-      // Generate comparison using selected plan (Premium = OpenAI, Free = OpenRouter)
+      // Generate comparison using selected plan
       let comparisonResult: string;
       if (isPremium) {
-        console.log('Using OpenAI GPT-4o for premium comparison');
+        console.log('Using premium AI service for enhanced analysis');
         comparisonResult = await openaiService.compareArticles({
           articles: articleData,
           outputLanguage,
           isFunnyMode
         });
       } else {
-        console.log('Using OpenRouter Meta Llama for free comparison');
+        console.log('Using free AI service for standard analysis');
         comparisonResult = await openRouterService.compareArticles({
           articles: articleData,
           outputLanguage,

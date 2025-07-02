@@ -104,17 +104,18 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 ## Changelog
 
 ### Recent Changes
+- January 2, 2025: **COMPLETED** - Streamlined subscription flow without interrupting user comparisons
+- January 2, 2025: **COMPLETED** - Removed all AI model mentions from user interface (privacy-focused design)
+- January 2, 2025: **COMPLETED** - Fixed subscription status detection after premium upgrade
+- January 2, 2025: **COMPLETED** - Implemented demo Smart Glocal payment simulation (3-second redirect)
+- January 2, 2025: **COMPLETED** - Auto-start comparisons based on current subscription status
+- January 2, 2025: **COMPLETED** - Optional upgrade button that doesn't disrupt user workflow
 - January 2, 2025: **COMPLETED** - Premium subscription system with Smart Glocal payment integration ($5/month)
-- January 2, 2025: **COMPLETED** - Freemium model: Free Meta Llama vs Premium OpenAI GPT-4o analysis
+- January 2, 2025: **COMPLETED** - Freemium model: Free OpenRouter vs Premium OpenAI analysis (hidden from users)
 - January 2, 2025: **COMPLETED** - Browser-based subscription validation with 30-day expiration tracking
 - January 2, 2025: **COMPLETED** - Policy acceptance dialog with subscription terms and conditions
 - January 2, 2025: **COMPLETED** - Plan selection interface with feature comparison
 - January 2, 2025: **COMPLETED** - Subscription status component in settings with upgrade options
-- January 2, 2025: **COMPLETED** - Comparison results badges showing which AI model was used
-- January 2, 2025: **COMPLETED** - Complete navigation system with all missing pages added
-- January 2, 2025: **COMPLETED** - Fixed large article truncation for AI token limit compliance
-- January 2, 2025: **COMPLETED** - Fixed output language selection and button loading states
-- January 2, 2025: **COMPLETED** - Added clipboard copy functionality for comparison results
 - December 30, 2024: **COMPLETED** - Subscription system implementation with Smart Glocal payment integration
 - December 30, 2024: **COMPLETED** - Premium subscription model ($1/month) replacing API key requirements
 - December 30, 2024: **COMPLETED** - Subscription validation and 30-day expiration tracking

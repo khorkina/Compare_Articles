@@ -30,9 +30,11 @@ export function SubscriptionStatus() {
   };
 
   const handleUpgrade = () => {
-    // Redirect to Smart Glocal payment (hardcoded demo URL)
-    window.location.href = "https://payments.smartglocal.com/pay/demo-5-usd-monthly?return_url=" + 
-      encodeURIComponent(window.location.origin + "/thank-you?premium=true");
+    // Simulate Smart Glocal payment demo (3 second delay)
+    const returnUrl = encodeURIComponent(window.location.origin + "/thank-you?premium=true");
+    setTimeout(() => {
+      window.location.href = window.location.origin + "/thank-you?premium=true";
+    }, 3000);
   };
 
   if (isLoading) {
@@ -86,7 +88,7 @@ export function SubscriptionStatus() {
         {subscriptionStatus.isValid ? (
           <>
             <CardDescription className="mb-4">
-              You have access to premium features including OpenAI GPT-4o analysis and unlimited article processing.
+              You have access to premium features including advanced AI analysis and unlimited article processing.
             </CardDescription>
             
             <div className="flex items-center gap-2 mb-4">
@@ -110,7 +112,7 @@ export function SubscriptionStatus() {
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2 text-green-600">
                 <Sparkles className="h-3 w-3" />
-                <span>OpenAI GPT-4o analysis</span>
+                <span>Advanced AI analysis</span>
               </div>
               <div className="flex items-center gap-2 text-green-600">
                 <Sparkles className="h-3 w-3" />
