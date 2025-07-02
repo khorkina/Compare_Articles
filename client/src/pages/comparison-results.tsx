@@ -7,6 +7,25 @@ import { api } from '@/lib/api';
 import { getLanguageName, getLanguageNativeName } from '@/lib/languages';
 import { useToast } from '@/hooks/use-toast';
 
+
+// Simple markdown formatter function
+function formatMarkdownContent(content: string) {
+  return content
+    // Replace ### headers with proper HTML
+    .replace(/^### (.+)$/gm, '<h3 class="text-lg font-semibold mb-2 text-blue-800 mt-6">$1</h3>')
+    // Replace ## headers with proper HTML  
+    .replace(/^## (.+)$/gm, '<h2 class="text-xl font-semibold mb-3 text-blue-800 mt-8 border-b border-gray-300 pb-2">$1</h2>')
+    // Replace # headers with proper HTML
+    .replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold mb-6 mt-0 text-blue-800 border-b-2 border-blue-600 pb-3">$1</h1>')
+    // Replace **bold** text with proper HTML
+    .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-blue-800">$1</strong>')
+    // Replace line breaks with proper paragraph breaks
+    .replace(/\n\n/g, '</p><p class="mb-4 leading-relaxed text-gray-800">')
+    // Wrap the whole content in a paragraph
+    .replace(/^/, '<p class="mb-4 leading-relaxed text-gray-800">')
+    .replace(/$/, '</p>');
+}
+
 export default function ComparisonResults() {
   const [match, params] = useRoute('/results/:id');
   const [, setLocation] = useLocation();
@@ -169,10 +188,13 @@ export default function ComparisonResults() {
         </div>
 
         {/* Comparison Content */}
-        <div className="prose max-w-none">
-          <div className="whitespace-pre-wrap text-gray-800 leading-relaxed">
-            {comparison.comparisonResult}
-          </div>
+        <div className="prose prose-slate max-w-none markdown-content">
+          <div 
+            className="formatted-content"
+            dangerouslySetInnerHTML={{ 
+              __html: formatMarkdownContent(comparison.comparisonResult) 
+            }}
+          />
         </div>
 
         {/* Share Buttons */}

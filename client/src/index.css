@@ -118,6 +118,69 @@
   .wiki-button-secondary {
     @apply px-4 py-2 bg-gray-100 text-gray-700 border border-gray-300 rounded hover:bg-gray-200 transition-all duration-150 font-medium;
   }
+
+  /* Markdown content styling for comparison results */
+  .markdown-content {
+    @apply text-gray-800 leading-relaxed;
+    font-family: 'Libre Baskerville', 'Linux Libertine', Georgia, serif;
+    line-height: 1.7;
+  }
+  
+  .markdown-content h1,
+  .markdown-content h2,
+  .markdown-content h3,
+  .markdown-content h4,
+  .markdown-content h5,
+  .markdown-content h6 {
+    @apply font-bold text-blue-800;
+    font-family: 'Libre Baskerville', 'Linux Libertine', Georgia, serif;
+    letter-spacing: -0.025em;
+  }
+  
+  .markdown-content h1 {
+    @apply text-2xl mb-6 mt-0 border-b-2 border-blue-600 pb-3;
+  }
+  
+  .markdown-content h2 {
+    @apply text-xl mb-4 mt-8 border-b border-gray-300 pb-2;
+  }
+  
+  .markdown-content h3 {
+    @apply text-lg mb-3 mt-6;
+  }
+  
+  .markdown-content p {
+    @apply mb-4 text-gray-800;
+  }
+  
+  .markdown-content strong {
+    @apply font-semibold text-blue-800;
+  }
+  
+  .markdown-content ul,
+  .markdown-content ol {
+    @apply mb-4 pl-6;
+  }
+  
+  .markdown-content li {
+    @apply mb-1;
+  }
+  
+  .markdown-content blockquote {
+    @apply border-l-4 border-blue-600 pl-4 italic text-gray-700 my-4 bg-gray-50 py-2 rounded-r;
+  }
+  
+  .markdown-content code {
+    @apply bg-gray-100 px-2 py-1 rounded text-sm font-mono text-gray-800;
+  }
+  
+  .markdown-content pre {
+    @apply bg-gray-100 p-4 rounded overflow-x-auto my-4;
+  }
+  
+  .markdown-content pre code {
+    @apply bg-transparent p-0;
+  }
   
   .wiki-tag {
     @apply inline-block px-2 py-1 text-sm rounded;
