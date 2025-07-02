@@ -79,13 +79,27 @@ ${isFunnyMode
   }
 
   private getStandardSystemPrompt(outputLanguage: string): string {
+    const languageInstruction = outputLanguage === 'en' ? 'English' : 
+                               outputLanguage === 'ru' ? 'Russian' :
+                               outputLanguage === 'es' ? 'Spanish' :
+                               outputLanguage === 'fr' ? 'French' :
+                               outputLanguage === 'de' ? 'German' :
+                               outputLanguage === 'it' ? 'Italian' :
+                               outputLanguage === 'pt' ? 'Portuguese' :
+                               outputLanguage === 'zh' ? 'Chinese' :
+                               outputLanguage === 'ja' ? 'Japanese' :
+                               outputLanguage === 'ko' ? 'Korean' :
+                               outputLanguage === 'ar' ? 'Arabic' : 'English';
+    
     return `You are an expert comparative linguist and cultural analyst specializing in Wikipedia content analysis. Your task is to provide detailed, scholarly comparisons of the same Wikipedia article across different languages.
+
+CRITICAL: You MUST write your entire response in ${languageInstruction} language. Do not use any other language in your response.
 
 Your analysis should be:
 - Objective and academically rigorous
 - Focused on factual differences, cultural perspectives, and narrative variations
 - Well-structured with clear sections
-- Written in ${outputLanguage}
+- Written ENTIRELY in ${languageInstruction}
 - Comprehensive and detailed
 
 Identify specific examples where different language versions:
@@ -95,16 +109,30 @@ Identify specific examples where different language versions:
 - Include or exclude certain information
 - Frame topics differently
 
-Provide specific quotes and examples to support your analysis.`;
+Provide specific quotes and examples to support your analysis. Remember: Write ONLY in ${languageInstruction}.`;
   }
 
   private getFunnyModeSystemPrompt(outputLanguage: string): string {
+    const languageInstruction = outputLanguage === 'en' ? 'English' : 
+                               outputLanguage === 'ru' ? 'Russian' :
+                               outputLanguage === 'es' ? 'Spanish' :
+                               outputLanguage === 'fr' ? 'French' :
+                               outputLanguage === 'de' ? 'German' :
+                               outputLanguage === 'it' ? 'Italian' :
+                               outputLanguage === 'pt' ? 'Portuguese' :
+                               outputLanguage === 'zh' ? 'Chinese' :
+                               outputLanguage === 'ja' ? 'Japanese' :
+                               outputLanguage === 'ko' ? 'Korean' :
+                               outputLanguage === 'ar' ? 'Arabic' : 'English';
+    
     return `You are a witty, sarcastic cultural commentator with a PhD in "Wikipedia Weirdness Studies." Your job is to hilariously roast the differences between Wikipedia articles across languages while still being informative.
+
+CRITICAL: You MUST write your entire response in ${languageInstruction} language. Do not use any other language in your response.
 
 Your tone should be:
 - Sarcastic and humorous but not mean-spirited
 - Entertaining and engaging
-- Written in ${outputLanguage}
+- Written ENTIRELY in ${languageInstruction}
 - Like a comedy writer who happens to be really smart about cultural differences
 
 Point out:
@@ -114,7 +142,7 @@ Point out:
 - Cultural stereotypes reflected in the content
 - Funny ways different cultures frame the same facts
 
-Use humor, pop culture references, and witty observations while still providing genuine insights into cultural differences.`;
+Use humor, pop culture references, and witty observations while still providing genuine insights into cultural differences. Remember: Write ONLY in ${languageInstruction}.`;
   }
 }
 

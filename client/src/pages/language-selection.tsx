@@ -19,6 +19,7 @@ export default function LanguageSelection() {
   
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([language]);
   const [outputLanguage, setOutputLanguage] = useState('en');
+  const [currentMode, setCurrentMode] = useState<'academic' | 'funny' | null>(null);
 
   // Fetch available language links
   const languageLinksQuery = useQuery({
@@ -99,11 +100,17 @@ export default function LanguageSelection() {
       return;
     }
 
+    setCurrentMode(isFunnyMode ? 'funny' : 'academic');
+    
     comparisonMutation.mutate({
       articleTitle: title,
       selectedLanguages,
       outputLanguage,
       isFunnyMode
+    }, {
+      onSettled: () => {
+        setCurrentMode(null);
+      }
     });
   };
 
@@ -226,7 +233,7 @@ export default function LanguageSelection() {
             disabled={selectedLanguages.length < 2 || comparisonMutation.isPending}
             className="w-full wiki-button-primary"
           >
-            {comparisonMutation.isPending ? (
+            {currentMode === 'academic' && comparisonMutation.isPending ? (
               <span>
                 <i className="fas fa-spinner fa-spin mr-2"></i>
                 Analyzing Articles...
@@ -244,7 +251,7 @@ export default function LanguageSelection() {
             disabled={selectedLanguages.length < 2 || comparisonMutation.isPending}
             className="w-full wiki-button-secondary"
           >
-            {comparisonMutation.isPending ? (
+            {currentMode === 'funny' && comparisonMutation.isPending ? (
               <span>
                 <i className="fas fa-spinner fa-spin mr-2"></i>
                 Creating Fun Analysis...

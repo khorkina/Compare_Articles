@@ -166,6 +166,30 @@ export default function ComparisonResults() {
         {/* Share Buttons */}
         <div className="mt-8 pt-6 border-t border-wiki-light-border">
           <h3 className="font-semibold mb-4">Share this comparison:</h3>
+          <div className="mb-3">
+            <Button 
+              onClick={async () => {
+                try {
+                  const comparison = comparisonQuery.data!;
+                  const fullText = `Wiki Truth Comparison: "${comparison.articleTitle}"\n${comparison.selectedLanguages.map(lang => `• ${lang.toUpperCase()}`).join('\n')}\n\n${comparison.comparisonResult}`;
+                  await navigator.clipboard.writeText(fullText);
+                  toast({
+                    title: "Copied to Clipboard",
+                    description: "Full comparison text copied to clipboard",
+                  });
+                } catch (error) {
+                  toast({
+                    title: "Copy Failed", 
+                    description: "Could not copy to clipboard",
+                    variant: "destructive"
+                  });
+                }
+              }} 
+              className="wiki-button-primary"
+            >
+              <i className="fas fa-copy mr-2"></i>Copy Full Text to Clipboard
+            </Button>
+          </div>
           <div className="flex flex-wrap gap-3">
             <Button 
               onClick={() => handleShare('X')} 

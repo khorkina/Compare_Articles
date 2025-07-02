@@ -274,8 +274,22 @@ ${article.content.slice(0, 1000)}...
       }
 
       const baseUrl = window.location.origin;
-      const shareUrl = `${baseUrl}/comparison/${id}`;
+      const shareUrl = `${baseUrl}/results/${id}`;
       
+      // Create full comparison text for clipboard
+      const fullComparisonText = `
+Wiki Truth Comparison: "${comparison.articleTitle}"
+${comparison.selectedLanguages.map(lang => `• ${lang.toUpperCase()}`).join('\n')}
+Generated: ${new Date(comparison.createdAt).toLocaleDateString()}
+
+${comparison.comparisonResult}
+
+View full comparison: ${shareUrl}
+      `.trim();
+
+      // Copy full text to clipboard
+      await navigator.clipboard.writeText(fullComparisonText);
+
       const platformMessages: Record<string, string> = {
         twitter: `Check out this fascinating comparison of "${comparison.articleTitle}" across ${comparison.selectedLanguages.length} languages! 🌍 #WikiTruth #Wikipedia`,
         linkedin: `Interesting cultural perspectives on "${comparison.articleTitle}" revealed through multi-language Wikipedia analysis.`,
@@ -286,7 +300,7 @@ ${article.content.slice(0, 1000)}...
 
       const message = platformMessages[platform] || `Check out this Wikipedia comparison: "${comparison.articleTitle}"`;
       
-      // Create platform-specific share URLs
+      // Create platform-specific share URLs (but we've already copied text to clipboard)
       const shareUrls: Record<string, string> = {
         twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(shareUrl)}`,
         linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&summary=${encodeURIComponent(message)}`,
