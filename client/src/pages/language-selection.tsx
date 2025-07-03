@@ -254,18 +254,13 @@ export default function LanguageSelection() {
 
   const availableLanguages = languageLinksQuery.data || [];
   
-  // Show ALL supported languages, not just the ones Wikipedia reports as available
-  // We'll merge the available languages with all supported languages
-  const allLanguagesForSelection = SUPPORTED_LANGUAGES.map(lang => {
-    const existingLink = availableLanguages.find(link => link.lang === lang.code);
-    return {
-      lang: lang.code,
-      title: existingLink?.title || title, // Use original title if no specific version exists
-      url: existingLink?.url || `https://${lang.code}.wikipedia.org/wiki/${encodeURIComponent(title)}`
-    };
-  });
+  // Show only languages where the article actually exists
+  // Filter available languages to include only those we support
+  const filteredAvailableLanguages = availableLanguages.filter(link => 
+    SUPPORTED_LANGUAGES.some(lang => lang.code === link.lang)
+  );
   
-  // Ensure the search language is always included first
+  // Ensure the search language is always included first if not already in the list
   const searchLanguageEntry = {
     lang: language,
     title: title,
@@ -273,10 +268,14 @@ export default function LanguageSelection() {
   };
   
   // Create final list with search language first, then others (excluding duplicates)
-  let supportedAvailableLanguages = [
-    searchLanguageEntry,
-    ...allLanguagesForSelection.filter(lang => lang.lang !== language)
-  ];
+  let languagesForDisplay = [searchLanguageEntry];
+  
+  // Add other available languages, excluding the search language to avoid duplicates
+  filteredAvailableLanguages.forEach(lang => {
+    if (lang.lang !== language) {
+      languagesForDisplay.push(lang);
+    }
+  });
   
   // Filter languages based on search query
   if (languageSearchQuery.trim()) {
@@ -284,13 +283,16 @@ export default function LanguageSelection() {
     const searchCodes = searchResults.map(lang => lang.code);
     
     // Keep search language first, then filter others based on search
-    supportedAvailableLanguages = [
+    languagesForDisplay = [
       searchLanguageEntry,
-      ...supportedAvailableLanguages.filter(lang => 
+      ...languagesForDisplay.filter(lang => 
         lang.lang !== language && searchCodes.includes(lang.lang)
       )
     ];
   }
+  
+  // Final list for rendering
+  const supportedAvailableLanguages = languagesForDisplay;
 
   if (!title) {
     return <div>Loading...</div>;
@@ -434,7 +436,7 @@ export default function LanguageSelection() {
         <div className="mb-4">
           <div className="text-sm text-gray-600 mb-3">
             <i className="fas fa-info-circle mr-1"></i>
-            All 270+ Wikipedia languages are available for selection. If an article doesn't exist in a selected language, the comparison will note this.
+            Showing all language versions where this article exists. Select 2-5 languages to compare different perspectives on the same topic.
           </div>
           
           {/* Language Search */}
@@ -461,7 +463,7 @@ export default function LanguageSelection() {
           
           {languageSearchQuery && (
             <div className="text-xs text-gray-500 mt-1">
-              Showing {supportedAvailableLanguages.length - 1} languages matching "{languageSearchQuery}"
+              Showing {supportedAvailableLanguages.length - 1} available languages matching "{languageSearchQuery}"
             </div>
           )}
         </div>
@@ -471,7 +473,6 @@ export default function LanguageSelection() {
             {supportedAvailableLanguages.map((link) => {
               const isSearchLanguage = link.lang === language;
               const isSelected = selectedLanguages.includes(link.lang);
-              const hasConfirmedArticle = availableLanguages.some(avail => avail.lang === link.lang);
               
               return (
                 <div 
@@ -494,14 +495,9 @@ export default function LanguageSelection() {
                           Search Language
                         </span>
                       )}
-                      {!isSearchLanguage && hasConfirmedArticle && (
+                      {!isSearchLanguage && (
                         <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full">
                           Article Available
-                        </span>
-                      )}
-                      {!isSearchLanguage && !hasConfirmedArticle && (
-                        <span className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full">
-                          Try Language
                         </span>
                       )}
                     </div>

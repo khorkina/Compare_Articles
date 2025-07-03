@@ -104,10 +104,10 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 ## Changelog
 
 ### Recent Changes
-- January 3, 2025: **COMPLETED** - Fixed language selection to show ALL 270+ Wikipedia languages instead of only available ones
-- January 3, 2025: **COMPLETED** - Added language search functionality to help users find specific languages quickly
+- January 3, 2025: **COMPLETED** - Fixed language selection to show only language versions where the specific article exists (corrected from showing all 270+ languages)
+- January 3, 2025: **COMPLETED** - Added language search functionality to help users find specific available languages quickly
 - January 3, 2025: **COMPLETED** - Search language automatically included first with special "Search Language" badge
-- January 3, 2025: **COMPLETED** - Added visual indicators for confirmed vs. potential language articles
+- January 3, 2025: **COMPLETED** - Added "Article Available" indicators for all language versions of the specific article
 - January 3, 2025: **COMPLETED** - Enhanced language selection system with 270+ Wikipedia languages support
 - January 3, 2025: **COMPLETED** - Added clear 2-5 language selection requirement with visual counter and validation
 - January 3, 2025: **COMPLETED** - Search language automatically included and protected from removal in comparisons
