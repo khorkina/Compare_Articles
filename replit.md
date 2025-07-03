@@ -104,6 +104,9 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 ## Changelog
 
 ### Recent Changes
+- January 3, 2025: **COMPLETED** - Added premium crown indicators throughout the interface for premium users
+- January 3, 2025: **COMPLETED** - Crown appears on settings button, in navbar, and sidebar for premium subscribers
+- January 3, 2025: **COMPLETED** - Green premium badge with golden crown icon for visual premium status
 - January 3, 2025: **COMPLETED** - Fixed language selection to show only language versions where the specific article exists (corrected from showing all 270+ languages)
 - January 3, 2025: **COMPLETED** - Added language search functionality to help users find specific available languages quickly
 - January 3, 2025: **COMPLETED** - Search language automatically included first with special "Search Language" badge

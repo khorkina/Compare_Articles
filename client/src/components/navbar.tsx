@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { SettingsDialog } from "./settings-dialog";
+import { PremiumIndicator } from "./premium-indicator";
 
 export function Navbar() {
   return (
@@ -21,7 +22,10 @@ export function Navbar() {
               <Link href="/help" className="wiki-link text-sm">Help</Link>
               <Link href="/about" className="wiki-link text-sm">About</Link>
             </div>
-            <SettingsDialog />
+            <div className="flex items-center space-x-3">
+              <PremiumIndicator />
+              <SettingsDialog />
+            </div>
           </nav>
         </div>
       </div>

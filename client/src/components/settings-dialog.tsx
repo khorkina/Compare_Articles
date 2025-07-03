@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Settings, Download, Trash2, Globe, Heart } from 'lucide-react';
+import { Settings, Download, Trash2, Globe, Heart, Crown } from 'lucide-react';
 import { clientStorage, type UserAccount } from '@/lib/storage';
 import { useToast } from '@/hooks/use-toast';
 import { SubscriptionStatus } from './subscription-status';
@@ -13,6 +13,10 @@ export function SettingsDialog() {
   const [user, setUser] = useState<UserAccount | null>(null);
   const [exportData, setExportData] = useState<string>('');
   const { toast } = useToast();
+
+  useEffect(() => {
+    loadUserData();
+  }, []);
 
   useEffect(() => {
     if (open) {
@@ -97,8 +101,11 @@ export function SettingsDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" className="relative">
           <Settings className="h-4 w-4" />
+          {user?.subscription.isPremium && (
+            <Crown className="h-3 w-3 text-yellow-500 absolute -top-1 -right-1" />
+          )}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">

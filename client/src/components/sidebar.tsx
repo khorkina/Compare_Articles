@@ -1,10 +1,14 @@
 import { Link } from "wouter";
+import { PremiumIndicator } from "./premium-indicator";
 
 export function Sidebar() {
   return (
     <aside className="lg:col-span-1">
       <div className="wiki-sidebar mb-6">
-        <h3 className="font-bold text-lg mb-3">Navigation</h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-bold text-lg">Navigation</h3>
+          <PremiumIndicator />
+        </div>
         <ul className="space-y-2 text-sm">
           <li><Link href="/" className="wiki-link">Main page</Link></li>
           <li><Link href="/search" className="wiki-link">Search articles</Link></li>
