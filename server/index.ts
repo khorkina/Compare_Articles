@@ -2,6 +2,8 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
+import 'dotenv/config';  
+
 const app = express();
 app.use(express.json({ limit: '50mb' })); // Increased limit for large Wikipedia articles
 app.use(express.urlencoded({ extended: false, limit: '50mb' }));
@@ -63,7 +65,7 @@ app.use((req, res, next) => {
   server.listen({
     port,
     host: "0.0.0.0",
-    reusePort: true,
+    reusePort: false,
   }, () => {
     log(`serving on port ${port}`);
   });
