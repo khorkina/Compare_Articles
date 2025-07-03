@@ -63,7 +63,6 @@ export default function MainPage() {
           <div className="inline-flex items-center gap-6 text-sm text-wiki-gray">
             <span><i className="fas fa-language mr-1"></i> 35+ Languages Supported</span>
             <span><i className="fas fa-infinity mr-1"></i> Unlimited Comparisons</span>
-            <span><i className="fas fa-lock mr-1"></i> 100% Free</span>
           </div>
         </div>
       </section>

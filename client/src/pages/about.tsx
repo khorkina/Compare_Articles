@@ -63,15 +63,7 @@ export default function AboutPage() {
                 </p>
               </div>
 
-              <div className="bg-orange-50 border border-orange-200 rounded p-6">
-                <h3 className="font-semibold text-orange-900 mb-3">
-                  <i className="fas fa-infinity mr-2"></i>Completely Free
-                </h3>
-                <p className="text-sm text-orange-800">
-                  Unlimited comparisons with no restrictions. No subscriptions, no premium tiers, 
-                  no hidden costs - just free access to cross-cultural knowledge analysis.
-                </p>
-              </div>
+
             </div>
           </section>
 
