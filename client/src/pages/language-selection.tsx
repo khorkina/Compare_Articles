@@ -3,9 +3,10 @@ import { useLocation, useRoute } from 'wouter';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { api, type LanguageLink } from '@/lib/api';
-import { getLanguageName, getLanguageNativeName, SUPPORTED_LANGUAGES } from '@/lib/languages';
+import { getLanguageName, getLanguageNativeName, SUPPORTED_LANGUAGES, searchLanguages } from '@/lib/languages';
 import { clientStorage } from '@/lib/storage';
 import { useToast } from '@/hooks/use-toast';
 import { PlanSelection } from '@/components/plan-selection';
@@ -21,6 +22,7 @@ export default function LanguageSelection() {
   
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([language]);
   const [outputLanguage, setOutputLanguage] = useState('en');
+  const [languageSearchQuery, setLanguageSearchQuery] = useState('');
   
   // Set output language based on user's browser language preference on component mount
   useEffect(() => {
@@ -251,9 +253,44 @@ export default function LanguageSelection() {
   };
 
   const availableLanguages = languageLinksQuery.data || [];
-  const supportedAvailableLanguages = availableLanguages.filter(link => 
-    SUPPORTED_LANGUAGES.some(lang => lang.code === link.lang)
-  );
+  
+  // Show ALL supported languages, not just the ones Wikipedia reports as available
+  // We'll merge the available languages with all supported languages
+  const allLanguagesForSelection = SUPPORTED_LANGUAGES.map(lang => {
+    const existingLink = availableLanguages.find(link => link.lang === lang.code);
+    return {
+      lang: lang.code,
+      title: existingLink?.title || title, // Use original title if no specific version exists
+      url: existingLink?.url || `https://${lang.code}.wikipedia.org/wiki/${encodeURIComponent(title)}`
+    };
+  });
+  
+  // Ensure the search language is always included first
+  const searchLanguageEntry = {
+    lang: language,
+    title: title,
+    url: `https://${language}.wikipedia.org/wiki/${encodeURIComponent(title)}`
+  };
+  
+  // Create final list with search language first, then others (excluding duplicates)
+  let supportedAvailableLanguages = [
+    searchLanguageEntry,
+    ...allLanguagesForSelection.filter(lang => lang.lang !== language)
+  ];
+  
+  // Filter languages based on search query
+  if (languageSearchQuery.trim()) {
+    const searchResults = searchLanguages(languageSearchQuery);
+    const searchCodes = searchResults.map(lang => lang.code);
+    
+    // Keep search language first, then filter others based on search
+    supportedAvailableLanguages = [
+      searchLanguageEntry,
+      ...supportedAvailableLanguages.filter(lang => 
+        lang.lang !== language && searchCodes.includes(lang.lang)
+      )
+    ];
+  }
 
   if (!title) {
     return <div>Loading...</div>;
@@ -394,11 +431,47 @@ export default function LanguageSelection() {
           </div>
         )}
 
+        <div className="mb-4">
+          <div className="text-sm text-gray-600 mb-3">
+            <i className="fas fa-info-circle mr-1"></i>
+            All 270+ Wikipedia languages are available for selection. If an article doesn't exist in a selected language, the comparison will note this.
+          </div>
+          
+          {/* Language Search */}
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Search for a language (e.g., French, Español, Русский)..."
+              value={languageSearchQuery}
+              onChange={(e) => setLanguageSearchQuery(e.target.value)}
+              className="wiki-input pr-10"
+            />
+            <i className="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            {languageSearchQuery && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setLanguageSearchQuery('')}
+                className="absolute right-8 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-100"
+              >
+                <i className="fas fa-times text-xs"></i>
+              </Button>
+            )}
+          </div>
+          
+          {languageSearchQuery && (
+            <div className="text-xs text-gray-500 mt-1">
+              Showing {supportedAvailableLanguages.length - 1} languages matching "{languageSearchQuery}"
+            </div>
+          )}
+        </div>
+
         {supportedAvailableLanguages.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
             {supportedAvailableLanguages.map((link) => {
               const isSearchLanguage = link.lang === language;
               const isSelected = selectedLanguages.includes(link.lang);
+              const hasConfirmedArticle = availableLanguages.some(avail => avail.lang === link.lang);
               
               return (
                 <div 
@@ -419,6 +492,16 @@ export default function LanguageSelection() {
                       {isSearchLanguage && (
                         <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
                           Search Language
+                        </span>
+                      )}
+                      {!isSearchLanguage && hasConfirmedArticle && (
+                        <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full">
+                          Article Available
+                        </span>
+                      )}
+                      {!isSearchLanguage && !hasConfirmedArticle && (
+                        <span className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full">
+                          Try Language
                         </span>
                       )}
                     </div>
