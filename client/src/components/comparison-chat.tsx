@@ -144,7 +144,7 @@ export function ComparisonChat({
             <div className="flex items-center gap-2">
               <Badge variant="secondary" className="text-xs">
                 <Sparkles className="h-3 w-3 mr-1" />
-                Free Model
+                AI
               </Badge>
               <Button
                 variant="ghost"
