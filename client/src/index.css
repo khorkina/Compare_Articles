@@ -229,3 +229,16 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--wiki-gray);
 }
+
+/* Mobile symbol display fixes */
+@media (max-width: 768px) {
+  .comparison-content {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  
+  .comparison-content * {
+    max-width: 100%;
+  }
+}

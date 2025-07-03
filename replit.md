@@ -104,6 +104,9 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 ## Changelog
 
 ### Recent Changes
+- January 3, 2025: **COMPLETED** - Fixed mobile display issues with problematic symbols (equal signs, dashes) in AI-generated content
+- January 3, 2025: **COMPLETED** - Enhanced markdown formatting to remove divider symbols that display incorrectly on mobile
+- January 3, 2025: **COMPLETED** - Added mobile-specific CSS for better text wrapping and symbol handling
 - January 3, 2025: **COMPLETED** - Removed "Completely Free" section from about page and "100% Free" text from main page
 - January 3, 2025: **COMPLETED** - Updated messaging to reflect freemium model with premium features available
 - January 3, 2025: **COMPLETED** - Added premium crown indicators throughout the interface for premium users

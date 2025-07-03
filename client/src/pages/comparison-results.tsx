@@ -13,6 +13,17 @@ import { clientStorage } from '@/lib/storage';
 
 // Enhanced markdown formatter function
 function formatMarkdownContent(content: string) {
+  // Clean up problematic symbols that cause mobile display issues first
+  content = content
+    // Remove standalone equal sign dividers (common AI output issue)
+    .replace(/^={3,}$/gm, '')
+    // Remove standalone dash dividers
+    .replace(/^-{3,}$/gm, '')
+    // Remove standalone asterisk dividers
+    .replace(/^\*{3,}$/gm, '')
+    // Remove lines with only symbols and whitespace
+    .replace(/^\s*[=\-\*]{3,}\s*$/gm, '');
+  
   // Split content into lines for better processing
   let lines = content.split('\n');
   let result = [];
@@ -100,9 +111,18 @@ function formatInlineMarkdown(text: string): string {
     .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-blue-800">$1</strong>')
     // Replace *italic* text with proper HTML (but not bullet points)
     .replace(/(?<!\*)\*([^*]+?)\*(?!\*)/g, '<em class="italic text-gray-700">$1</em>')
-    // Clean up any remaining stray markdown symbols
+    // Clean up any remaining stray markdown symbols and problematic formatting
     .replace(/#{5,}/g, '')
-    .replace(/^\s*[#]+\s*$/g, '');
+    .replace(/^\s*[#]+\s*$/g, '')
+    // Remove equal signs that might be used as dividers (common mobile issue)
+    .replace(/^={3,}$/gm, '')
+    .replace(/\s*={3,}\s*/g, '')
+    // Remove dash dividers that display poorly on mobile
+    .replace(/^-{3,}$/gm, '')
+    .replace(/\s*-{5,}\s*/g, '')
+    // Clean up asterisk dividers
+    .replace(/^\*{3,}$/gm, '')
+    .replace(/\s*\*{5,}\s*/g, '');
 }
 
 export default function ComparisonResults() {
@@ -330,7 +350,7 @@ export default function ComparisonResults() {
         {/* Comparison Content */}
         <div className="prose prose-slate max-w-none markdown-content text-sm md:text-base">
           <div 
-            className="formatted-content leading-relaxed"
+            className="formatted-content comparison-content leading-relaxed"
             dangerouslySetInnerHTML={{ 
               __html: formatMarkdownContent(comparison.comparisonResult) 
             }}
