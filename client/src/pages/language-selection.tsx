@@ -330,6 +330,18 @@ export default function LanguageSelection() {
           </div>
         )}
         
+        {supportedAvailableLanguages.length === 0 && !languageLinksQuery.isLoading && !languageLinksQuery.error && (
+          <div className="bg-amber-50 border border-amber-200 rounded p-4 mb-4">
+            <p className="text-amber-800 text-sm">
+              <i className="fas fa-info-circle mr-2"></i>
+              <strong>Single Language Article:</strong> This article is only available in {getLanguageName(language)} ({getLanguageNativeName(language)}).
+            </p>
+            <p className="text-amber-700 text-xs mt-1">
+              Wikipedia comparison requires at least 2 different language versions of the same article.
+            </p>
+          </div>
+        )}
+
         {supportedAvailableLanguages.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
             {supportedAvailableLanguages.map((link) => (

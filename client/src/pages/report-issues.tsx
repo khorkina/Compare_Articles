@@ -163,29 +163,32 @@ User has consented to include local data for debugging purposes.
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Desktop Header */}
+      {/* Mobile & Desktop Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Wiki Truth
+                  <ArrowLeft className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Back to Wiki Truth</span>
                 </Link>
               </Button>
-              <Separator orientation="vertical" className="h-6" />
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Issue Reporter</h1>
+              <Separator orientation="vertical" className="h-6 hidden sm:block" />
+              <h1 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white truncate">
+                Issue Reporter
+              </h1>
             </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200 text-xs sm:text-sm">
                 <Bug className="h-3 w-3 mr-1" />
-                Bug Tracker
+                <span className="hidden sm:inline">Bug Tracker</span>
+                <span className="sm:hidden">Bug</span>
               </Badge>
               {systemInfo && (
                 <Button variant="outline" size="sm" onClick={copySystemInfo}>
-                  <Copy className="h-4 w-4 mr-2" />
-                  Copy System Info
+                  <Copy className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Copy System Info</span>
                 </Button>
               )}
             </div>
@@ -193,21 +196,21 @@ User has consented to include local data for debugging purposes.
         </div>
       </div>
 
-      <div className="container mx-auto px-6 py-8 max-w-7xl">
-        <div className="text-center mb-8">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-7xl">
+        <div className="text-center mb-6 sm:mb-8">
           <div className="inline-flex items-center gap-2 bg-red-100 dark:bg-red-900/30 px-3 py-1 rounded-full text-sm text-red-700 dark:text-red-300 mb-4">
             <AlertTriangle className="h-4 w-4" />
             Issue Reporting
           </div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Help us improve Wiki Truth
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Report bugs, performance issues, or suggest improvements. Your feedback helps us build a better experience for everyone.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Quick Issue Types */}
           <Card className="md:col-span-1">
             <CardHeader>

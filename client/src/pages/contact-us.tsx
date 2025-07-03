@@ -81,46 +81,49 @@ export default function ContactUsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Desktop Header with Navigation */}
+      {/* Mobile & Desktop Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Wiki Truth
+                  <ArrowLeft className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Back to Wiki Truth</span>
                 </Link>
               </Button>
-              <Separator orientation="vertical" className="h-6" />
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Contact & Support</h1>
+              <Separator orientation="vertical" className="h-6 hidden sm:block" />
+              <h1 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white truncate">
+                Contact & Support
+              </h1>
             </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs sm:text-sm">
                 <Clock className="h-3 w-3 mr-1" />
-                24-48h Response
+                <span className="hidden sm:inline">24-48h Response</span>
+                <span className="sm:hidden">24h</span>
               </Badge>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-6 py-8 max-w-7xl">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-7xl">
         {/* Hero Section */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 sm:mb-12">
           <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 px-3 py-1 rounded-full text-sm text-blue-700 dark:text-blue-300 mb-4">
             <MessageSquare className="h-4 w-4" />
             Support Center
           </div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             How can we help you?
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Get technical support, report issues, or share feedback. Our team is here to help you get the most out of Wiki Truth.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
           {/* Contact Form */}
           <Card>
             <CardHeader>

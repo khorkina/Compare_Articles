@@ -188,7 +188,7 @@ export function PremiumComparisonOptions({
               <Bot className="h-5 w-5" />
               AI Model
             </CardTitle>
-            <CardDescription>Choose the AI model for analysis</CardDescription>
+            <CardDescription>Select your preferred analysis model</CardDescription>
           </CardHeader>
           <CardContent>
             <RadioGroup
@@ -203,19 +203,19 @@ export function PremiumComparisonOptions({
                       <div className="font-medium">OpenAI GPT-4o</div>
                       <div className="text-sm text-gray-500">Enhanced analysis, full articles</div>
                     </div>
-                    <Badge variant="default" className="bg-purple-100 text-purple-700">Premium</Badge>
+                    <Badge variant="default" className="bg-purple-100 text-purple-700">Recommended</Badge>
                   </div>
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="free" id="free-model" />
-                <Label htmlFor="free-model" className="flex-1">
+                <RadioGroupItem value="free" id="standard-model" />
+                <Label htmlFor="standard-model" className="flex-1">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="font-medium">Meta Llama 3.1</div>
+                      <div className="font-medium">Standard Model</div>
                       <div className="text-sm text-gray-500">Fast analysis, good quality</div>
                     </div>
-                    <Badge variant="secondary">Free</Badge>
+                    <Badge variant="secondary">Alternative</Badge>
                   </div>
                 </Label>
               </div>
