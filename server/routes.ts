@@ -8,6 +8,9 @@ import { exportService } from "./services/export";
 import { insertComparisonSchema, insertSearchSessionSchema } from "@shared/schema";
 import { z } from "zod";
 import { nanoid } from "nanoid";
+import { chatWithOpenAI } from './services/openaiChat';
+
+
 
 // Free models to try in order of preference (shared between comparison and chat)
 const freeModels = [
@@ -391,16 +394,27 @@ The user is now asking about this analysis. Please provide helpful, conversation
       // Use OpenRouter with fallback mechanism
       const messages = [
         { role: "system", content: contextPrompt },
+        ...chatHistory,                 // [{role:'user'|'assistant', content:'…'}]
         { role: "user", content: message }
       ];
-      
-      const response = await callOpenRouterWithFallback(messages, 0.7, 500);
-      res.json({ response });
-    } catch (error) {
-      console.error('Chat error:', error);
-      res.status(500).json({ error: "Failed to generate chat response" });
-    }
-  });
+
+      let reply: string;
+
+      try {
+        // 1) пробуем OpenAI
+        reply = await chatWithOpenAI(messages, 0.7, 500);
+      } catch (err) {
+        console.error('OpenAI failed, falling back to OpenRouter', err);
+        // 2) если нет ключа / лимит, откатываемся на OpenRouter
+        reply = await callOpenRouterWithFallback(messages, 0.7, 500);
+      }
+
+      res.json({ response: reply });
+      } catch (error) {
+       console.error('Chat error:', error);
+       res.status(500).json({ error: "Failed to generate chat response" });
+     }
+   });
 
   // Payment session creation endpoint (Smart Glocal integration)
   app.post("/api/payments/create-session", async (req, res) => {
