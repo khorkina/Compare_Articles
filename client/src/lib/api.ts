@@ -268,35 +268,31 @@ export const api = {
 
   async exportComparison(id: string): Promise<Blob> {
     try {
-      const comparison = await clientStorage.getComparison(id);
-      if (!comparison) {
+      const localComparison = await clientStorage.getComparison(id);
+      if (!localComparison) {
         throw new Error('Comparison not found');
       }
 
-      // Create a simple text export since we can't generate DOCX in browser without additional libraries
-      const exportContent = `
-Wiki Truth Comparison Report
-===========================
+      // Send comparison data directly to export endpoint
+      const response = await fetch('/api/export/docx', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          articleTitle: localComparison.articleTitle,
+          languages: localComparison.selectedLanguages,
+          outputLanguage: localComparison.outputLanguage,
+          content: localComparison.comparisonResult,
+          isFunnyMode: localComparison.isFunnyMode
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Export request failed');
+      }
 
-Article: ${comparison.articleTitle}
-Languages Compared: ${comparison.selectedLanguages.join(', ')}
-Output Language: ${comparison.outputLanguage}
-Mode: ${comparison.isFunnyMode ? 'Funny Mode' : 'Standard Analysis'}
-Created: ${new Date(comparison.createdAt).toLocaleString()}
-
-COMPARISON RESULTS:
-${comparison.comparisonResult}
-
-ARTICLE DETAILS:
-${comparison.articles.map((article: any) => `
-${article.language.toUpperCase()} - ${article.title}
-Content Length: ${article.contentLength} characters
----
-${article.content.slice(0, 1000)}...
-`).join('\n')}
-`;
-
-      return new Blob([exportContent], { type: 'text/plain;charset=utf-8' });
+      return await response.blob();
     } catch (error) {
       console.error('Export comparison error:', error);
       throw error;

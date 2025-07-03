@@ -9,6 +9,8 @@ export class ExportService {
     isFunnyMode: boolean;
   }): Promise<Buffer> {
     try {
+      console.log('Generating DOCX for:', comparisonData.articleTitle);
+      console.log('Content length:', comparisonData.content.length);
       const doc = new Document({
         sections: [{
           properties: {},
@@ -93,14 +95,60 @@ export class ExportService {
   }
 
   private convertTextToParagraphs(text: string): Paragraph[] {
-    const lines = text.split('\n');
-    return lines.map(line => new Paragraph({
-      children: [
-        new TextRun({
-          text: line.trim(),
-        }),
-      ],
-    }));
+    // Clean HTML tags and formatting symbols that might be in the text
+    const cleanText = text
+      .replace(/<[^>]*>/g, '') // Remove HTML tags
+      .replace(/^\s*[=\-\*]{3,}\s*$/gm, '') // Remove divider lines
+      .replace(/#{1,6}\s+/g, '') // Remove markdown headers
+      .trim();
+
+    const lines = cleanText.split('\n');
+    const paragraphs: Paragraph[] = [];
+    
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+      
+      // Skip empty lines or lines with only symbols
+      if (!trimmedLine || /^[=\-\*\s]+$/.test(trimmedLine)) {
+        continue;
+      }
+      
+      // Check if line starts with bullet point
+      if (trimmedLine.match(/^[-*+]\s+/)) {
+        const bulletText = trimmedLine.replace(/^[-*+]\s+/, '');
+        paragraphs.push(new Paragraph({
+          children: [
+            new TextRun({
+              text: `• ${bulletText}`,
+            }),
+          ],
+        }));
+      }
+      // Check if line looks like a header (bold text or all caps)
+      else if (trimmedLine.length < 100 && (trimmedLine === trimmedLine.toUpperCase() || trimmedLine.endsWith(':'))) {
+        paragraphs.push(new Paragraph({
+          children: [
+            new TextRun({
+              text: trimmedLine,
+              bold: true,
+              size: 24,
+            }),
+          ],
+        }));
+      }
+      // Regular paragraph
+      else {
+        paragraphs.push(new Paragraph({
+          children: [
+            new TextRun({
+              text: trimmedLine,
+            }),
+          ],
+        }));
+      }
+    }
+    
+    return paragraphs;
   }
 }
 

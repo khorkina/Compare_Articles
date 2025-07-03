@@ -443,7 +443,7 @@ The user is now asking about this analysis. Please provide helpful, conversation
     }
   });
 
-  // Export comparison as DOCX
+  // Export comparison as DOCX (from stored data)
   app.get("/api/compare/:id/export", async (req, res) => {
     try {
       const { id } = req.params;
@@ -466,6 +466,32 @@ The user is now asking about this analysis. Please provide helpful, conversation
       res.send(docxBuffer);
     } catch (error) {
       console.error('Export error:', error);
+      res.status(500).json({ error: "Failed to export comparison" });
+    }
+  });
+
+  // Direct DOCX export endpoint (from client data)
+  app.post("/api/export/docx", async (req, res) => {
+    try {
+      const { articleTitle, languages, outputLanguage, content, isFunnyMode } = req.body;
+
+      if (!articleTitle || !languages || !content) {
+        return res.status(400).json({ error: "Missing required data for export" });
+      }
+
+      const docxBuffer = await exportService.generateDocx({
+        articleTitle,
+        languages,
+        outputLanguage: outputLanguage || 'en',
+        content,
+        isFunnyMode: isFunnyMode || false
+      });
+
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+      res.setHeader('Content-Disposition', 'attachment; filename="wiki-truth-comparison.docx"');
+      res.send(docxBuffer);
+    } catch (error) {
+      console.error('Direct export error:', error);
       res.status(500).json({ error: "Failed to export comparison" });
     }
   });
