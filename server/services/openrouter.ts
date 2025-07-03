@@ -5,6 +5,14 @@ export interface ComparisonRequest {
 }
 
 export class OpenRouterService {
+  // List of free models to try in order of preference
+  private freeModels = [
+    "google/gemini-2.0-flash-exp:free",
+    "qwen/qwen-2.5-7b-instruct:free", 
+    "microsoft/phi-3.5-mini-instruct:free",
+    "mistralai/mistral-7b-instruct:free"
+  ];
+
   async compareArticles(request: ComparisonRequest): Promise<string> {
     const { articles, outputLanguage, isFunnyMode = false } = request;
     
@@ -24,38 +32,72 @@ export class OpenRouterService {
     
     const userPrompt = this.buildUserPrompt(articles, isFunnyMode, outputLanguage);
 
-    try {
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          'HTTP-Referer': process.env.YOUR_SITE_URL || 'http://localhost:5000',
-          'X-Title': 'WikiTruth',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: "meta-llama/llama-3.1-8b-instruct:free", // Using free model from OpenRouter
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt }
-          ],
-          temperature: isFunnyMode ? 0.8 : 0.3,
-          max_tokens: 2000
-        })
-      });
+    // Try each model in order until one works
+    for (let i = 0; i < this.freeModels.length; i++) {
+      const model = this.freeModels[i];
+      console.log(`Attempting with model: ${model}`);
+      
+      try {
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+            'HTTP-Referer': process.env.YOUR_SITE_URL || 'http://localhost:5000',
+            'X-Title': 'WikiTruth',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: model,
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt }
+            ],
+            temperature: isFunnyMode ? 0.8 : 0.3,
+            max_tokens: 2000
+          })
+        });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('OpenRouter API error:', errorText);
-        throw new Error(`OpenRouter API error: ${response.status} - ${errorText}`);
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`Model ${model} failed:`, errorText);
+          
+          // If this is the last model, throw the error
+          if (i === this.freeModels.length - 1) {
+            throw new Error(`OpenRouter API error: ${response.status} - ${errorText}`);
+          }
+          
+          // Otherwise, continue to next model
+          continue;
+        }
+
+        const data = await response.json();
+        const result = data.choices[0]?.message?.content;
+        
+        if (result) {
+          console.log(`Successfully used model: ${model}`);
+          return result;
+        }
+        
+        // If no content returned, try next model
+        if (i === this.freeModels.length - 1) {
+          throw new Error('No comparison content generated from any model');
+        }
+        
+      } catch (error) {
+        console.error(`Model ${model} error:`, error);
+        
+        // If this is the last model, throw the error
+        if (i === this.freeModels.length - 1) {
+          throw new Error(`OpenRouter comparison failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+        
+        // Otherwise, continue to next model
+        continue;
       }
-
-      const data = await response.json();
-      return data.choices[0]?.message?.content || 'No comparison generated';
-    } catch (error) {
-      console.error('OpenRouter API error:', error);
-      throw new Error(`OpenRouter comparison failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
+    
+    // This should never be reached, but just in case
+    throw new Error('All OpenRouter models failed to generate comparison');
   }
 
   private truncateArticle(content: string, maxChars: number = 15000): string {
@@ -85,72 +127,56 @@ export class OpenRouterService {
     
     const articleData = JSON.stringify(truncatedArticles, null, 2);
     
-    return `Please analyze and compare these Wikipedia articles about the same topic across different languages. Write your ENTIRE response in ${outputLanguage} language only.
+    if (isFunnyMode) {
+      return `Please compare these Wikipedia articles and provide insights in a humorous, entertaining way while still being informative. Respond in ${outputLanguage}:
 
 ${articleData}
 
-Please provide a comprehensive comparison focusing on:
-1. Factual differences and variations in information
-2. Cultural perspectives and framing differences
-3. Narrative emphasis and tone variations
-4. Structural and organizational differences
-5. Missing or additional information in each version
+Make the comparison engaging and fun while highlighting the interesting differences between how these different language versions present the topic.`;
+    }
 
-${isFunnyMode 
-  ? 'Make this comparison humorous, sarcastic, and entertaining while still being informative. Point out absurd differences and cultural quirks in a witty way.'
-  : 'Provide a scholarly, detailed analysis that would be suitable for academic or research purposes.'
-}
+    return `Please compare these Wikipedia articles from different languages and provide a comprehensive analysis highlighting key differences, similarities, and cultural perspectives. Respond in ${outputLanguage}:
 
-IMPORTANT: Write your response ONLY in ${outputLanguage}. Do not use any other language.`;
+${articleData}
+
+Focus on:
+1. Content differences (facts, emphasis, details included/excluded)
+2. Cultural perspectives and biases
+3. Historical context variations
+4. Notable differences in how the topic is presented
+5. Any unique insights from each language version
+
+Provide a thorough, balanced analysis that helps readers understand how the same topic can be presented differently across cultures and languages.`;
   }
 
   private getStandardSystemPrompt(outputLanguage: string): string {
-    return `You are an expert comparative linguist and cultural analyst specializing in Wikipedia content analysis. Your task is to provide detailed, scholarly comparisons of the same Wikipedia article across different languages.
+    return `You are a Wikipedia comparison expert. Your task is to analyze Wikipedia articles from different languages about the same topic and provide insightful comparisons.
 
-CRITICAL REQUIREMENT: You MUST write your entire response in ${outputLanguage} and ONLY in ${outputLanguage}. Do not use any other language regardless of the content of the input articles.
+Key guidelines:
+- Respond ONLY in ${outputLanguage}, never mix languages
+- Focus on factual differences, not language quality
+- Highlight cultural perspectives and regional emphasis
+- Note any unique information found in specific language versions
+- Be objective and balanced in your analysis
+- Structure your response clearly with headers and bullet points
+- Aim for comprehensive yet concise analysis
 
-Your analysis should be:
-- Objective and academically rigorous
-- Focused on factual differences, cultural perspectives, and narrative variations
-- Well-structured with clear sections
-- Written EXCLUSIVELY in ${outputLanguage} (never mix languages)
-- Comprehensive and detailed
-
-Identify specific examples where different language versions:
-- Present different facts or emphasis
-- Reflect cultural biases or perspectives  
-- Use different organizational structures
-- Include or exclude certain information
-- Frame topics differently
-
-When quoting text from articles in other languages, always translate the quotes to ${outputLanguage} and indicate the original language in parentheses.
-
-REMINDER: Your entire response must be in ${outputLanguage} only.`;
+Your goal is to help users understand how different cultures and regions present the same topic through their Wikipedia articles.`;
   }
 
   private getFunnyModeSystemPrompt(outputLanguage: string): string {
-    return `You are a witty, sarcastic cultural commentator with a PhD in "Wikipedia Weirdness Studies." Your job is to hilariously roast the differences between Wikipedia articles across languages while still being informative.
+    return `You are a witty Wikipedia comparison expert with a great sense of humor. Your task is to analyze Wikipedia articles from different languages and provide entertaining yet informative comparisons.
 
-CRITICAL REQUIREMENT: You MUST write your entire response in ${outputLanguage} and ONLY in ${outputLanguage}. Do not use any other language regardless of the content of the input articles.
+Key guidelines:
+- Respond ONLY in ${outputLanguage}, never mix languages
+- Make it funny and engaging while being factually accurate
+- Use humor to highlight interesting differences between articles
+- Point out amusing cultural quirks or biases with wit
+- Include clever observations and light-hearted commentary
+- Structure with entertaining headers and amusing bullet points
+- Keep it informative despite the humorous tone
 
-Your tone should be:
-- Sarcastic and humorous but not mean-spirited
-- Entertaining and engaging
-- Written EXCLUSIVELY in ${outputLanguage} (never mix languages)
-- Like a comedy writer who happens to be really smart about cultural differences
-
-Point out:
-- Absurd cultural biases in a funny way
-- Ridiculous differences in what each culture considers important
-- Hilarious omissions or additions
-- Cultural stereotypes reflected in the content
-- Funny ways different cultures frame the same facts
-
-When referencing text from articles in other languages, always translate it to ${outputLanguage} and indicate the original language in parentheses.
-
-Use humor, pop culture references, and witty observations while still providing genuine insights into cultural differences.
-
-REMINDER: Your entire response must be in ${outputLanguage} only.`;
+Your goal is to make Wikipedia comparison fun and memorable while genuinely helping users understand cultural differences in how topics are presented.`;
   }
 }
 
