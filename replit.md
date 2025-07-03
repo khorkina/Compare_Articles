@@ -104,6 +104,9 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 ## Changelog
 
 ### Recent Changes
+- January 3, 2025: **COMPLETED** - Fixed mobile responsiveness issues on recent comparisons page
+- January 3, 2025: **COMPLETED** - Improved mobile layout with stacked buttons, better text wrapping, and responsive typography
+- January 3, 2025: **COMPLETED** - Enhanced summary statistics display with centered mobile layout and larger number displays
 - January 3, 2025: **COMPLETED** - Fixed DOCX export functionality - files were empty due to client-side text generation instead of server DOCX creation
 - January 3, 2025: **COMPLETED** - Created new /api/export/docx endpoint for proper server-side DOCX generation with docx library
 - January 3, 2025: **COMPLETED** - Enhanced DOCX formatting to handle HTML cleanup, bullet points, headers, and symbol removal
