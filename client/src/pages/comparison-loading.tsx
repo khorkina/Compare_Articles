@@ -50,13 +50,24 @@ export default function ComparisonLoading() {
       }, 500);
     },
     onError: (error) => {
-      console.error('Comparison error:', error);
-      toast({
-        title: "Comparison Failed",
-        description: "Failed to complete the comparison. Please try again.",
-        variant: "destructive",
-      });
-      setLocation('/select-languages');
+      console.error("Comparison error:", error);
+
+      if (!isPremium) {
+        toast({
+          title: "Free generation limit reached",
+          description:
+            "You have reached the limit of free generations. Please upgrade to Premium to continue.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Comparison failed",
+          description: "Failed to complete the comparison. Please try again.",
+          variant: "destructive",
+        });
+      }
+
+      setLocation("/select-languages");
     },
   });
 
