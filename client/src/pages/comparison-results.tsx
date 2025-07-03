@@ -267,34 +267,34 @@ export default function ComparisonResults() {
 
   return (
     <main className="lg:col-span-3">
-      <div className="wiki-content-section">
+      <div className="wiki-content-section px-4 md:px-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
+        <div className="flex flex-col gap-4 mb-6">
           <div className="flex flex-col gap-2">
-            <h2 className="font-bold text-2xl">
+            <h2 className="font-bold text-xl md:text-2xl">
               Comparison Results
             </h2>
             <div className="flex flex-wrap items-center gap-2">
               {comparison.isPremium && (
-                <Badge className="bg-green-100 text-green-800 border-green-300">
+                <Badge className="bg-green-100 text-green-800 border-green-300 text-xs md:text-sm">
                   <Crown className="h-3 w-3 mr-1" />
                   Premium
                 </Badge>
               )}
               {comparison.isFunnyMode && (
-                <Badge className="bg-gradient-to-r from-pink-500 to-yellow-500 text-white">
+                <Badge className="bg-gradient-to-r from-pink-500 to-yellow-500 text-white text-xs md:text-sm">
                   FUNNY MODE
                 </Badge>
               )}
             </div>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <Button onClick={handleExport} className="wiki-button text-sm">
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button onClick={handleExport} className="wiki-button text-sm flex-1 sm:flex-initial">
               <i className="fas fa-file-word mr-2"></i>Export DOCX
             </Button>
             <Button 
               onClick={() => handleShare('general')} 
-              className="wiki-button text-sm"
+              className="wiki-button text-sm flex-1 sm:flex-initial"
             >
               <i className="fas fa-share mr-2"></i>Share
             </Button>
@@ -302,27 +302,35 @@ export default function ComparisonResults() {
         </div>
 
         {/* Article Metadata */}
-        <div className="mb-6 p-4 bg-wiki-light-gray border border-wiki-light-border rounded">
-          <h3 className="font-semibold mb-2">
-            Compared Article: <span className="text-wiki-blue">{comparison.articleTitle}</span>
+        <div className="mb-6 p-3 md:p-4 bg-wiki-light-gray border border-wiki-light-border rounded">
+          <h3 className="font-semibold mb-2 text-sm md:text-base">
+            Compared Article: <span className="text-wiki-blue break-words">{comparison.articleTitle}</span>
           </h3>
-          <div className="text-sm text-wiki-gray">
-            Languages compared: <span className="font-medium">{languageNames}</span> • 
-            Output language: <span className="font-medium">{getLanguageName(comparison.outputLanguage)}</span>
+          <div className="text-xs md:text-sm text-wiki-gray space-y-1 md:space-y-0">
+            <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2">
+              <span>Languages compared: <span className="font-medium">{languageNames}</span></span>
+              <span className="hidden md:inline">•</span>
+              <span>Output language: <span className="font-medium">{getLanguageName(comparison.outputLanguage)}</span></span>
+            </div>
           </div>
           {comparison.articles && (
-            <div className="text-sm text-wiki-gray mt-2">
-              Article lengths: {comparison.articles.map(a => 
-                `${getLanguageNativeName(a.language)}: ${(a.contentLength || 0).toLocaleString()} chars`
-              ).join(' • ')}
+            <div className="text-xs md:text-sm text-wiki-gray mt-2">
+              <div className="font-medium mb-1">Article lengths:</div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-2">
+                {comparison.articles.map(a => (
+                  <span key={a.language} className="block md:inline">
+                    {getLanguageNativeName(a.language)}: {(a.contentLength || 0).toLocaleString()} chars
+                  </span>
+                ))}
+              </div>
             </div>
           )}
         </div>
 
         {/* Comparison Content */}
-        <div className="prose prose-slate max-w-none markdown-content">
+        <div className="prose prose-slate max-w-none markdown-content text-sm md:text-base">
           <div 
-            className="formatted-content"
+            className="formatted-content leading-relaxed"
             dangerouslySetInnerHTML={{ 
               __html: formatMarkdownContent(comparison.comparisonResult) 
             }}
@@ -330,11 +338,11 @@ export default function ComparisonResults() {
         </div>
 
         {/* Share Buttons */}
-        <div className="mt-8 pt-6 border-t border-wiki-light-border">
-          <h3 className="font-semibold text-lg mb-6 text-center">Share this comparison</h3>
+        <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-wiki-light-border">
+          <h3 className="font-semibold text-base md:text-lg mb-4 md:mb-6 text-center">Share this comparison</h3>
           
           {/* Copy to Clipboard */}
-          <div className="mb-6 flex justify-center">
+          <div className="mb-4 md:mb-6 flex justify-center px-4">
             <Button 
               onClick={async () => {
                 try {
@@ -354,94 +362,94 @@ export default function ComparisonResults() {
                   });
                 }
               }} 
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-sm md:text-base w-full sm:w-auto"
             >
-              <i className="fas fa-copy mr-3 text-lg"></i>
+              <i className="fas fa-copy mr-2 md:mr-3 text-base md:text-lg"></i>
               <span className="font-semibold">Copy Full Text + Link</span>
             </Button>
           </div>
 
           {/* Social Media Buttons */}
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-wrap justify-center gap-3 md:gap-4 px-4">
             {/* X (Twitter) */}
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-1 md:gap-2">
               <Button 
                 onClick={() => handleShare('twitter')} 
-                className="bg-black hover:bg-gray-800 text-white w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
+                className="bg-black hover:bg-gray-800 text-white w-12 h-12 md:w-16 md:h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
                 title="Share on X"
               >
-                <span className="text-2xl font-bold group-hover:animate-pulse">𝕏</span>
+                <span className="text-lg md:text-2xl font-bold group-hover:animate-pulse">𝕏</span>
               </Button>
               <span className="text-xs text-gray-600 font-medium">X</span>
             </div>
 
             {/* Facebook */}
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-1 md:gap-2">
               <Button 
                 onClick={() => handleShare('facebook')} 
-                className="bg-blue-600 hover:bg-blue-700 text-white w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
+                className="bg-blue-600 hover:bg-blue-700 text-white w-12 h-12 md:w-16 md:h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
                 title="Share on Facebook"
               >
-                <i className="fab fa-facebook-f text-xl group-hover:animate-pulse"></i>
+                <i className="fab fa-facebook-f text-base md:text-xl group-hover:animate-pulse"></i>
               </Button>
               <span className="text-xs text-gray-600 font-medium">Facebook</span>
             </div>
 
             {/* LinkedIn */}
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-1 md:gap-2">
               <Button 
                 onClick={() => handleShare('linkedin')} 
-                className="bg-blue-700 hover:bg-blue-800 text-white w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
+                className="bg-blue-700 hover:bg-blue-800 text-white w-12 h-12 md:w-16 md:h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
                 title="Share on LinkedIn"
               >
-                <i className="fab fa-linkedin text-xl group-hover:animate-pulse"></i>
+                <i className="fab fa-linkedin text-base md:text-xl group-hover:animate-pulse"></i>
               </Button>
               <span className="text-xs text-gray-600 font-medium">LinkedIn</span>
             </div>
 
             {/* WhatsApp */}
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-1 md:gap-2">
               <Button 
                 onClick={() => handleShare('whatsapp')} 
-                className="bg-green-500 hover:bg-green-600 text-white w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
+                className="bg-green-500 hover:bg-green-600 text-white w-12 h-12 md:w-16 md:h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
                 title="Share on WhatsApp"
               >
-                <i className="fab fa-whatsapp text-xl group-hover:animate-pulse"></i>
+                <i className="fab fa-whatsapp text-base md:text-xl group-hover:animate-pulse"></i>
               </Button>
               <span className="text-xs text-gray-600 font-medium">WhatsApp</span>
             </div>
 
             {/* Telegram */}
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-1 md:gap-2">
               <Button 
                 onClick={() => handleShare('telegram')} 
-                className="bg-blue-500 hover:bg-blue-600 text-white w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
+                className="bg-blue-500 hover:bg-blue-600 text-white w-12 h-12 md:w-16 md:h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
                 title="Share on Telegram"
               >
-                <i className="fab fa-telegram text-xl group-hover:animate-pulse"></i>
+                <i className="fab fa-telegram text-base md:text-xl group-hover:animate-pulse"></i>
               </Button>
               <span className="text-xs text-gray-600 font-medium">Telegram</span>
             </div>
 
             {/* Reddit */}
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-1 md:gap-2">
               <Button 
                 onClick={() => handleShare('reddit')} 
-                className="bg-orange-600 hover:bg-orange-700 text-white w-16 h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
+                className="bg-orange-600 hover:bg-orange-700 text-white w-12 h-12 md:w-16 md:h-16 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center group p-0"
                 title="Share on Reddit"
               >
-                <i className="fab fa-reddit text-xl group-hover:animate-pulse"></i>
+                <i className="fab fa-reddit text-base md:text-xl group-hover:animate-pulse"></i>
               </Button>
               <span className="text-xs text-gray-600 font-medium">Reddit</span>
             </div>
           </div>
         </div>
 
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center px-4">
           <Button
             variant="ghost"
             onClick={() => setLocation('/')}
-            className="wiki-link"
+            className="wiki-link text-sm md:text-base"
           >
             ← Start New Comparison
           </Button>
