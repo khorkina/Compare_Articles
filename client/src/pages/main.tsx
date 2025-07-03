@@ -33,7 +33,7 @@ export default function MainPage() {
             </div>
             <h3 className="font-bold text-lg mb-2">Multi-Language Analysis</h3>
             <p className="text-sm text-wiki-gray">
-              Compare the same topic across 2-5 different Wikipedia language versions to discover cultural perspectives.
+              Compare articles across 2-5 Wikipedia languages from 270+ available languages to discover cultural perspectives.
             </p>
           </div>
           

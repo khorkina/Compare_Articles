@@ -75,11 +75,19 @@ export function SearchInterface({ onArticleSelected }: SearchInterfaceProps) {
               suggestions.map((suggestion, index) => (
                 <div
                   key={`${suggestion.pageid}-${index}`}
-                  className="p-3 hover:bg-wiki-light-gray cursor-pointer border-b border-wiki-light-border last:border-b-0"
+                  className="p-4 hover:bg-wiki-light-gray cursor-pointer border-b border-wiki-light-border last:border-b-0 transition-colors"
                   onClick={() => handleSuggestionClick(suggestion)}
                 >
-                  <div className="font-semibold">{suggestion.title}</div>
-                  <div className="text-sm text-wiki-gray">{suggestion.snippet}</div>
+                  <div className="font-semibold text-base mb-2 text-wiki-blue">{suggestion.title}</div>
+                  {suggestion.snippet && (
+                    <div className="text-sm text-wiki-gray leading-relaxed line-clamp-3">
+                      {suggestion.snippet.replace(/<[^>]*>/g, '')}
+                    </div>
+                  )}
+                  <div className="mt-2 flex items-center text-xs text-gray-500">
+                    <i className="fas fa-globe mr-1"></i>
+                    Click to select this article for comparison
+                  </div>
                 </div>
               ))
             )}

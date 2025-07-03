@@ -113,8 +113,28 @@ export default function LanguageSelection() {
   const handleLanguageToggle = (langCode: string) => {
     setSelectedLanguages(prev => {
       if (prev.includes(langCode)) {
+        // Don't allow removing the search language (base language)
+        if (langCode === language) {
+          toast({
+            title: "Cannot Remove Search Language",
+            description: `${getLanguageName(language)} is the search language and cannot be removed from comparison`,
+            variant: "destructive"
+          });
+          return prev;
+        }
+        // Remove language if it's not the base language
         return prev.filter(l => l !== langCode);
       } else {
+        // Don't allow more than 5 languages
+        if (prev.length >= 5) {
+          toast({
+            title: "Maximum Languages Reached",
+            description: "You can select up to 5 languages for comparison",
+            variant: "destructive"
+          });
+          return prev;
+        }
+        // Add the language
         return [...prev, langCode];
       }
     });
@@ -312,9 +332,41 @@ export default function LanguageSelection() {
 
       {/* Language Selection Section */}
       <div className="wiki-content-section mb-6">
-        <h2 className="wiki-section-title text-xl font-semibold mb-4">
-          Available Languages ({supportedAvailableLanguages.length})
-        </h2>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+          <h2 className="wiki-section-title text-xl font-semibold">
+            Select Languages for Comparison
+          </h2>
+          <div className="flex items-center gap-4 mt-2 md:mt-0">
+            <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+              selectedLanguages.length >= 2 && selectedLanguages.length <= 5 
+                ? 'bg-green-100 text-green-800' 
+                : 'bg-amber-100 text-amber-800'
+            }`}>
+              {selectedLanguages.length}/5 languages selected
+            </div>
+            <div className="text-xs text-gray-600">
+              Choose 2-5 languages to compare
+            </div>
+          </div>
+        </div>
+        
+        {selectedLanguages.length < 2 && (
+          <div className="bg-blue-50 border border-blue-200 rounded p-3 mb-4">
+            <p className="text-blue-800 text-sm">
+              <i className="fas fa-info-circle mr-2"></i>
+              <strong>Getting Started:</strong> Please select at least 2 languages to compare Wikipedia articles and discover cultural differences.
+            </p>
+          </div>
+        )}
+        
+        {selectedLanguages.length > 5 && (
+          <div className="bg-amber-50 border border-amber-200 rounded p-3 mb-4">
+            <p className="text-amber-800 text-sm">
+              <i className="fas fa-exclamation-triangle mr-2"></i>
+              <strong>Maximum Reached:</strong> Please select no more than 5 languages for optimal comparison quality.
+            </p>
+          </div>
+        )}
         
         {languageLinksQuery.isLoading && (
           <div className="space-y-2 mb-4">
@@ -344,19 +396,42 @@ export default function LanguageSelection() {
 
         {supportedAvailableLanguages.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
-            {supportedAvailableLanguages.map((link) => (
-              <div key={link.lang} className="wiki-sidebar p-3 flex items-center space-x-3">
-                <Checkbox
-                  id={link.lang}
-                  checked={selectedLanguages.includes(link.lang)}
-                  onCheckedChange={() => handleLanguageToggle(link.lang)}
-                />
-                <label htmlFor={link.lang} className="flex-1 cursor-pointer">
-                  <div className="font-medium">{getLanguageName(link.lang)}</div>
-                  <div className="text-sm text-wiki-gray">{getLanguageNativeName(link.lang)}</div>
-                </label>
-              </div>
-            ))}
+            {supportedAvailableLanguages.map((link) => {
+              const isSearchLanguage = link.lang === language;
+              const isSelected = selectedLanguages.includes(link.lang);
+              
+              return (
+                <div 
+                  key={link.lang} 
+                  className={`wiki-sidebar p-3 flex items-center space-x-3 ${
+                    isSearchLanguage ? 'border-2 border-blue-200 bg-blue-50' : ''
+                  }`}
+                >
+                  <Checkbox
+                    id={link.lang}
+                    checked={isSelected}
+                    disabled={isSearchLanguage}
+                    onCheckedChange={() => handleLanguageToggle(link.lang)}
+                  />
+                  <label htmlFor={link.lang} className="flex-1 cursor-pointer">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">{getLanguageName(link.lang)}</span>
+                      {isSearchLanguage && (
+                        <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
+                          Search Language
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-sm text-wiki-gray">{getLanguageNativeName(link.lang)}</div>
+                    {isSearchLanguage && (
+                      <div className="text-xs text-blue-600 mt-1">
+                        This language is automatically included in your comparison
+                      </div>
+                    )}
+                  </label>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
