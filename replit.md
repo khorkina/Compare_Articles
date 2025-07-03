@@ -104,6 +104,9 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 ## Changelog
 
 ### Recent Changes
+- January 3, 2025: **COMPLETED** - Fixed chat functionality with same robust fallback mechanism as comparisons
+- January 3, 2025: **COMPLETED** - Added shared helper function for OpenRouter API calls with automatic model fallback
+- January 3, 2025: **COMPLETED** - Premium users can now chat about comparisons using free models (hidden from user interface)
 - January 3, 2025: **COMPLETED** - Fixed OpenRouter API comparison failures with robust fallback mechanism
 - January 3, 2025: **COMPLETED** - Updated OpenRouter service to use working free models (Gemini 2.0 Flash, Qwen 2.5, Phi-3.5, Mistral)
 - January 3, 2025: **COMPLETED** - Implemented automatic model fallback when endpoints are unavailable

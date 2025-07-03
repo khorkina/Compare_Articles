@@ -9,6 +9,76 @@ import { insertComparisonSchema, insertSearchSessionSchema } from "@shared/schem
 import { z } from "zod";
 import { nanoid } from "nanoid";
 
+// Free models to try in order of preference (shared between comparison and chat)
+const freeModels = [
+  "google/gemini-2.0-flash-exp:free",
+  "qwen/qwen-2.5-7b-instruct:free", 
+  "microsoft/phi-3.5-mini-instruct:free",
+  "mistralai/mistral-7b-instruct:free"
+];
+
+// Helper function for OpenRouter API calls with fallback
+async function callOpenRouterWithFallback(messages: any[], temperature = 0.7, maxTokens = 500): Promise<string> {
+  if (!process.env.OPENROUTER_API_KEY) {
+    throw new Error('OpenRouter API key not configured');
+  }
+
+  for (let i = 0; i < freeModels.length; i++) {
+    const model = freeModels[i];
+    console.log(`Attempting chat with model: ${model}`);
+    
+    try {
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          'HTTP-Referer': process.env.YOUR_SITE_URL || 'http://localhost:5000',
+          'X-Title': 'WikiTruth',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: messages,
+          temperature: temperature,
+          max_tokens: maxTokens
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`Chat model ${model} failed:`, errorText);
+        
+        if (i === freeModels.length - 1) {
+          throw new Error(`OpenRouter API error: ${response.status} - ${errorText}`);
+        }
+        continue;
+      }
+
+      const data = await response.json();
+      const result = data.choices[0]?.message?.content;
+      
+      if (result) {
+        console.log(`Successfully used chat model: ${model}`);
+        return result;
+      }
+      
+      if (i === freeModels.length - 1) {
+        throw new Error('No chat response generated from any model');
+      }
+      
+    } catch (error) {
+      console.error(`Chat model ${model} error:`, error);
+      
+      if (i === freeModels.length - 1) {
+        throw new Error(`OpenRouter chat failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+      continue;
+    }
+  }
+  
+  throw new Error('All OpenRouter chat models failed');
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   
   // Wikipedia search endpoint
@@ -318,33 +388,13 @@ ${comparisonContext}
 
 The user is now asking about this analysis. Please provide helpful, conversational responses based on the comparison findings. Be friendly and informative.`;
 
-      // Use OpenRouter free model for chat
-      const chatResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          'HTTP-Referer': process.env.YOUR_SITE_URL || 'http://localhost:5000',
-          'X-Title': 'WikiTruth',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: "meta-llama/llama-3.1-8b-instruct:free",
-          messages: [
-            { role: "system", content: contextPrompt },
-            { role: "user", content: message }
-          ],
-          temperature: 0.7,
-          max_tokens: 500
-        })
-      });
-
-      if (!chatResponse.ok) {
-        throw new Error(`OpenRouter API error: ${chatResponse.status}`);
-      }
-
-      const chatData = await chatResponse.json();
-      const response = chatData.choices[0]?.message?.content || 'Sorry, I could not generate a response.';
-
+      // Use OpenRouter with fallback mechanism
+      const messages = [
+        { role: "system", content: contextPrompt },
+        { role: "user", content: message }
+      ];
+      
+      const response = await callOpenRouterWithFallback(messages, 0.7, 500);
       res.json({ response });
     } catch (error) {
       console.error('Chat error:', error);
