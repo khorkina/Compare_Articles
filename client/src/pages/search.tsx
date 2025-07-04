@@ -14,9 +14,15 @@ export default function SearchPage() {
     <main className="lg:col-span-3">
       <div className="wiki-content-section">
         <h1 className="wiki-article-title">Search Wikipedia Articles</h1>
-        <p className="text-wiki-gray mb-6">
+        <p className="text-wiki-gray mb-4">
           Search for any Wikipedia article to start comparing across different languages and cultures.
         </p>
+        <div className="bg-green-50 border border-green-200 rounded p-3 mb-6">
+          <p className="text-sm text-green-800">
+            <i className="fas fa-filter mr-2"></i>
+            Only articles available in multiple languages are shown. This ensures you can compare different cultural perspectives.
+          </p>
+        </div>
 
         <SearchInterface onArticleSelected={handleArticleSelected} />
 
@@ -30,6 +36,7 @@ export default function SearchPage() {
             <li>• Use specific names rather than general terms</li>
             <li>• Historical figures and countries often have rich cross-cultural perspectives</li>
             <li>• Scientific topics may show different emphasis across languages</li>
+            <li>• All results are pre-filtered to include only articles available in multiple languages</li>
           </ul>
         </div>
 

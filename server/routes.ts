@@ -95,13 +95,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Query parameter is required" });
       }
 
+      // Fetch more results initially since we'll filter some out
+      const initialLimit = Math.max(Number(limit) * 3, 20);
       const results = await wikipediaService.searchArticles(
         query,
         language as string,
-        Number(limit)
+        initialLimit
       );
       
-      res.json(results);
+      // Filter articles that have multiple language versions
+      const filteredResults = [];
+      for (const result of results) {
+        try {
+          const languageLinks = await wikipediaService.getLanguageLinks(
+            result.title,
+            language as string
+          );
+          
+          // Only include articles that have at least 1 other language version
+          // (the original language + at least 1 more = minimum 2 total languages)
+          if (languageLinks.length > 0) {
+            filteredResults.push(result);
+          }
+        } catch (error) {
+          // If we can't get language links, assume it's single-language and skip
+          console.log(`Skipping article "${result.title}" - no language links available`);
+          continue;
+        }
+        
+        // Limit the final results to the requested limit
+        if (filteredResults.length >= Number(limit)) {
+          break;
+        }
+      }
+      
+      res.json(filteredResults);
     } catch (error) {
       console.error('Search error:', error);
       res.status(500).json({ error: "Failed to search articles" });
