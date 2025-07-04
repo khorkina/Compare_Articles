@@ -64,8 +64,8 @@ function App() {
         <div className="min-h-screen bg-white">
           <Navbar />
           
-          <div className="max-w-6xl mx-auto px-4 py-8">
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <div className="mx-auto px-4 py-8 lg:max-w-none 2xl:max-w-[1800px]">
+            <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
               <Sidebar />
               <Router />
             </div>
