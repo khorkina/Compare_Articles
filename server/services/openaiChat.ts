@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// Initialize OpenAI client only if API key is available
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
 export async function chatWithOpenAI(
   messages: { role: 'system' | 'user' | 'assistant'; content: string }[],
@@ -9,6 +10,10 @@ export async function chatWithOpenAI(
   model = 'gpt-4o'          // для премиум-аккаунтов,
   // можно подменять на 'gpt-3.5-turbo-0125' для бесплатного тарифа
 ) {
+  if (!openai) {
+    throw new Error('OpenAI API key not configured');
+  }
+
   const resp = await openai.chat.completions.create({
     model,
     messages,
@@ -16,5 +21,5 @@ export async function chatWithOpenAI(
     max_tokens: maxTokens,
   });
 
-  return resp.choices[0].message.content.trim();
+  return resp.choices[0].message.content?.trim() || '';
 }
