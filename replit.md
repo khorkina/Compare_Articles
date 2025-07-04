@@ -104,6 +104,11 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 ## Changelog
 
 ### Recent Changes
+- January 3, 2025: **COMPLETED** - Fixed desktop loading page layout with proper responsive design and reduced excessive padding/spacing
+- January 3, 2025: **COMPLETED** - Implemented search filtering to show only articles available in multiple languages
+- January 3, 2025: **COMPLETED** - Added language link validation during search with user-friendly messaging
+- January 3, 2025: **COMPLETED** - Enhanced search endpoint to fetch more initial results and filter single-language articles
+- January 3, 2025: **COMPLETED** - Added clear notifications explaining multi-language filtering in search interface
 - January 3, 2025: **COMPLETED** - Fixed mobile responsiveness issues on recent comparisons page
 - January 3, 2025: **COMPLETED** - Improved mobile layout with stacked buttons, better text wrapping, and responsive typography
 - January 3, 2025: **COMPLETED** - Enhanced summary statistics display with centered mobile layout and larger number displays
