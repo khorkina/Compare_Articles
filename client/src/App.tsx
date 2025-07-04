@@ -64,10 +64,18 @@ function App() {
         <div className="min-h-screen bg-white">
           <Navbar />
           
-          <div className="mx-auto px-4 py-8 lg:max-w-none 2xl:max-w-[1800px]">
-            <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
-              <Sidebar />
-              <Router />
+            <div className="mx-auto px-4 py-8 lg:max-w-none 2xl:max-w-[1800px]">
+            {/* на мобильных элементы идут столбцом, на ≥lg — в строку */}
+            <div className="flex flex-col lg:flex-row gap-8">
+              {/* фиксированная ширина сайдбара и запрет на сжатие  */}
+              <aside className="w-64 flex-shrink-0">
+                <Sidebar />
+              </aside>
+
+              {/* основная область растягивается на всё оставшееся */}
+              <main className="flex-1 min-w-0">
+                <Router />
+              </main>
             </div>
           </div>
           
