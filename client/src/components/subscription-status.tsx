@@ -127,7 +127,7 @@ export function SubscriptionStatus() {
             {subscriptionStatus.daysRemaining !== undefined && subscriptionStatus.daysRemaining <= 7 && (
               <Button 
                 onClick={handleUpgrade}
-                className="w-full mt-4 bg-yellow-500 hover:bg-yellow-600 text-black"
+                className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
               >
                 Renew Subscription
               </Button>

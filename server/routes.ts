@@ -9,8 +9,10 @@ import { insertComparisonSchema, insertSearchSessionSchema } from "@shared/schem
 import { z } from "zod";
 import { nanoid } from "nanoid";
 import { chatWithOpenAI } from './services/openaiChat';
+import LimitExceeded from "@/pages/limit-exceeded";
 
-
+// app/limit-exceeded/page.tsx
+export { default } from "@/pages/limit-exceeded";
 
 // Free models to try in order of preference (shared between comparison and chat)
 const freeModels = [

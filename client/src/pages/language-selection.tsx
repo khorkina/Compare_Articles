@@ -359,7 +359,7 @@ export default function LanguageSelection() {
                 onClick={handleUpgradeToPremium}
                 size="sm"
                 variant="outline"
-                className="ml-4 text-xs"
+                className="ml-4 text-xs bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
               >
                 <i className="fas fa-crown mr-1"></i>
                 Upgrade to Premium
@@ -576,7 +576,7 @@ export default function LanguageSelection() {
             ) : (
               <span>
                 <i className="fas fa-search mr-2"></i>
-                {userSubscriptionStatus.isValid ? 'Configure Premium Analysis' : 'Start Academic Analysis'}
+                {userSubscriptionStatus.isValid ? 'Academic Analysis' : 'Academic Analysis'}
               </span>
             )}
           </Button>
@@ -594,7 +594,7 @@ export default function LanguageSelection() {
             ) : (
               <span>
                 <i className="fas fa-smile mr-2"></i>
-                {userSubscriptionStatus.isValid ? 'Configure Fun Analysis' : 'Fun Mode Analysis'}
+                {userSubscriptionStatus.isValid ? 'Fun Analysis' : 'Fun Analysis'}
               </span>
             )}
           </Button>

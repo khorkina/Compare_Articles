@@ -69,12 +69,12 @@ export default function ThankYou() {
             <>
               <div className="flex justify-center items-center gap-2 mb-4">
                 <Crown className="h-8 w-8 text-green-500" />
-                <Badge className="bg-green-100 text-green-800 px-3 py-1 text-lg font-semibold">
+                <Badge className="bg-lime-200 text-lime-800 px-3 py-1 text-lg font-semibold">
                   PREMIUM ACTIVATED
                 </Badge>
               </div>
               
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              <h1 className="text-3xl font-bold text-gray-900 mb-4">
                 Welcome to WikiTruth Premium!
               </h1>
               
@@ -82,7 +82,7 @@ export default function ThankYou() {
                 Your premium subscription is now active with enhanced AI analysis
               </p>
 
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-6 mb-8">
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-6 mb-8 max-w-xl mx-auto">
                 <div className="flex items-center justify-center gap-3 mb-3">
                   <Zap className="h-6 w-6 text-green-600" />
                   <h2 className="text-xl font-semibold text-green-800">

@@ -38,7 +38,7 @@ export function Footer() {
         </div>
         <div className="border-t border-wiki-light-border mt-8 pt-6 text-center">
           <p className="text-sm text-wiki-gray">
-            © 2024 Wiki Truth. This site is not affiliated with the Wikimedia Foundation.
+            © 2025 Wiki Truth. This site is not affiliated with the Wikimedia Foundation.
           </p>
         </div>
       </div>
