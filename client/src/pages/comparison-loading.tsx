@@ -111,21 +111,21 @@ export default function ComparisonLoading() {
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-6 lg:py-12">
         <div className="max-w-7xl mx-auto">
           
-          <div className="text-center mb-8 lg:mb-12">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 dark:text-white mb-4 lg:mb-6">
+          <div className="text-center mb-8 lg:mb-12 xl:mb-16">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold text-gray-900 dark:text-white mb-4 lg:mb-6 xl:mb-8">
               Comparing "{articleTitle}"
             </h1>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto">
               Analyzing across {selectedLanguages.length} languages with AI-powered insights
             </p>
           </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
             
-            <div className="xl:col-span-8 space-y-6 lg:space-y-8">
+            <div className="lg:col-span-8 space-y-6 lg:space-y-8">
               <Card className="w-full shadow-xl border-2 overflow-hidden">
                 <CardHeader className="pb-4 lg:pb-6">
                   <CardTitle className="text-xl sm:text-2xl lg:text-3xl flex items-center gap-3 lg:gap-4">
@@ -137,14 +137,14 @@ export default function ComparisonLoading() {
                   
                   <div className="space-y-4 lg:space-y-6">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-                      <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-900 dark:text-white flex-1 min-w-0">
+                      <h3 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-semibold text-gray-900 dark:text-white flex-1 min-w-0">
                         {steps[currentStep].text}
                       </h3>
-                      <Badge variant="secondary" className="text-sm sm:text-base lg:text-lg px-3 lg:px-4 py-1 lg:py-2 whitespace-nowrap self-start sm:self-auto">
+                      <Badge variant="secondary" className="text-sm sm:text-base lg:text-lg xl:text-xl px-3 lg:px-4 py-1 lg:py-2 whitespace-nowrap self-start sm:self-auto">
                         {Math.round(progress)}% Complete
                       </Badge>
                     </div>
-                    <Progress value={progress} className="h-3 sm:h-4 lg:h-6 w-full" />
+                    <Progress value={progress} className="h-4 sm:h-5 lg:h-6 xl:h-8 w-full" />
                   </div>
 
                   <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl p-4 sm:p-6 lg:p-8">
@@ -172,7 +172,7 @@ export default function ComparisonLoading() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 w-full">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 xl:gap-8 w-full">
                     {steps.map((step, index) => {
                       const StepIcon = step.icon;
                       const isActive = index === currentStep;
@@ -201,7 +201,7 @@ export default function ComparisonLoading() {
               </Card>
             </div>
 
-            <div className="xl:col-span-4 space-y-6 lg:space-y-8">
+            <div className="lg:col-span-4 space-y-6 lg:space-y-8">
               
               <Card className="shadow-xl border-2 h-fit overflow-hidden">
                 <CardHeader className="pb-4 lg:pb-6">
