@@ -13,6 +13,7 @@ export default function ComparisonLoading() {
   const { toast } = useToast();
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
+  const [elapsedTime, setElapsedTime] = useState(0);
 
   // Get comparison data from URL search params
   const urlParams = new URLSearchParams(window.location.search);
@@ -78,26 +79,33 @@ export default function ComparisonLoading() {
     }
   }, []);
 
-  // Progress animation
+  // Progress animation and timer
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 95) {
-          return prev;
-        }
-        return prev + Math.random() * 2;
-      });
-    }, 800);
+    if (comparisonMutation.isPending) {
+      const interval = setInterval(() => {
+        setProgress(prev => {
+          if (prev >= 95) {
+            return prev;
+          }
+          return prev + Math.random() * 1.5;
+        });
+      }, 1000);
 
-    const stepInterval = setInterval(() => {
-      setCurrentStep(prev => (prev + 1) % steps.length);
-    }, 3000);
+      const stepInterval = setInterval(() => {
+        setCurrentStep(prev => (prev + 1) % steps.length);
+      }, 4000);
 
-    return () => {
-      clearInterval(interval);
-      clearInterval(stepInterval);
-    };
-  }, []);
+      const timerInterval = setInterval(() => {
+        setElapsedTime(prev => prev + 1);
+      }, 1000);
+
+      return () => {
+        clearInterval(interval);
+        clearInterval(stepInterval);
+        clearInterval(timerInterval);
+      };
+    }
+  }, [comparisonMutation.isPending]);
 
   const CurrentIcon = steps[currentStep].icon;
 
@@ -152,6 +160,16 @@ export default function ComparisonLoading() {
                     <p className="text-sm sm:text-base lg:text-lg xl:text-xl text-blue-600 dark:text-blue-400">
                       {isPremium ? 'Using advanced AI model for detailed analysis' : 'Processing with AI for comprehensive insights'}
                     </p>
+                    {comparisonMutation.isPending && (
+                      <div className="mt-4 p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                        <p className="text-sm text-blue-800 dark:text-blue-200 font-medium">
+                          🔄 AI analysis in progress... This may take up to 2 minutes for complex comparisons.
+                        </p>
+                        <p className="text-xs text-blue-600 dark:text-blue-300 mt-1">
+                          Elapsed time: {Math.floor(elapsedTime / 60)}:{(elapsedTime % 60).toString().padStart(2, '0')}
+                        </p>
+                      </div>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 w-full">
