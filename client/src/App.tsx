@@ -4,8 +4,8 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Navbar } from "@/components/navbar";
-import { Sidebar } from "@/components/sidebar";
+import { ResponsiveNav } from "@/components/responsive-nav";
+import { MobileFAB } from "@/components/mobile-fab";
 import { Footer } from "@/components/footer";
 import { clientStorage } from "@/lib/storage";
 import Home from "@/pages/home";
@@ -62,23 +62,17 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <div className="min-h-screen bg-white">
-          <Navbar />
+          <ResponsiveNav />
           
-            <div className="mx-auto px-4 py-8 lg:max-w-none 2xl:max-w-[1800px]">
-            {/* на мобильных элементы идут столбцом, на ≥lg — в строку */}
-            <div className="flex flex-col lg:flex-row gap-8">
-              {/* фиксированная ширина сайдбара и запрет на сжатие  */}
-              <aside className="w-64 flex-shrink-0">
-                <Sidebar />
-              </aside>
-
-              {/* основная область растягивается на всё оставшееся */}
-              <main className="flex-1 min-w-0">
+          <div className="desktop-content">
+            <main className="pt-16 lg:pt-20 pb-16 lg:pb-8 px-4 lg:px-6 min-h-screen">
+              <div className="max-w-7xl mx-auto">
                 <Router />
-              </main>
-            </div>
+              </div>
+            </main>
           </div>
           
+          <MobileFAB />
           <Footer />
         </div>
         <Toaster />

@@ -24,14 +24,17 @@
   --ring: hsl(0, 0%, 0%);
   --radius: 0.5rem;
   
-  /* Wikipedia-specific colors */
+  /* Wikipedia-inspired colors */
   --wiki-blue: hsl(220, 89%, 33%);
+  --wiki-blue-hover: hsl(220, 89%, 28%);
   --wiki-gray: hsl(214, 13%, 47%);
   --wiki-light-gray: hsl(0, 0%, 96.5%);
   --wiki-border: hsl(214, 19%, 69%);
   --wiki-light-border: hsl(216, 20%, 92%);
   --wiki-success: hsl(162, 100%, 34%);
   --wiki-alert: hsl(4, 68%, 48%);
+  --wiki-premium: hsl(142, 76%, 36%);
+  --wiki-premium-light: hsl(142, 76%, 95%);
 }
 
 .dark {
@@ -204,6 +207,103 @@
   
   .wiki-blue {
     color: var(--wiki-blue);
+  }
+  
+  /* Mobile-first responsive components */
+  .mobile-nav-overlay {
+    @apply fixed inset-0 bg-black/50 z-40 lg:hidden;
+  }
+  
+  .mobile-nav-panel {
+    @apply fixed left-0 top-0 h-full w-80 bg-white shadow-xl z-50 transform transition-transform duration-300 lg:hidden;
+  }
+  
+  .mobile-nav-panel.closed {
+    @apply -translate-x-full;
+  }
+  
+  .mobile-nav-panel.open {
+    @apply translate-x-0;
+  }
+  
+  .mobile-search-bar {
+    @apply fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-30 px-4 py-3 lg:static lg:border-none lg:p-0;
+  }
+  
+  .mobile-fab {
+    @apply fixed bottom-6 right-6 bg-blue-600 text-white rounded-full p-4 shadow-lg z-30 lg:hidden;
+  }
+  
+  .mobile-fab:hover {
+    @apply bg-blue-700;
+  }
+  
+  .mobile-bottom-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-30 px-4 py-2 lg:hidden;
+  }
+  
+  .desktop-sidebar {
+    @apply hidden lg:block fixed left-0 top-0 h-full w-64 bg-gray-50 border-r border-gray-200 overflow-y-auto;
+  }
+  
+  .desktop-content {
+    @apply lg:ml-64 min-h-screen;
+  }
+  
+  .wiki-card {
+    @apply bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow;
+  }
+  
+  .wiki-card-compact {
+    @apply bg-white border border-gray-200 rounded-lg p-4 shadow-sm;
+  }
+  
+  .wiki-button-modern {
+    @apply px-6 py-3 bg-blue-600 text-white border border-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-200 font-medium shadow-sm hover:shadow-md;
+  }
+  
+  .wiki-button-secondary-modern {
+    @apply px-6 py-3 bg-white text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-200 font-medium shadow-sm hover:shadow-md;
+  }
+  
+  .wiki-premium-badge {
+    @apply inline-flex items-center gap-1 px-2 py-1 text-xs font-medium bg-wiki-premium-light text-wiki-premium rounded-full;
+  }
+  
+  .wiki-search-input {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent placeholder-gray-500 text-base;
+  }
+  
+  .wiki-nav-link {
+    @apply flex items-center gap-3 px-4 py-3 text-gray-600 hover:text-blue-600 hover:bg-gray-50 transition-colors rounded-lg;
+  }
+  
+  .wiki-nav-link.active {
+    @apply text-blue-600 bg-gray-50;
+  }
+  
+  .wiki-section-header {
+    @apply flex items-center justify-between mb-6 pb-3 border-b border-gray-200;
+  }
+  
+  .wiki-breadcrumb {
+    @apply flex items-center gap-2 text-sm text-gray-600 mb-4;
+  }
+  
+  .wiki-breadcrumb-separator {
+    @apply text-gray-400;
+  }
+  
+  .wiki-status-indicator {
+    @apply inline-flex items-center gap-2 px-3 py-1 text-sm rounded-full;
+  }
+  
+  .wiki-status-free {
+    @apply bg-blue-50 text-blue-700;
+  }
+  
+  .wiki-status-premium {
+    @apply bg-green-50 text-green-700;
   }
 }
 
