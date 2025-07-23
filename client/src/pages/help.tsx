@@ -5,8 +5,8 @@ export default function HelpPage() {
   const [, setLocation] = useLocation();
 
   return (
-    <main className="lg:col-span-3">
-      <div className="wiki-content-section">
+    <main className="container mx-auto max-w-7xl pt-16 pb-20 lg:pt-24 lg:pb-8">
+      <div className="wiki-content-section px-4 md:px-6">
         <h1 className="wiki-article-title">Help & Support</h1>
         <p className="text-wiki-gray mb-6">
           Learn how to use Wiki Truth effectively and get answers to common questions.

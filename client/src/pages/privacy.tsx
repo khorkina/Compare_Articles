@@ -5,8 +5,8 @@ export default function PrivacyPage() {
   const [, setLocation] = useLocation();
 
   return (
-    <main className="lg:col-span-3">
-      <div className="wiki-content-section">
+    <main className="container mx-auto max-w-7xl pt-16 pb-20 lg:pt-24 lg:pb-8">
+      <div className="wiki-content-section px-4 md:px-6">
         <h1 className="wiki-article-title">Privacy Policy</h1>
         <p className="text-wiki-gray mb-6">
           Your privacy is fundamental to Wiki Truth. Learn how we protect your data and ensure complete privacy.

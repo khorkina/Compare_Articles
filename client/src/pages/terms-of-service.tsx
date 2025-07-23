@@ -76,7 +76,7 @@ export default function TermsOfServicePage() {
           </div>
 
           {/* Main Content */}
-          <div className="lg:col-span-3 space-y-8">
+          <div className="space-y-8">
             <div className="text-center lg:text-left">
               <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 px-3 py-1 rounded-full text-sm text-blue-700 dark:text-blue-300 mb-4">
                 <ExternalLink className="h-4 w-4" />
