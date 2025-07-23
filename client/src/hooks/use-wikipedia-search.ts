@@ -8,7 +8,7 @@ export function useWikipediaSearch(language: string = 'en') {
 
   // Debounce the search query with faster response for good queries
   useEffect(() => {
-    const delay = query.length >= 4 ? 200 : 400; // Faster for longer, more specific queries
+    const delay = query.length >= 3 ? 150 : 300; // Much faster for longer, more specific queries
     const timer = setTimeout(() => {
       setDebouncedQuery(query);
     }, delay);
@@ -34,12 +34,12 @@ export function useWikipediaSearch(language: string = 'en') {
   // Search query with optimized caching and retry
   const searchQuery = useQuery({
     queryKey: ['/api/wikipedia/search', debouncedQuery, language],
-    queryFn: () => api.searchArticles(debouncedQuery, language, 8),
+    queryFn: () => api.searchArticles(debouncedQuery, language, 10),
     enabled: debouncedQuery.length >= 2,
-    staleTime: 10 * 60 * 1000, // 10 minutes cache
-    gcTime: 15 * 60 * 1000, // Keep in memory for 15 minutes
-    retry: 2,
-    retryDelay: 1000,
+    staleTime: 5 * 60 * 1000, // 5 minutes cache for faster updates
+    gcTime: 10 * 60 * 1000, // Keep in memory for 10 minutes
+    retry: 1, // Reduce retries for faster response
+    retryDelay: 500, // Faster retry
   });
 
   return {

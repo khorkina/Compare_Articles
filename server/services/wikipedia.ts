@@ -20,7 +20,10 @@ export class WikipediaService {
           srprop: 'snippet|size|wordcount|timestamp',
           srsort: 'relevance'
         },
-        timeout: 8000
+        timeout: 3000, // Reduce timeout for faster response
+        headers: {
+          'User-Agent': 'WikiTruth/1.0 (https://wikitruth.app)'
+        }
       });
 
       const searchResults = response.data.query?.search || [];
@@ -43,7 +46,10 @@ export class WikipediaService {
             format: 'json',
             suggest: true
           },
-          timeout: 6000
+          timeout: 2000, // Even faster fallback
+          headers: {
+            'User-Agent': 'WikiTruth/1.0 (https://wikitruth.app)'
+          }
         });
 
         const [, titles, snippets] = fallbackResponse.data;
@@ -70,7 +76,10 @@ export class WikipediaService {
           lllimit: 500,
           format: 'json'
         },
-        timeout: 10000
+        timeout: 4000, // Faster language links
+        headers: {
+          'User-Agent': 'WikiTruth/1.0 (https://wikitruth.app)'
+        }
       });
 
       const pages = response.data.query.pages;
