@@ -104,6 +104,10 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 ## Changelog
 
 ### Recent Changes
+- July 23, 2025: **COMPLETED** - Successfully migrated Wiki Truth from Replit Agent to standard Replit environment
+- July 23, 2025: **COMPLETED** - Added automatic scroll-to-top functionality for page navigation improvements
+- July 23, 2025: **COMPLETED** - Configured API keys (OpenRouter & OpenAI) for AI comparison features
+- July 23, 2025: **COMPLETED** - Verified all core functionality working in Replit environment
 - January 3, 2025: **COMPLETED** - Optimized loading page for full-screen desktop display with XL and 2XL breakpoints
 - January 3, 2025: **COMPLETED** - Enhanced typography scaling and spacing for large screens (1440px+ and 1920px+)
 - January 3, 2025: **COMPLETED** - Added proper container max-width limits for ultra-wide displays

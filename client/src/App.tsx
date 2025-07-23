@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { useEffect } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -27,28 +27,42 @@ import ReportIssuesPage from "@/pages/report-issues";
 import ComparisonLoading from "@/pages/comparison-loading";
 import NotFound from "@/pages/not-found";
 
+function ScrollToTop() {
+  const [location] = useLocation();
+  
+  useEffect(() => {
+    // Scroll to top when route changes
+    window.scrollTo(0, 0);
+  }, [location]);
+  
+  return null;
+}
+
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={MainPage} />
-      <Route path="/home" component={Home} />
-      <Route path="/search" component={SearchPage} />
-      <Route path="/compare" component={ComparePage} />
-      <Route path="/tools" component={ToolsPage} />
-      <Route path="/recent" component={RecentComparisonsPage} />
-      <Route path="/help" component={HelpPage} />
-      <Route path="/about" component={AboutPage} />
-      <Route path="/how-it-works" component={HowItWorksPage} />
-      <Route path="/privacy" component={PrivacyPage} />
-      <Route path="/select-languages" component={LanguageSelection} />
-      <Route path="/comparison-loading" component={ComparisonLoading} />
-      <Route path="/results/:id" component={ComparisonResults} />
-      <Route path="/thank-you" component={ThankYou} />
-      <Route path="/terms-of-service" component={TermsOfServicePage} />
-      <Route path="/contact-us" component={ContactUsPage} />
-      <Route path="/report-issues" component={ReportIssuesPage} />
-      <Route component={NotFound} />
-    </Switch>
+    <>
+      <ScrollToTop />
+      <Switch>
+        <Route path="/" component={MainPage} />
+        <Route path="/home" component={Home} />
+        <Route path="/search" component={SearchPage} />
+        <Route path="/compare" component={ComparePage} />
+        <Route path="/tools" component={ToolsPage} />
+        <Route path="/recent" component={RecentComparisonsPage} />
+        <Route path="/help" component={HelpPage} />
+        <Route path="/about" component={AboutPage} />
+        <Route path="/how-it-works" component={HowItWorksPage} />
+        <Route path="/privacy" component={PrivacyPage} />
+        <Route path="/select-languages" component={LanguageSelection} />
+        <Route path="/comparison-loading" component={ComparisonLoading} />
+        <Route path="/results/:id" component={ComparisonResults} />
+        <Route path="/thank-you" component={ThankYou} />
+        <Route path="/terms-of-service" component={TermsOfServicePage} />
+        <Route path="/contact-us" component={ContactUsPage} />
+        <Route path="/report-issues" component={ReportIssuesPage} />
+        <Route component={NotFound} />
+      </Switch>
+    </>
   );
 }
 
