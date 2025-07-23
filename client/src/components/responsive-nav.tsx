@@ -112,6 +112,7 @@ export function ResponsiveNav() {
                         key={item.href}
                         href={item.href}
                         className={`wiki-nav-link ${location === item.href ? 'active' : ''}`}
+                        onClick={toggleMobileMenu}
                       >
                         {item.icon}
                         {item.label}

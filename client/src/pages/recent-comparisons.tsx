@@ -34,7 +34,7 @@ export default function RecentComparisonsPage() {
   };
 
   return (
-    <main className="lg:col-span-3">
+    <main className="container mx-auto max-w-7xl pt-16 pb-20 lg:pt-24 lg:pb-8">
       <div className="wiki-content-section px-4 md:px-6">
         <h1 className="wiki-article-title text-xl md:text-2xl">Recent Comparisons</h1>
         <p className="text-wiki-gray mb-4 md:mb-6 text-sm md:text-base">
