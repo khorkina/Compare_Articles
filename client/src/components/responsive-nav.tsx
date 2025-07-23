@@ -168,14 +168,14 @@ export function ResponsiveNav() {
                 <span>About</span>
               </Link>
               <Link 
-                href="/about" 
+                href="/privacy" 
                 className="flex flex-col items-center gap-1 py-2 px-3 text-xs"
                 onClick={() => {
                   setTimeout(() => window.scrollTo({ top: 0, behavior: 'instant' }), 50);
                 }}
               >
                 <Info className="w-4 h-4" />
-                <span>About</span>
+                <span>Privacy</span>
               </Link>
             </div>
           </div>
