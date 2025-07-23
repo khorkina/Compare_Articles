@@ -18,7 +18,7 @@ export function MobileFAB() {
             className="fixed inset-0 bg-black/20 z-40"
             onClick={toggleExpanded}
           />
-          <div className="fixed bottom-20 right-6 z-50 flex flex-col gap-3">
+          <div className="fixed bottom-32 right-6 z-50 flex flex-col gap-3">
             <Link
               href="/search"
               className="w-14 h-14 bg-white text-wiki-blue border border-gray-200 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200"

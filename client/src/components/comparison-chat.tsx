@@ -121,7 +121,7 @@ export function ComparisonChat({
 
   if (!isVisible) {
     return (
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-20 left-6 z-50">
         <Button
           onClick={onToggle}
           className="rounded-full w-14 h-14 bg-purple-600 hover:bg-purple-700 shadow-lg"
@@ -133,7 +133,7 @@ export function ComparisonChat({
   }
 
   return (
-    <div className="fixed bottom-6 right-6 w-[420px] max-w-[calc(100vw-3rem)] h-[550px] max-h-[calc(100vh-3rem)] z-50">
+    <div className="fixed bottom-20 left-6 w-[420px] max-w-[calc(100vw-3rem)] h-[550px] max-h-[calc(100vh-6rem)] z-50">
       <Card className="h-full flex flex-col shadow-xl border-2 bg-white dark:bg-gray-900">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
