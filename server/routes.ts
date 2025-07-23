@@ -86,7 +86,7 @@ async function callOpenRouterWithFallback(messages: any[], temperature = 0.7, ma
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
-  // Wikipedia search endpoint
+  // Wikipedia search endpoint with optimized filtering
   app.get("/api/wikipedia/search", async (req, res) => {
     try {
       const { query, language = 'en', limit = 10 } = req.query;
@@ -96,38 +96,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Fetch more results initially since we'll filter some out
-      const initialLimit = Math.max(Number(limit) * 3, 20);
+      const initialLimit = Math.max(Number(limit) * 2, 15);
       const results = await wikipediaService.searchArticles(
         query,
         language as string,
         initialLimit
       );
       
-      // Filter articles that have multiple language versions
-      const filteredResults = [];
-      for (const result of results) {
+      // Batch check language links for better performance
+      const languageLinksPromises = results.map(async (result) => {
         try {
           const languageLinks = await wikipediaService.getLanguageLinks(
             result.title,
             language as string
           );
-          
-          // Only include articles that have at least 1 other language version
-          // (the original language + at least 1 more = minimum 2 total languages)
-          if (languageLinks.length > 0) {
-            filteredResults.push(result);
-          }
+          return {
+            result,
+            hasMultipleLanguages: languageLinks.length > 0,
+            languageCount: languageLinks.length + 1 // +1 for the original language
+          };
         } catch (error) {
-          // If we can't get language links, assume it's single-language and skip
-          console.log(`Skipping article "${result.title}" - no language links available`);
-          continue;
+          return {
+            result,
+            hasMultipleLanguages: false,
+            languageCount: 1
+          };
         }
-        
-        // Limit the final results to the requested limit
-        if (filteredResults.length >= Number(limit)) {
-          break;
-        }
-      }
+      });
+      
+      // Process all language link checks in parallel
+      const languageResults = await Promise.allSettled(languageLinksPromises);
+      
+      // Filter and sort results
+      const filteredResults = languageResults
+        .filter((promiseResult): promiseResult is PromiseFulfilledResult<any> => 
+          promiseResult.status === 'fulfilled'
+        )
+        .map(promiseResult => promiseResult.value)
+        .filter(item => item.hasMultipleLanguages)
+        .sort((a, b) => b.languageCount - a.languageCount) // Sort by number of languages (more = better)
+        .slice(0, Number(limit))
+        .map(item => item.result);
       
       res.json(filteredResults);
     } catch (error) {

@@ -7,28 +7,56 @@ export class WikipediaService {
 
   async searchArticles(query: string, language: string = 'en', limit: number = 10): Promise<WikipediaSearchResult[]> {
     try {
+      // Use more robust search API that provides better results
       const response = await axios.get(`https://${language}.wikipedia.org/w/api.php`, {
         params: {
-          action: 'opensearch',
-          search: query,
-          limit,
-          namespace: 0,
+          action: 'query',
+          list: 'search',
+          srsearch: query,
+          srlimit: limit,
+          srnamespace: 0,
           format: 'json',
-          suggest: true
+          srinfo: 'snippet|totalhits',
+          srprop: 'snippet|size|wordcount|timestamp',
+          srsort: 'relevance'
         },
-        timeout: 10000
+        timeout: 8000
       });
 
-      const [, titles, snippets] = response.data;
+      const searchResults = response.data.query?.search || [];
       
-      return titles.map((title: string, index: number) => ({
-        title,
-        snippet: snippets[index] || '',
-        pageid: index // This will be replaced with actual pageid in real implementation
+      return searchResults.map((result: any) => ({
+        title: result.title,
+        snippet: result.snippet || '',
+        pageid: result.pageid
       }));
     } catch (error) {
       console.error('Wikipedia search error:', error);
-      throw new Error('Failed to search Wikipedia articles');
+      // Fallback to opensearch if query API fails
+      try {
+        const fallbackResponse = await axios.get(`https://${language}.wikipedia.org/w/api.php`, {
+          params: {
+            action: 'opensearch',
+            search: query,
+            limit,
+            namespace: 0,
+            format: 'json',
+            suggest: true
+          },
+          timeout: 6000
+        });
+
+        const [, titles, snippets] = fallbackResponse.data;
+        
+        return titles.map((title: string, index: number) => ({
+          title,
+          snippet: snippets[index] || '',
+          pageid: index + 1000000 // Use high number to avoid conflicts
+        }));
+      } catch (fallbackError) {
+        console.error('Wikipedia fallback search error:', fallbackError);
+        throw new Error('Failed to search Wikipedia articles');
+      }
     }
   }
 
