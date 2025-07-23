@@ -112,12 +112,17 @@ export function ResponsiveNav() {
                         key={item.href}
                         href={item.href}
                         className={`wiki-nav-link ${location === item.href ? 'active' : ''}`}
-                        onClick={() => {
-                          toggleMobileMenu();
-                          // Force scroll to top after menu closes
+                        onClick={(e) => {
+                          e.preventDefault();
+                          // Close menu with animation
+                          setIsMobileMenuOpen(false);
+                          // Navigate after animation completes
                           setTimeout(() => {
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                          }, 100);
+                            // Use wouter's navigation
+                            const link = document.createElement('a');
+                            link.href = item.href;
+                            link.click();
+                          }, 200);
                         }}
                       >
                         {item.icon}

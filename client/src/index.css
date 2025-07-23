@@ -215,7 +215,7 @@
   }
   
   .mobile-nav-panel {
-    @apply fixed left-0 top-0 h-full w-80 bg-white shadow-xl z-50 transform transition-transform duration-300 lg:hidden;
+    @apply fixed left-0 top-0 h-full w-80 bg-white shadow-xl z-50 transform transition-transform duration-200 lg:hidden;
   }
   
   .mobile-nav-panel.closed {
