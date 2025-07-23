@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Search, History, Settings, X } from 'lucide-react';
+import { Plus, Search, History, HelpCircle, X } from 'lucide-react';
 import { Link } from 'wouter';
 
 export function MobileFAB() {
@@ -33,9 +33,16 @@ export function MobileFAB() {
             >
               <History className="w-5 h-5" />
             </Link>
-            <button className="w-14 h-14 bg-white text-wiki-blue border border-gray-200 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200">
-              <Settings className="w-5 h-5" />
-            </button>
+            <Link
+              href="/help"
+              className="w-14 h-14 bg-white text-wiki-blue border border-gray-200 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200"
+              onClick={(e) => {
+                toggleExpanded();
+                setTimeout(() => window.scrollTo({ top: 0, behavior: 'instant' }), 50);
+              }}
+            >
+              <HelpCircle className="w-5 h-5" />
+            </Link>
           </div>
         </>
       )}

@@ -115,6 +115,8 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 - July 23, 2025: **COMPLETED** - Moved premium chat button to left side and adjusted heights for better mobile UX
 - July 23, 2025: **COMPLETED** - Fixed mobile page positioning issues for Help, About, Privacy, and How It Works pages
 - July 23, 2025: **COMPLETED** - Added proper mobile navigation menu closing when clicking navigation links
+- July 23, 2025: **COMPLETED** - Moved Help from mobile navigation panel to FAB button to prevent animation issues
+- July 23, 2025: **COMPLETED** - Replaced Settings with Help in mobile FAB expandable actions
 - July 23, 2025: **COMPLETED** - Verified all core functionality working in Replit environment
 - January 3, 2025: **COMPLETED** - Optimized loading page for full-screen desktop display with XL and 2XL breakpoints
 - January 3, 2025: **COMPLETED** - Enhanced typography scaling and spacing for large screens (1440px+ and 1920px+)

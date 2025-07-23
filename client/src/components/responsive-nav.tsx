@@ -15,7 +15,6 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/', label: 'Main page', icon: <Search className="w-4 h-4" />, section: 'Primary' },
   { href: '/search', label: 'Search articles', icon: <Search className="w-4 h-4" />, section: 'Primary' },
   { href: '/recent', label: 'Recent comparisons', icon: <History className="w-4 h-4" />, section: 'Tools' },
-  { href: '/help', label: 'Help', icon: <HelpCircle className="w-4 h-4" />, section: 'Help' },
   { href: '/about', label: 'About', icon: <Info className="w-4 h-4" />, section: 'Help' },
   { href: '/how-it-works', label: 'How it works', icon: <Info className="w-4 h-4" />, section: 'Help' },
   { href: '/privacy', label: 'Privacy', icon: <Info className="w-4 h-4" />, section: 'Help' },
@@ -159,14 +158,14 @@ export function ResponsiveNav() {
                 <span>History</span>
               </Link>
               <Link 
-                href="/help" 
+                href="/about" 
                 className="flex flex-col items-center gap-1 py-2 px-3 text-xs"
                 onClick={() => {
                   setTimeout(() => window.scrollTo({ top: 0, behavior: 'instant' }), 50);
                 }}
               >
-                <HelpCircle className="w-4 h-4" />
-                <span>Help</span>
+                <Info className="w-4 h-4" />
+                <span>About</span>
               </Link>
               <Link 
                 href="/about" 
