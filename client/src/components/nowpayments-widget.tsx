@@ -116,7 +116,7 @@ export function NowPaymentsWidget({ isOpen, onClose, onSuccess }: NowPaymentsWid
             ) : (
               <iframe
                 ref={iframeRef}
-                src="https://nowpayments.io/embeds/payment-widget?iid=5894409417"
+                src="https://nowpayments.io/embeds/payment-widget?iid=5894409417&amount=5&currency=usd"
                 width="100%"
                 height="500"
                 frameBorder="0"
