@@ -71,37 +71,26 @@ export function NowPaymentsWidget({ isOpen, onClose, onSuccess }: NowPaymentsWid
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg w-full mx-auto">
+      <DialogContent className="max-w-sm sm:max-w-md w-[95vw] sm:w-full mx-auto max-h-[95vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-lg">
             <Zap className="h-5 w-5 text-green-600" />
             Upgrade to Premium
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-sm">
             Unlock advanced AI analysis with GPT-4o and enhanced features for $5/month
           </DialogDescription>
         </DialogHeader>
         
-        <div className="space-y-4">
-          {/* Premium Features Summary */}
-          <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-            <h4 className="font-semibold text-green-800 dark:text-green-300 mb-2">Premium Features</h4>
-            <ul className="text-sm text-green-700 dark:text-green-400 space-y-1">
-              <li>• Advanced GPT-4o AI analysis</li>
-              <li>• Full article processing (no truncation)</li>
-              <li>• Enhanced cultural insights</li>
-              <li>• Priority support</li>
-            </ul>
-          </div>
-
+        <div className="space-y-3">
           {/* Security Notice */}
-          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <Shield className="h-4 w-4" />
+          <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+            <Shield className="h-3 w-3 sm:h-4 sm:w-4" />
             <span>Secure payment processing via NowPayments</span>
           </div>
 
           {/* Payment Widget Container */}
-          <div className="relative">
+          <div className="relative w-full">
             {isLoading && (
               <div className="absolute inset-0 flex items-center justify-center bg-white dark:bg-gray-800 rounded-lg border">
                 <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
@@ -129,13 +118,14 @@ export function NowPaymentsWidget({ isOpen, onClose, onSuccess }: NowPaymentsWid
                 ref={iframeRef}
                 src="https://nowpayments.io/embeds/payment-widget?iid=5894409417"
                 width="100%"
-                height="500"
+                height="350"
                 frameBorder="0"
                 scrolling="no"
                 onLoad={handleIframeLoad}
-                className="rounded-lg border"
+                className="rounded-lg border w-full"
                 style={{ 
-                  minHeight: '500px',
+                  minHeight: '300px',
+                  maxHeight: '350px',
                   overflow: 'hidden'
                 }}
                 title="NowPayments Widget"
@@ -150,8 +140,8 @@ export function NowPaymentsWidget({ isOpen, onClose, onSuccess }: NowPaymentsWid
 
           {/* Cancel Button */}
           {!paymentCompleted && (
-            <div className="flex justify-end">
-              <Button variant="outline" onClick={onClose}>
+            <div className="flex justify-end pt-2">
+              <Button variant="outline" onClick={onClose} size="sm">
                 Cancel
               </Button>
             </div>
