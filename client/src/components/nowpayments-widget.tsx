@@ -71,7 +71,7 @@ export function NowPaymentsWidget({ isOpen, onClose, onSuccess }: NowPaymentsWid
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-sm sm:max-w-md w-[95vw] sm:w-full mx-auto max-h-[95vh] overflow-y-auto p-4 sm:p-6">
+      <DialogContent className="max-w-md sm:max-w-lg w-[95vw] sm:w-full mx-auto max-h-[95vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-lg">
             <Zap className="h-5 w-5 text-green-600" />
@@ -118,15 +118,15 @@ export function NowPaymentsWidget({ isOpen, onClose, onSuccess }: NowPaymentsWid
                 ref={iframeRef}
                 src="https://nowpayments.io/embeds/payment-widget?iid=5894409417"
                 width="100%"
-                height="350"
+                height="500"
                 frameBorder="0"
-                scrolling="no"
+                scrolling="yes"
                 onLoad={handleIframeLoad}
                 className="rounded-lg border w-full"
                 style={{ 
-                  minHeight: '300px',
-                  maxHeight: '350px',
-                  overflow: 'hidden'
+                  minHeight: '450px',
+                  maxHeight: '500px',
+                  overflow: 'auto'
                 }}
                 title="NowPayments Widget"
               >
