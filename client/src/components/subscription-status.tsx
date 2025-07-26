@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Crown, Globe, Calendar, AlertTriangle, Sparkles } from 'lucide-react';
 import { clientStorage } from '@/lib/storage';
 import { useToast } from '@/hooks/use-toast';
+import { NowPaymentsWidget } from './nowpayments-widget';
 
 export function SubscriptionStatus() {
   const [subscriptionStatus, setSubscriptionStatus] = useState<{
@@ -12,6 +13,7 @@ export function SubscriptionStatus() {
     daysRemaining?: number;
   } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showPaymentWidget, setShowPaymentWidget] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -30,11 +32,17 @@ export function SubscriptionStatus() {
   };
 
   const handleUpgrade = () => {
-    // Simulate Smart Glocal payment demo (3 second delay)
-    const returnUrl = encodeURIComponent(window.location.origin + "/thank-you?premium=true");
-    setTimeout(() => {
-      window.location.href = window.location.origin + "/thank-you?premium=true";
-    }, 3000);
+    setShowPaymentWidget(true);
+  };
+
+  const handlePaymentSuccess = () => {
+    setShowPaymentWidget(false);
+    checkSubscription();
+    toast({
+      title: "Welcome to Premium!",
+      description: "You now have access to advanced AI analysis and enhanced features.",
+      variant: "default",
+    });
   };
 
   if (isLoading) {
@@ -164,6 +172,12 @@ export function SubscriptionStatus() {
           </>
         )}
       </CardContent>
+      
+      <NowPaymentsWidget
+        isOpen={showPaymentWidget}
+        onClose={() => setShowPaymentWidget(false)}
+        onSuccess={handlePaymentSuccess}
+      />
     </Card>
   );
 }

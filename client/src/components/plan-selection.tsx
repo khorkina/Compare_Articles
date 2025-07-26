@@ -8,6 +8,7 @@ import { CheckCircle, Sparkles, Globe, BookOpen, Zap, FileText, Shield } from "l
 import { clientStorage } from "@/lib/storage";
 import { useToast } from "@/hooks/use-toast";
 import { PrivacyPolicyDialog } from "@/components/privacy-policy-dialog";
+import { NowPaymentsWidget } from "@/components/nowpayments-widget";
 
 interface PlanSelectionProps {
   onPlanSelected: (isPremium: boolean) => void;
@@ -19,6 +20,7 @@ export function PlanSelection({ onPlanSelected, selectedLanguages, articleTitle 
   const [isPolicyAccepted, setIsPolicyAccepted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showPrivacyDialog, setShowPrivacyDialog] = useState(false);
+  const [showPaymentWidget, setShowPaymentWidget] = useState(false);
   const { toast } = useToast();
 
   const handleFreePlan = () => {
@@ -32,16 +34,18 @@ export function PlanSelection({ onPlanSelected, selectedLanguages, articleTitle 
 
   const handlePrivacyAccept = async () => {
     // User accepted privacy policy, proceed with payment
-    setIsLoading(true);
-    
-    // Redirect to demo payment page (simulating Smart Glocal payment)
-    const returnUrl = encodeURIComponent(window.location.origin + "/thank-you?premium=true");
-    const paymentUrl = `https://httpbin.org/delay/3?return_url=${returnUrl}`;
-    
-    // For demo purposes, simulate successful payment after 3 seconds
-    setTimeout(() => {
-      window.location.href = window.location.origin + "/thank-you?premium=true";
-    }, 3000);
+    setShowPrivacyDialog(false);
+    setShowPaymentWidget(true);
+  };
+
+  const handlePaymentSuccess = () => {
+    setShowPaymentWidget(false);
+    toast({
+      title: "Payment Successful!",
+      description: "Your premium subscription has been activated.",
+      variant: "default",
+    });
+    onPlanSelected(true);
   };
 
   const SubscriptionPolicy = () => (
@@ -82,7 +86,7 @@ export function PlanSelection({ onPlanSelected, selectedLanguages, articleTitle 
 
         <div>
           <h5 className="font-medium text-wiki-blue">Support</h5>
-          <p>For technical support, contact us through the Help section. Payment support is handled through Smart Glocal payment processor.</p>
+          <p>For technical support, contact us through the Help section. Payment support is handled through NowPayments secure payment processor.</p>
         </div>
       </div>
       
@@ -240,11 +244,11 @@ export function PlanSelection({ onPlanSelected, selectedLanguages, articleTitle 
                 </div>
                 
                 <Button 
-                  onClick={handlePremiumPlan}
-                  disabled={!isPolicyAccepted || isLoading}
+                  onClick={handlePrivacyAccept}
+                  disabled={!isPolicyAccepted}
                   className="w-full mt-4 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
                 >
-                  {isLoading ? "Redirecting to Payment..." : "Proceed to Payment ($5/month)"}
+                  Proceed to Payment ($5/month)
                 </Button>
               </DialogContent>
             </Dialog>
@@ -264,6 +268,13 @@ export function PlanSelection({ onPlanSelected, selectedLanguages, articleTitle 
         isOpen={showPrivacyDialog}
         onClose={() => setShowPrivacyDialog(false)}
         onAccept={handlePrivacyAccept}
+      />
+
+      {/* NowPayments Widget */}
+      <NowPaymentsWidget
+        isOpen={showPaymentWidget}
+        onClose={() => setShowPaymentWidget(false)}
+        onSuccess={handlePaymentSuccess}
       />
     </div>
   );

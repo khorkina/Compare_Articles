@@ -24,7 +24,7 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 - **Client Storage**: IndexedDB with idb library for structured data
 - **User Accounts**: UUID-based accounts stored in browser localStorage with premium subscription tracking
 - **Session Management**: Local browser storage only
-- **Subscription Management**: Browser-based premium subscription with 30-day validation and Smart Glocal payment integration
+- **Subscription Management**: Browser-based premium subscription with 30-day validation and NowPayments integration
 - **Privacy**: No server-side data storage or tracking
 
 ## Key Components
@@ -41,7 +41,7 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 - **Comparison Modes**: Standard academic analysis and "funny mode" for entertaining insights
 - **Content Processing**: Browser-to-server API communication with plan-based routing
 - **Cultural Analysis**: Focus on factual differences, framing variations, and cultural perspectives
-- **Payment Processing**: Smart Glocal integration with browser-based subscription validation
+- **Payment Processing**: NowPayments integration with browser-based subscription validation
 
 ### Export and Sharing
 - **Document Export**: DOCX generation using docx library
@@ -105,6 +105,7 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 
 ### Recent Changes
 - July 26, 2025: **COMPLETED** - Successfully completed migration from Replit Agent to standard Replit environment with API keys configured
+- July 26, 2025: **COMPLETED** - Integrated NowPayments API for premium subscription payments, replacing demo system
 - July 23, 2025: **COMPLETED** - Successfully migrated Wiki Truth from Replit Agent to standard Replit environment
 - July 23, 2025: **COMPLETED** - Added automatic scroll-to-top functionality for page navigation improvements
 - July 23, 2025: **COMPLETED** - Configured API keys (OpenRouter & OpenAI) for AI comparison features
@@ -196,16 +197,16 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 - January 2, 2025: **COMPLETED** - Streamlined subscription flow without interrupting user comparisons
 - January 2, 2025: **COMPLETED** - Removed all AI model mentions from user interface (privacy-focused design)
 - January 2, 2025: **COMPLETED** - Fixed subscription status detection after premium upgrade
-- January 2, 2025: **COMPLETED** - Implemented demo Smart Glocal payment simulation (3-second redirect)
+- January 2, 2025: **COMPLETED** - Implemented demo Smart Glocal payment simulation (3-second redirect) - replaced with NowPayments integration
 - January 2, 2025: **COMPLETED** - Auto-start comparisons based on current subscription status
 - January 2, 2025: **COMPLETED** - Optional upgrade button that doesn't disrupt user workflow
-- January 2, 2025: **COMPLETED** - Premium subscription system with Smart Glocal payment integration ($5/month)
+- January 2, 2025: **COMPLETED** - Premium subscription system with Smart Glocal payment integration ($5/month) - upgraded to NowPayments
 - January 2, 2025: **COMPLETED** - Freemium model: Free OpenRouter vs Premium OpenAI analysis (hidden from users)
 - January 2, 2025: **COMPLETED** - Browser-based subscription validation with 30-day expiration tracking
 - January 2, 2025: **COMPLETED** - Policy acceptance dialog with subscription terms and conditions
 - January 2, 2025: **COMPLETED** - Plan selection interface with feature comparison
 - January 2, 2025: **COMPLETED** - Subscription status component in settings with upgrade options
-- December 30, 2024: **COMPLETED** - Subscription system implementation with Smart Glocal payment integration
+- December 30, 2024: **COMPLETED** - Subscription system implementation with Smart Glocal payment integration - upgraded to NowPayments
 - December 30, 2024: **COMPLETED** - Premium subscription model ($1/month) replacing API key requirements
 - December 30, 2024: **COMPLETED** - Subscription validation and 30-day expiration tracking
 - December 30, 2024: **COMPLETED** - Subscription gate on comparison features

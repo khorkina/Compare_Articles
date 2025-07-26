@@ -91,7 +91,7 @@ export function PrivacyPolicyDialog({ isOpen, onClose, onAccept }: PrivacyPolicy
                 <div>
                   <h4 className="font-semibold mb-2">Subscription Terms</h4>
                   <p className="text-gray-700">
-                    Premium subscriptions are processed through Smart Glocal payment system. 
+                    Premium subscriptions are processed through NowPayments secure payment system. 
                     Subscription status is validated locally in your browser for 30 days. 
                     No automatic renewals - you maintain control over your subscription.
                   </p>
