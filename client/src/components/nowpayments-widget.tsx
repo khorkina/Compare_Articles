@@ -78,7 +78,7 @@ export function NowPaymentsWidget({ isOpen, onClose, onSuccess }: NowPaymentsWid
             Upgrade to Premium
           </DialogTitle>
           <DialogDescription className="text-sm">
-            Unlock advanced AI analysis with GPT-4o and enhanced features for $5/month
+            Unlock advanced AI analysis with GPT-4o and enhanced features for $10/month
           </DialogDescription>
         </DialogHeader>
         
@@ -116,7 +116,7 @@ export function NowPaymentsWidget({ isOpen, onClose, onSuccess }: NowPaymentsWid
             ) : (
               <iframe
                 ref={iframeRef}
-                src="https://nowpayments.io/embeds/payment-widget?iid=5894409417&amount=5&currency=usd"
+                src="https://nowpayments.io/embeds/payment-widget?iid=5894409417&amount=10&currency=usd"
                 width="100%"
                 height="500"
                 frameBorder="0"

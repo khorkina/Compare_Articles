@@ -60,7 +60,7 @@ export function PlanSelection({ onPlanSelected, selectedLanguages, articleTitle 
 
         <div>
           <h5 className="font-medium text-wiki-blue">Billing & Duration</h5>
-          <p>Premium subscription costs $5.00 USD per month. Your subscription is valid for 30 days from activation date. No automatic renewal - you'll need to manually renew before expiration.</p>
+          <p>Premium subscription costs $10.00 USD per month. Your subscription is valid for 30 days from activation date. No automatic renewal - you'll need to manually renew before expiration.</p>
         </div>
 
         <div>
@@ -183,7 +183,7 @@ export function PlanSelection({ onPlanSelected, selectedLanguages, articleTitle 
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="text-2xl font-bold">$5<span className="text-sm font-normal text-gray-500">/month</span></div>
+            <div className="text-2xl font-bold">$10<span className="text-sm font-normal text-gray-500">/month</span></div>
             
             <ul className="space-y-2">
               <li className="flex items-center gap-2">
@@ -248,7 +248,7 @@ export function PlanSelection({ onPlanSelected, selectedLanguages, articleTitle 
                   disabled={!isPolicyAccepted}
                   className="w-full mt-4 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
                 >
-                  Proceed to Payment ($5/month)
+                  Proceed to Payment ($10/month)
                 </Button>
               </DialogContent>
             </Dialog>

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Wiki Truth is a freemium web application that enables users to compare Wikipedia articles across multiple languages using artificial intelligence. The platform offers both free and premium tiers - free users get Meta Llama AI analysis while premium subscribers ($5/month) receive OpenAI GPT-4o analysis with enhanced features. The platform is designed with privacy-first principles, storing all user data locally in the browser while revealing how the same topic can be presented differently in various linguistic and cultural contexts.
+Wiki Truth is a freemium web application that enables users to compare Wikipedia articles across multiple languages using artificial intelligence. The platform offers both free and premium tiers - free users get Meta Llama AI analysis while premium subscribers ($10/month) receive OpenAI GPT-4o analysis with enhanced features. The platform is designed with privacy-first principles, storing all user data locally in the browser while revealing how the same topic can be presented differently in various linguistic and cultural contexts.
 
 ## System Architecture
 
@@ -37,7 +37,7 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 
 ### AI Comparison Engine
 - **Free Tier**: OpenRouter.ai with Meta Llama 3.1 8B Instruct (unlimited usage)
-- **Premium Tier**: OpenAI GPT-4o with full article processing and enhanced analysis ($5/month)
+- **Premium Tier**: OpenAI GPT-4o with full article processing and enhanced analysis ($10/month)
 - **Comparison Modes**: Standard academic analysis and "funny mode" for entertaining insights
 - **Content Processing**: Browser-to-server API communication with plan-based routing
 - **Cultural Analysis**: Focus on factual differences, framing variations, and cultural perspectives
@@ -106,6 +106,7 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 ### Recent Changes
 - July 26, 2025: **COMPLETED** - Successfully completed migration from Replit Agent to standard Replit environment with API keys configured
 - July 26, 2025: **COMPLETED** - Integrated NowPayments API for premium subscription payments, replacing demo system
+- July 26, 2025: **COMPLETED** - Updated premium subscription pricing from $5 to $10 per month
 - July 23, 2025: **COMPLETED** - Successfully migrated Wiki Truth from Replit Agent to standard Replit environment
 - July 23, 2025: **COMPLETED** - Added automatic scroll-to-top functionality for page navigation improvements
 - July 23, 2025: **COMPLETED** - Configured API keys (OpenRouter & OpenAI) for AI comparison features

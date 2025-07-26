@@ -167,7 +167,7 @@ export function SubscriptionStatus() {
               className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold"
             >
               <Crown className="h-4 w-4 mr-2" />
-              Upgrade to Premium ($5/month)
+              Upgrade to Premium ($10/month)
             </Button>
           </>
         )}

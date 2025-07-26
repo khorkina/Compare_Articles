@@ -129,7 +129,7 @@ export default function TermsOfServicePage() {
                   <section id="subscription">
                     <h2 className="text-2xl font-semibold mb-3">4. Premium Subscription</h2>
                     <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-3">
-                      Premium subscriptions are processed through NowPayments secure payment system at $5 USD per month:
+                      Premium subscriptions are processed through NowPayments secure payment system at $10 USD per month:
                     </p>
                     <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300 space-y-2">
                       <li>Subscription automatically renews monthly unless cancelled</li>
