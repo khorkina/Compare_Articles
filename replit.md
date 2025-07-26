@@ -104,6 +104,10 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 ## Changelog
 
 ### Recent Changes
+- July 26, 2025: **COMPLETED** - Enhanced Wikipedia search functionality with intelligent filtering and relevance scoring
+- July 26, 2025: **COMPLETED** - Added quality filters to remove disambiguation pages, stubs, and low-content articles
+- July 26, 2025: **COMPLETED** - Improved search relevance with title matching, content length scoring, and freshness weighting
+- July 26, 2025: **COMPLETED** - Enhanced search interface with better loading states and result presentation
 - July 26, 2025: **COMPLETED** - Successfully completed migration from Replit Agent to standard Replit environment with API keys configured
 - July 26, 2025: **COMPLETED** - Integrated NowPayments API for premium subscription payments, replacing demo system
 - July 26, 2025: **COMPLETED** - Updated premium subscription pricing from $5 to $10 per month

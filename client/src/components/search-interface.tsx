@@ -65,34 +65,54 @@ export function SearchInterface({ onArticleSelected }: SearchInterfaceProps) {
         </div>
 
         {/* Suggestions Dropdown */}
-        {showSuggestions && (suggestions.length > 0 || isLoading) && (
-          <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-b shadow-lg z-10 max-h-60 overflow-y-auto">
+        {showSuggestions && query.length >= 2 && (
+          <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-b shadow-lg z-10 max-h-80 overflow-y-auto">
             {isLoading ? (
-              <div className="p-3 text-center text-gray-600">
+              <div className="p-4 text-center text-gray-600">
                 <div className="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full inline-block mr-2"></div>
-                Searching...
+                Finding quality articles...
+              </div>
+            ) : suggestions.length === 0 ? (
+              <div className="p-4 text-center text-gray-500">
+                <div className="mb-2">No articles found for "{query}"</div>
+                <div className="text-xs text-gray-400">
+                  Try different keywords or check spelling
+                </div>
               </div>
             ) : (
-              suggestions.map((suggestion, index) => (
-                <div
-                  key={`${suggestion.pageid}-${index}`}
-                  className="p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-200 last:border-b-0 transition-colors"
-                  onClick={() => handleSuggestionClick(suggestion)}
-                >
-                  <div className="font-semibold text-base mb-2 text-blue-600">{suggestion.title}</div>
-                  {suggestion.snippet && (
-                    <div className="text-sm text-gray-600 leading-relaxed line-clamp-3">
-                      {suggestion.snippet.replace(/<[^>]*>/g, '')}
-                    </div>
-                  )}
-                  <div className="mt-2 flex items-center text-xs text-gray-500">
-                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    Click to select this article for comparison
-                  </div>
+              <>
+                <div className="p-2 bg-green-50 border-b border-green-200 text-xs text-green-700">
+                  <i className="fas fa-check-circle mr-1"></i>
+                  {suggestions.length} quality articles found with multiple language versions
                 </div>
-              ))
+                {suggestions.map((suggestion, index) => (
+                  <div
+                    key={`${suggestion.pageid}-${index}`}
+                    className="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-200 last:border-b-0 transition-colors"
+                    onClick={() => handleSuggestionClick(suggestion)}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900 mb-1 flex items-center">
+                          <span className="text-xs text-gray-400 mr-2 bg-gray-100 px-1.5 py-0.5 rounded">#{index + 1}</span>
+                          {suggestion.title}
+                        </div>
+                        {suggestion.snippet && (
+                          <div className="text-sm text-gray-600 leading-relaxed line-clamp-2">
+                            {suggestion.snippet}
+                          </div>
+                        )}
+                      </div>
+                      <div className="ml-2 text-xs text-gray-400">
+                        <i className="fas fa-arrow-right"></i>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <div className="p-2 bg-blue-50 border-t border-blue-200 text-xs text-blue-700 text-center">
+                  Click any article above to start comparing across languages
+                </div>
+              </>
             )}
           </div>
         )}
