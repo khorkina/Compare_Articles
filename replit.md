@@ -104,6 +104,10 @@ Wiki Truth is a freemium web application that enables users to compare Wikipedia
 ## Changelog
 
 ### Recent Changes
+- July 26, 2025: **COMPLETED** - Added comprehensive NowPayments instruction guide to Help section
+- July 26, 2025: **COMPLETED** - Updated Help page with step-by-step cryptocurrency payment instructions
+- July 26, 2025: **COMPLETED** - Added payment support links and troubleshooting guidance in NowPayments widget
+- July 26, 2025: **COMPLETED** - Updated Help page from outdated "completely free" to accurate freemium model information
 - July 26, 2025: **COMPLETED** - Enhanced Wikipedia search functionality with intelligent filtering and relevance scoring
 - July 26, 2025: **COMPLETED** - Added quality filters to remove disambiguation pages, stubs, and low-content articles
 - July 26, 2025: **COMPLETED** - Improved search relevance with title matching, content length scoring, and freshness weighting

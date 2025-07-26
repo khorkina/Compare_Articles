@@ -88,6 +88,21 @@ export function NowPaymentsWidget({ isOpen, onClose, onSuccess }: NowPaymentsWid
             <Shield className="h-3 w-3 sm:h-4 sm:w-4" />
             <span>Secure payment processing via NowPayments</span>
           </div>
+          
+          {/* Payment Instructions Link */}
+          <div className="bg-blue-50 border border-blue-200 rounded p-3 text-center">
+            <p className="text-xs text-blue-800 mb-2">
+              <i className="fas fa-info-circle mr-1"></i>
+              New to cryptocurrency payments? Need help?
+            </p>
+            <a 
+              href="/help" 
+              target="_blank" 
+              className="text-xs text-blue-600 hover:text-blue-800 underline font-semibold"
+            >
+              View detailed payment instructions and FAQ →
+            </a>
+          </div>
 
           {/* Payment Widget Container */}
           <div className="relative w-full">
@@ -137,6 +152,16 @@ export function NowPaymentsWidget({ isOpen, onClose, onSuccess }: NowPaymentsWid
               </iframe>
             )}
           </div>
+
+          {/* Payment Support Notice */}
+          {!paymentCompleted && (
+            <div className="bg-gray-50 border border-gray-200 rounded p-3 text-center">
+              <p className="text-xs text-gray-600">
+                <i className="fas fa-headset mr-1"></i>
+                Payment issues? Check our <a href="/help" target="_blank" className="text-blue-600 hover:underline">Help section</a> or <a href="/contact-us" target="_blank" className="text-blue-600 hover:underline">contact support</a>
+              </p>
+            </div>
+          )}
 
           {/* Cancel Button */}
           {!paymentCompleted && (

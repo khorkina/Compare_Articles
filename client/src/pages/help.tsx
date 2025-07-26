@@ -39,10 +39,12 @@ export default function HelpPage() {
               <details className="bg-gray-50 border border-gray-200 rounded p-4">
                 <summary className="font-semibold cursor-pointer">
                   <i className="fas fa-question-circle mr-2 text-wiki-blue"></i>
-                  Is Wiki Truth really completely free?
+                  What's the difference between Free and Premium?
                 </summary>
                 <div className="mt-3 text-sm text-gray-700">
-                  Yes! Wiki Truth is 100% free with unlimited comparisons. No subscription, no account required, no hidden fees.
+                  <strong>Free:</strong> Unlimited comparisons with Meta Llama AI analysis. No subscription required, all data stored locally in your browser.
+                  <br/><br/>
+                  <strong>Premium ($10/month):</strong> Advanced OpenAI GPT-4o analysis with enhanced features, customization options, and post-comparison chat functionality.
                 </div>
               </details>
 
@@ -130,12 +132,91 @@ export default function HelpPage() {
             </div>
           </section>
 
+          {/* Premium Payment Guide */}
+          <section>
+            <h2 className="wiki-section-title">Premium Payment Guide</h2>
+            <div className="space-y-4">
+              <div className="bg-green-50 border border-green-200 rounded p-6">
+                <h3 className="font-semibold text-green-900 mb-4">
+                  <i className="fas fa-credit-card mr-2"></i>How to Subscribe to Premium ($10/month)
+                </h3>
+                
+                <div className="space-y-4 text-sm text-green-800">
+                  <div className="bg-white rounded p-4 border border-green-200">
+                    <h4 className="font-semibold mb-2">Step 1: Access Payment</h4>
+                    <p>Click the "Upgrade to Premium" button in Settings or during language selection to open the secure NowPayments widget.</p>
+                  </div>
+                  
+                  <div className="bg-white rounded p-4 border border-green-200">
+                    <h4 className="font-semibold mb-2">Step 2: Choose Payment Method</h4>
+                    <p>NowPayments supports 400+ cryptocurrencies and traditional payment methods:</p>
+                    <ul className="mt-2 ml-4 space-y-1">
+                      <li>• <strong>Cryptocurrencies:</strong> Bitcoin (BTC), Ethereum (ETH), USDT, USDC, Litecoin (LTC), and many more</li>
+                      <li>• <strong>Traditional Methods:</strong> Credit/debit cards, bank transfers (where available)</li>
+                      <li>• <strong>Popular Wallets:</strong> MetaMask, Trust Wallet, Coinbase Wallet integration</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="bg-white rounded p-4 border border-green-200">
+                    <h4 className="font-semibold mb-2">Step 3: Complete Payment</h4>
+                    <ul className="space-y-1">
+                      <li>• The widget will show the exact amount needed in your chosen currency</li>
+                      <li>• For crypto: Scan the QR code or copy the wallet address</li>
+                      <li>• For cards: Enter your payment details securely</li>
+                      <li>• Payment confirmation typically takes 1-5 minutes</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="bg-white rounded p-4 border border-green-200">
+                    <h4 className="font-semibold mb-2">Step 4: Subscription Activation</h4>
+                    <p>Once payment is confirmed, your premium subscription activates immediately for 30 days. No automatic renewal - you control when to extend your subscription.</p>
+                  </div>
+                </div>
+                
+                <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
+                  <p className="text-xs text-blue-800">
+                    <i className="fas fa-shield-alt mr-1"></i>
+                    <strong>Security:</strong> All payments are processed through NowPayments' secure infrastructure. Wiki Truth never stores your payment information.
+                  </p>
+                </div>
+              </div>
+              
+              <details className="bg-gray-50 border border-gray-200 rounded p-4">
+                <summary className="font-semibold cursor-pointer">
+                  <i className="fas fa-question-circle mr-2 text-wiki-blue"></i>
+                  What if my payment fails or I need help?
+                </summary>
+                <div className="mt-3 text-sm text-gray-700 space-y-2">
+                  <p><strong>Common Issues:</strong></p>
+                  <ul className="ml-4 space-y-1">
+                    <li>• <strong>Low crypto amount:</strong> Ensure the payment meets minimum network requirements (usually ~$5 USD equivalent)</li>
+                    <li>• <strong>Network delays:</strong> Crypto payments can take 10-30 minutes during network congestion</li>
+                    <li>• <strong>Wrong address:</strong> Always copy the exact address from the payment widget</li>
+                  </ul>
+                  <p className="mt-2">
+                    <strong>Need Support?</strong> Visit our <a href="/contact-us" className="text-blue-600 hover:underline">Contact Us</a> page for assistance with payment issues.
+                  </p>
+                </div>
+              </details>
+              
+              <details className="bg-gray-50 border border-gray-200 rounded p-4">
+                <summary className="font-semibold cursor-pointer">
+                  <i className="fas fa-question-circle mr-2 text-wiki-blue"></i>
+                  Why cryptocurrency payments?
+                </summary>
+                <div className="mt-3 text-sm text-gray-700">
+                  Cryptocurrency payments align with our privacy-first approach - no personal financial data is required, and payments are processed globally without geographic restrictions. We also accept traditional payment methods where available.
+                </div>
+              </details>
+            </div>
+          </section>
+
           {/* Contact */}
           <section>
             <h2 className="wiki-section-title">Need More Help?</h2>
             <div className="bg-gray-50 border border-gray-200 rounded p-6 text-center">
               <p className="text-wiki-gray mb-4">
-                Wiki Truth is an open-source project focused on privacy and accessibility.
+                Wiki Truth combines privacy-first architecture with powerful AI analysis.
               </p>
               <div className="flex justify-center gap-4">
                 <Button 
